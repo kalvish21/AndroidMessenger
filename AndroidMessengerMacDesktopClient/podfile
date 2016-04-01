@@ -1,9 +1,0 @@
-platform :osx, '10.10'
-use_frameworks!
-
-target 'AndroidMessenger' do
-    pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
-    pod 'Starscream', '~> 1.1.1'
-    pod 'Alamofire'
-    pod 'ReachabilitySwift', :git => 'https://github.com/ashleymills/Reachability.swift'
-end
