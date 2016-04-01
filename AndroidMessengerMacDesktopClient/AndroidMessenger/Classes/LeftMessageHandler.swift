@@ -24,7 +24,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         self.chatHandler = chatHandler
     }
     
-    func getDataForLeftTableView() {
+    func getDataForLeftTableView(new_selection: Bool) {
         let row = self.leftTableView.selectedRow
         var row_data: Dictionary<String, AnyObject>?
         if row > -1 {
@@ -35,7 +35,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         results = self.messageHandler.getLeftMessagePaneWithLatestMessages(delegate.coreDataHandler.managedObjectContext)
         self.leftTableView.reloadData()
         
-        if row_data != nil {
+        if row_data != nil && !new_selection {
             for row_id in 0...results.count - 1 {
                 let row_dict = results[row_id]
                 if self.chatHandler.thread_id == row_dict["thread_id"] as! Int {
@@ -157,7 +157,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
                 self.chatHandler.chatTableView.beginUpdates()
                 self.chatHandler.chatTableView.reloadDataForRowIndexes(rowSet, columnIndexes: col)
                 self.chatHandler.chatTableView.endUpdates()
-                getDataForLeftTableView()
+                getDataForLeftTableView(true)
             }
         }
         

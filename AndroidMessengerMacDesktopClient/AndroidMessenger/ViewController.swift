@@ -79,7 +79,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         messageTextField.nextKeyView = tableView
         
         // Populate left message view box
-        self.leftMessageHandler.getDataForLeftTableView()
+        self.leftMessageHandler.getDataForLeftTableView(false)
         
         // Get latest data from app if we're connected
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
@@ -133,7 +133,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                     self.chatTableView.reloadDataForRowIndexes(row, columnIndexes: col)
                     self.chatTableView.endUpdates()
                     
-                    self.leftMessageHandler.getDataForLeftTableView()
+                    self.leftMessageHandler.getDataForLeftTableView(false)
                     break
                 }
             }
@@ -147,7 +147,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             }
             
             self.chatHandler.performActionsForNewData(self.chatTableView, id_values: userInfo!["ids"] as! Array<Int>)
-            self.leftMessageHandler.getDataForLeftTableView()
+            self.leftMessageHandler.getDataForLeftTableView(false)
             break
         default:
             break
@@ -258,7 +258,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                     }
                 }
                 
-                self.leftMessageHandler.getDataForLeftTableView()
+                self.leftMessageHandler.getDataForLeftTableView(false)
             }
         }
         
@@ -322,7 +322,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                     
                     if (id_values.count > 0) {
                         dispatch_async(dispatch_get_main_queue(),{
-                            self.leftMessageHandler.getDataForLeftTableView()
+                            self.leftMessageHandler.getDataForLeftTableView(false)
                             self.chatHandler.performActionsForNewData(self.chatTableView, id_values: id_values)
                         })
                     }

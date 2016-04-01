@@ -206,22 +206,24 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     }
     
     func checkIfIdsAreForThisThread(ids: Array<Int>) -> [Message] {
-        let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-        let context = delegate.coreDataHandler.managedObjectContext
-        
-        let request = NSFetchRequest(entityName: "Message")
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "thread_id = %i AND id IN %@", self.thread_id!, ids)])
-        request.sortDescriptors = [NSSortDescriptor(key: "time", ascending: true)]
-        
-        var obtained_Values: [Message]? = nil
-        do {
-            try obtained_Values = context.executeFetchRequest(request) as? [Message]
-        } catch let error as NSError {
-            NSLog("Unresolved error: %@, %@", error, error.userInfo)
-        }
-        
-        if (obtained_Values != nil && obtained_Values!.count > 0) {
-            return obtained_Values!
+        if (self.thread_id != nil) {
+            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+            let context = delegate.coreDataHandler.managedObjectContext
+            
+            let request = NSFetchRequest(entityName: "Message")
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "thread_id = %i AND id IN %@", self.thread_id!, ids)])
+            request.sortDescriptors = [NSSortDescriptor(key: "time", ascending: true)]
+            
+            var obtained_Values: [Message]? = nil
+            do {
+                try obtained_Values = context.executeFetchRequest(request) as? [Message]
+            } catch let error as NSError {
+                NSLog("Unresolved error: %@, %@", error, error.userInfo)
+            }
+            
+            if (obtained_Values != nil && obtained_Values!.count > 0) {
+                return obtained_Values!
+            }
         }
         return []
     }
