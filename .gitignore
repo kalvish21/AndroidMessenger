@@ -1,21 +1,3 @@
-<<<<<<< HEAD
-# OS
-*.DS_Store
-.svn
-
-# Android Studio
-workspace.xml
-out/
-*.apk
-*.iml
-*.ap_
-*.class
-.gradle/
-build/
-local.properties
-
-# xcode noise
-=======
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
@@ -25,7 +7,6 @@ build/
 DerivedData
 
 ## Various settings
->>>>>>> f50876cab08f65085d06e35a3908b733d65052c6
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -35,18 +16,6 @@ DerivedData
 *.perspectivev3
 !default.perspectivev3
 xcuserdata
-<<<<<<< HEAD
-profile
-Build/
-*.moved-aside
-
-# IDE
-*.iml
-.idea
-#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
-.gradle
-build/
-=======
 
 ## Other
 *.xccheckout
@@ -92,4 +61,3 @@ Carthage/Build
 
 fastlane/report.xml
 fastlane/screenshots
->>>>>>> f50876cab08f65085d06e35a3908b733d65052c6
