@@ -1,0 +1,35 @@
+# OS
+*.DS_Store
+.svn
+
+# Android Studio
+workspace.xml
+out/
+*.apk
+*.iml
+*.ap_
+*.class
+.gradle/
+build/
+local.properties
+
+# xcode noise
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+profile
+Build/
+*.moved-aside
+
+# IDE
+*.iml
+.idea
+#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+.gradle
+build/
