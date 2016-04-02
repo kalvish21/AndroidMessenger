@@ -48,7 +48,7 @@ public class SmsObserver extends ContentObserver {
                 for (int i = 0; i < totalSMS; i++) {
                     long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow("date")));
                     if (currentDate > largestDateCounted) {
-                        largestDateCounted = currentDate;
+                        receivedDate = currentDate;
                     }
 
                     JSONObject obj = util.getJsonObjectFromCursorObjectForSmsText(c);
@@ -61,8 +61,8 @@ public class SmsObserver extends ContentObserver {
 
             if (receivedDate > largestDateCounted) {
                 largestDateCounted = receivedDate;
+                UserPreferencesManager.getInstance().setStringInPreferences(context, Constants.CURRENT_COUNTER, String.valueOf(largestDateCounted));
             }
-            UserPreferencesManager.getInstance().setStringInPreferences(context, Constants.CURRENT_COUNTER, String.valueOf(largestDateCounted));
 
             if (array != null && array.length() > 0) {
                 JSONObject obj = new JSONObject();
