@@ -71,7 +71,7 @@ public class SmsObserver extends ContentObserver {
                     if (messages_received) {
                         obj.put("action", "/message/received");
                     } else {
-                        obj.put("action", "/message/sent");
+                        obj.put("action", "/message/send");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
