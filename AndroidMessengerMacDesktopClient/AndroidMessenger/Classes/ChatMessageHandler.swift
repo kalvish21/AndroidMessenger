@@ -119,9 +119,10 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
                     
                     resultIds.append(String(r.id!))
                 }
-                
-                let json = JSON(["uid": NetworkingUtil().generateUUID(), "t": self.thread_id!, "is": resultIds, "c": self.getMaxDateFromCoreData(), "action": "/messages/mark_read"])
-                delegate.socketHandler.socket?.writeString(json.rawString()!)
+
+                // Google wont allow us to update the read status -- no need for the below
+//                let json = JSON(["uid": NetworkingUtil().generateUUID(), "t": self.thread_id!, "is": resultIds, "c": self.getMaxDateFromCoreData(), "action": "/messages/mark_read"])
+//                delegate.socketHandler.socket?.writeString(json.rawString()!)
                 
                 do {
                     try context.save()

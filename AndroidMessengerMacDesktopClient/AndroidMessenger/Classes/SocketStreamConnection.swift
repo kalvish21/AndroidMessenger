@@ -72,7 +72,6 @@ class SocketHandler: NSObject, WebSocketDelegate {
                     var id_values: Array<Int> = Array<Int>()
                     
                     context.performBlock {
-                        
                         if (messages!.count > 0) {
                             for i in 0...(messages!.count-1) {
                                 let object = messages![i] as! JSON
@@ -83,7 +82,6 @@ class SocketHandler: NSObject, WebSocketDelegate {
                                 if (self.messageHandler.checkIfMessageExists(context, idValue: objectId)) {
                                     continue
                                 }
-                                id_values.append(objectId!)
                                 
                                 let type = object["type"].stringValue
                                 if (type == "mms") {
@@ -92,6 +90,10 @@ class SocketHandler: NSObject, WebSocketDelegate {
                                 
                                 var sms = NSEntityDescription.insertNewObjectForEntityForName("Message", inManagedObjectContext: context) as! Message
                                 sms = self.messageHandler.setMessageDetailsFromJsonObject(sms, object: object, is_pending: false)
+                                
+                                if sms.received == false {
+                                    id_values.append(objectId!)
+                                }
                             }
                             
                             do {
@@ -170,13 +172,13 @@ class SocketHandler: NSObject, WebSocketDelegate {
             }
             break
 
-        case "/messages/mark_read":
-            let messages = jsonData["messages"].array
-            if (messages != nil) {
-                self.parseIncomingMessagesAndShowNotification(messages!)
-            }
-            
-            break
+//        case "/messages/mark_read":
+//            let messages = jsonData["messages"].array
+//            if (messages != nil) {
+//                self.parseIncomingMessagesAndShowNotification(messages!)
+//            }
+//            
+//            break
             
         default:
             break

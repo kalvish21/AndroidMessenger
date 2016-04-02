@@ -12,9 +12,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
-    <!-- Contacts Permissions -->
-    <!--<uses-permission android:name="android.permission.READ_CONTACTS" />-->
-
     <!-- SMS Permissions -->
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
@@ -37,36 +34,36 @@
             </intent-filter>
         </activity>
 
-        <!--<receiver android:name=".receiver.SmsReceiver" android:process=":sms_process" >-->
+        <!-- We will not be using this since we have issues when we are not the default SMS/MMS application  -->
+        <!--
+        <receiver android:name=".receiver.SmsReceiver" android:process=":sms_process" >
 
-<!--            <intent-filter>-->
-                <!--<action android:name="android.provider.Telephony.SMS_RECEIVED" />-->
-                <!--<action android:name="android.provider.Telephony.SMS_SENT"/>-->
-<!--            </intent-filter>-->
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+                <action android:name="android.provider.Telephony.SMS_SENT"/>
+            </intent-filter>
 
-<!--            <intent-filter>-->
-                <!--<action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />-->
-                <!--<data android:mimeType="application/vnd.wap.mms-message" />-->
-            <!--</intent-filter>-->
+            <intent-filter>
+                <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
+                <data android:mimeType="application/vnd.wap.mms-message" />
+            </intent-filter>
 
-<!--            <intent-filter>-->
-                <!--<action android:name="com.androidmessenger.MESSAGE_RECEIVED" />-->
-            <!--</intent-filter>-->
+            <intent-filter>
+                <action android:name="com.androidmessenger.MESSAGE_RECEIVED" />
+            </intent-filter>
 
-        <!--</receiver>-->
+        </receiver>
+        -->
 
         <receiver android:name=".receiver.WifiReciever" android:process=":sms_process" >
-
             <intent-filter>
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
                 <action android:name="android.net.wifi.STATE_CHANGE"/>
             </intent-filter>
-
         </receiver>
 
         <service android:name=".service.AndroidAppService" android:process=":sms_process" android:icon="@mipmap/ic_launcher" />
 
     </application>
-    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
 
 </manifest>

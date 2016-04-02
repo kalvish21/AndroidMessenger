@@ -13,13 +13,11 @@ import com.androidmessenger.util.Util;
 
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
 /**
  * Created by Kalyan Vishnubhatla on 3/23/16.
@@ -109,29 +107,30 @@ public class WebSocket extends WebSocketServer {
                         break;
                     }
 
-                    case "/messages/mark_read": {
-                        String uuid = obj.getString("uid");
-                        if (!util.verifyUUID(context, uuid)) {
-                            return;
-                        }
-
-                        String counterString = obj.getString("c");
-                        String threadId = obj.getString("t");
-                        JSONArray ids = obj.getJSONArray("is");
-                        ArrayList<String> valuesArray = new ArrayList<>();
-                        for (int i = 0; i < ids.length(); ++i) {
-                            String value = ids.getString(i);
-                            valuesArray.add(value);
-                        }
-
-                        smsMmsUtil.markSmsMessageAsRead(threadId, valuesArray.toArray(new String[valuesArray.size()]));
-                        JSONArray array = smsMmsUtil.getLatestSmsMmsMessagesFromDate(counterString);
-                        JSONObject returnObj = new JSONObject();
-                        returnObj.put("action", action);
-                        returnObj.put("messages", array);
-                        conn.send(returnObj.toString());
-                        break;
-                    }
+                    // Google won't allow us to update the read status anyway
+//                    case "/messages/mark_read": {
+//                        String uuid = obj.getString("uid");
+//                        if (!util.verifyUUID(context, uuid)) {
+//                            return;
+//                        }
+//
+//                        String counterString = obj.getString("c");
+//                        String threadId = obj.getString("t");
+//                        JSONArray ids = obj.getJSONArray("is");
+//                        ArrayList<String> valuesArray = new ArrayList<>();
+//                        for (int i = 0; i < ids.length(); ++i) {
+//                            String value = ids.getString(i);
+//                            valuesArray.add(value);
+//                        }
+//
+//                        smsMmsUtil.markSmsMessageAsRead(threadId, valuesArray.toArray(new String[valuesArray.size()]));
+//                        JSONArray array = smsMmsUtil.getLatestSmsMmsMessagesFromDate(counterString);
+//                        JSONObject returnObj = new JSONObject();
+//                        returnObj.put("action", action);
+//                        returnObj.put("messages", array);
+//                        conn.send(returnObj.toString());
+//                        break;
+//                    }
 
                     default: {
                         break;
