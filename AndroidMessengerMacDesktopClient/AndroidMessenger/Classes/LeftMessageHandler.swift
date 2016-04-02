@@ -128,8 +128,9 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         if (msg["read"] as! Bool == false && self.chatHandler.thread_id != msg["thread_id"] as! Int) {
             let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
             let context = delegate.coreDataHandler.managedObjectContext
+            let threadId = msg["thread_id"] as! Int
             let request = NSFetchRequest(entityName: "Message")
-            request.predicate = NSPredicate(format: "thread_id = %i and read = %@", (msg["thread_id"] as! Int), false)
+            request.predicate = NSPredicate(format: "thread_id = %i and read = %@", threadId, false)
             
             var objs: [Message]?
             do {
@@ -139,15 +140,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
             }
             
             if (objs?.count > 0) {
-                for obj in objs! {
-                    obj.read = true
-                }
-                
-                do {
-                    try context.save()
-                } catch let error as NSError {
-                    NSLog("Unresolved error: %@, %@", error, error.userInfo)
-                }
+                self.chatHandler.performActionsForIncomingMessages(self.leftTableView, threadId: threadId)
                 
                 // Update table
                 let rowSet = NSIndexSet(index: row)
@@ -157,6 +150,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
                 self.chatHandler.chatTableView.beginUpdates()
                 self.chatHandler.chatTableView.reloadDataForRowIndexes(rowSet, columnIndexes: col)
                 self.chatHandler.chatTableView.endUpdates()
+                
                 getDataForLeftTableView(true)
             }
         }

@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.androidmessenger.connections.WebServer;
 import com.androidmessenger.connections.WebSocket;
+import com.androidmessenger.observer.SmsObserver;
 import com.androidmessenger.util.Constants;
 import com.androidmessenger.util.UserPreferencesManager;
 import com.androidmessenger.util.Util;
@@ -32,8 +33,10 @@ public class AndroidAppService extends Service {
     public static final String TAG = AndroidAppService.class.getSimpleName();
     private Looper mServiceLooper;
     public static ServiceHandler mServiceHandler;
+
     private WebSocket webSocket;
     private WebServer webServer;
+    private SmsObserver content;
 
     public AndroidAppService() {
         super();
@@ -92,20 +95,29 @@ public class AndroidAppService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Add observer
+        content = new SmsObserver(new Handler(), this);
+        getContentResolver().registerContentObserver(Constants.Sms, true, content);
     }
 
     public void stopServers() {
         Toast.makeText(this, "Stopping servers ...", Toast.LENGTH_LONG).show();
         try {
+            // Shut down websocket
             if (webSocket != null) {
                 webSocket.closeAllConnectionsAndStop();
                 webSocket = null;
             }
 
+            // Shutdown webserver
             if (webServer != null) {
                 webServer.stop();
                 webServer = null;
             }
+
+            // Remove observers
+            getContentResolver().unregisterContentObserver(content);
         } catch (Exception e) {
             e.printStackTrace();
         }

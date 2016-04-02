@@ -37,23 +37,23 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".receiver.SmsReceiver" android:process=":sms_process" >
+        <!--<receiver android:name=".receiver.SmsReceiver" android:process=":sms_process" >-->
 
-            <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-                <action android:name="android.provider.Telephony.SMS_SENT"/>
-            </intent-filter>
+<!--            <intent-filter>-->
+                <!--<action android:name="android.provider.Telephony.SMS_RECEIVED" />-->
+                <!--<action android:name="android.provider.Telephony.SMS_SENT"/>-->
+<!--            </intent-filter>-->
 
-            <intent-filter>
-                <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
-                <data android:mimeType="application/vnd.wap.mms-message" />
-            </intent-filter>
+<!--            <intent-filter>-->
+                <!--<action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />-->
+                <!--<data android:mimeType="application/vnd.wap.mms-message" />-->
+            <!--</intent-filter>-->
 
-            <intent-filter>
-                <action android:name="com.androidmessenger.MESSAGE_RECEIVED" />
-            </intent-filter>
+<!--            <intent-filter>-->
+                <!--<action android:name="com.androidmessenger.MESSAGE_RECEIVED" />-->
+            <!--</intent-filter>-->
 
-        </receiver>
+        <!--</receiver>-->
 
         <receiver android:name=".receiver.WifiReciever" android:process=":sms_process" >
 

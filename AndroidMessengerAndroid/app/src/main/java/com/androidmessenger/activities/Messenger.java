@@ -11,7 +11,6 @@ import android.telephony.TelephonyManager;
 import android.text.format.Formatter;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidmessenger.R;
 import com.androidmessenger.service.AndroidAppService;

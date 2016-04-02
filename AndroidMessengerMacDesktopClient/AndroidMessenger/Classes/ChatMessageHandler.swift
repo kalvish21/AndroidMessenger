@@ -91,7 +91,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         return results
     }
     
-    func performActionsForIncomingMessages(tableView: NSTableView) {
+    func performActionsForIncomingMessages(tableView: NSTableView, threadId: Int) {
         // Anything that has to be done when the message window is shown (i.e. mark messages as read)
         
         // See if there're unread messages we need to mark as read (on the phone)
@@ -101,7 +101,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         
         let request = NSFetchRequest(entityName: "Message")
         request.sortDescriptors = [NSSortDescriptor(key: "time", ascending: true)]
-        request.predicate = NSPredicate(format: "thread_id = %i and sms = %@ and read = %@", self.thread_id!, true, false)
+        request.predicate = NSPredicate(format: "thread_id = %i and sms = %@ and read = %@", threadId, true, false)
         
         var message_result = Array<AnyObject>()
         do {
@@ -202,7 +202,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         
         // Update the messages
         tableView.scrollRowToVisible(self.results.count - 1)
-        self.performActionsForIncomingMessages(tableView)
+        self.performActionsForIncomingMessages(tableView, threadId: self.thread_id!)
     }
     
     func checkIfIdsAreForThisThread(ids: Array<Int>) -> [Message] {

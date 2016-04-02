@@ -1,10 +1,12 @@
 package com.androidmessenger.connections;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.util.Log;
 
 import com.androidmessenger.service.AndroidAppService;
 import com.androidmessenger.util.Constants;
@@ -138,6 +140,54 @@ public class WebServer extends NanoHTTPD {
                 if (cursor != null && !cursor.isClosed()) {
                     cursor.close();
                 }
+
+                return newFixedLengthResponse(response);
+
+            }
+
+            // This API is just for testing. Will be removed in future
+            case "/markread": {
+                String id = session.getParms().get("i");
+                Uri uri = Uri.parse("content://sms/inbox");
+                Cursor cursor = context.getContentResolver().query(uri, null, "_id=" + id, null, null);
+                int updated = -1;
+                try {
+                    if (cursor.getCount() == 1) {
+                        ContentValues values = new ContentValues();
+                        values.put("READ", true);
+                        values.put("READ", 1);
+                        values.put("SEEN", true);
+                        values.put("SEEN", 1);
+                        updated = context.getContentResolver().update(Uri.parse("content://sms/"+id), values, null, null);
+                    }
+                } catch (Exception e) {
+                    Log.e("Mark Read", "Error in Read: " + e.toString());
+                } finally {
+                    cursor.close();
+                }
+                return newFixedLengthResponse(Integer.toString(updated));
+            }
+
+            // This API is just for testing. Will be removed in future
+            case "/unreadmessages": {
+
+                ContentResolver cr = context.getContentResolver();
+                Cursor cursor = cr.query(Constants.Sms, null, "read=0", null, null);
+                if (cursor == null) {
+                    return null;
+                }
+                String response = null;
+                StringBuffer responseBuffer = new StringBuffer();
+                if (cursor.moveToFirst()) {
+                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+                        responseBuffer.append(cursor.getColumnName(i) + "=" + cursor.getString(cursor.getColumnIndexOrThrow(cursor.getColumnName(i))) + "<br>");
+                    }
+                }
+                responseBuffer.append(Integer.toString(cursor.getCount()));
+                if (cursor != null && !cursor.isClosed()) {
+                    cursor.close();
+                }
+                response = responseBuffer.toString();
 
                 return newFixedLengthResponse(response);
 
