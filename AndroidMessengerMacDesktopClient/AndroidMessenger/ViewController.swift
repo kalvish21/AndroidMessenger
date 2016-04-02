@@ -71,6 +71,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: websocketDisconnected, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: messageSentConfirmation, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: newMessageReceived, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: leftDataShouldRefresh, object: nil)
         
         // Message field properties
         messageTextField.enabled = false
@@ -98,6 +99,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             break
         case websocketDisconnected:
             sheetShouldOpen()
+            break
+        case leftDataShouldRefresh:
+            self.leftMessageHandler.getDataForLeftTableView(false)
             break
         case messageSentConfirmation:
             let userInfo: Dictionary<String, AnyObject>? = notification.object as? Dictionary<String, AnyObject>

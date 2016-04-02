@@ -7,7 +7,6 @@ import android.widget.Toast;
 
 import com.androidmessenger.R;
 import com.androidmessenger.service.AndroidAppService;
-import com.androidmessenger.util.SmsMmsUtil;
 import com.androidmessenger.util.UserPreferencesManager;
 import com.androidmessenger.util.Util;
 
@@ -25,15 +24,15 @@ import java.net.UnknownHostException;
 public class WebSocket extends WebSocketServer {
     private static final String TAG = WebSocket.class.getSimpleName();
     public static final int PORT_NUMBER = 5555;
+    private AndroidAppService service;
     private Context context;
     private Util util;
-    private SmsMmsUtil smsMmsUtil;
 
     public WebSocket(AndroidAppService service) throws UnknownHostException {
         super(new InetSocketAddress(PORT_NUMBER));
+        this.service = service;
         this.context = service.getBaseContext();
         this.util = new Util();
-        this.smsMmsUtil = new SmsMmsUtil(service);
     }
 
     public void sendJsonData(JSONObject obj) {
@@ -101,7 +100,6 @@ public class WebSocket extends WebSocketServer {
 
                         // Send the success message
                         JSONObject returnObj = new JSONObject();
-                        returnObj.put("SUCCESS", "ADDED");
                         returnObj.put("action", action);
                         conn.send(returnObj.toString());
                         break;
@@ -123,8 +121,8 @@ public class WebSocket extends WebSocketServer {
 //                            valuesArray.add(value);
 //                        }
 //
-//                        smsMmsUtil.markSmsMessageAsRead(threadId, valuesArray.toArray(new String[valuesArray.size()]));
-//                        JSONArray array = smsMmsUtil.getLatestSmsMmsMessagesFromDate(counterString);
+//                        smsMmsUriHandler.markSmsMessageAsRead(threadId, valuesArray.toArray(new String[valuesArray.size()]));
+//                        JSONArray array = smsMmsUriHandler.getLatestSmsMmsMessagesFromDate(counterString);
 //                        JSONObject returnObj = new JSONObject();
 //                        returnObj.put("action", action);
 //                        returnObj.put("messages", array);

@@ -1,4 +1,4 @@
-package com.androidmessenger.util;
+package com.androidmessenger.urihandler;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -20,6 +20,9 @@ import android.util.Log;
 
 import com.androidmessenger.R;
 import com.androidmessenger.service.AndroidAppService;
+import com.androidmessenger.util.Constants;
+import com.androidmessenger.util.UserPreferencesManager;
+import com.androidmessenger.util.Util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
@@ -38,8 +41,8 @@ import java.util.Collections;
 /**
  * Created by Kalyan Vishnubhatla on 3/28/16.
  */
-public class SmsMmsUtil implements Serializable {
-    private final String TAG = SmsMmsUtil.class.getSimpleName();
+public class SmsMmsUriHandler implements Serializable {
+    private final String TAG = SmsMmsUriHandler.class.getSimpleName();
     private static final long serialVersionUID = 292645201441507838L;
     private AndroidAppService service;
     private Context context;
@@ -47,7 +50,7 @@ public class SmsMmsUtil implements Serializable {
 
     private final String SEND = "send";
 
-    public SmsMmsUtil(AndroidAppService service) {
+    public SmsMmsUriHandler(AndroidAppService service) {
         this.service = service;
         this.context = service.getBaseContext();
         this.util = new Util();

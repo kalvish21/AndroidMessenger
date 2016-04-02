@@ -28,6 +28,10 @@
 		74C63E301CA87622006C1DEE /* MessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C63E2F1CA87622006C1DEE /* MessageHandler.swift */; };
 		74CD31661CA431AD0051909B /* Int-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74CD31651CA431AD0051909B /* Int-Extension.swift */; };
 		74DFE2F41CA6F62500B8DB73 /* NSColor-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DFE2F31CA6F62500B8DB73 /* NSColor-Extension.swift */; };
+		74DFFE331CB0449E00441DA6 /* Contact+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DFFE2F1CB0449E00441DA6 /* Contact+CoreDataProperties.swift */; };
+		74DFFE341CB0449E00441DA6 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DFFE301CB0449E00441DA6 /* Contact.swift */; };
+		74DFFE351CB0449E00441DA6 /* PhoneNumber+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DFFE311CB0449E00441DA6 /* PhoneNumber+CoreDataProperties.swift */; };
+		74DFFE361CB0449E00441DA6 /* PhoneNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DFFE321CB0449E00441DA6 /* PhoneNumber.swift */; };
 		74E3FAE11CAB2AAA00C9D3BB /* compose@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 74E3FAE01CAB2AAA00C9D3BB /* compose@2x.png */; };
 		74EDC09A1CAA2F85001EBE9F /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = 74EDC0991CAA2F85001EBE9F /* SimplePing.m */; };
 		74EDC09C1CAA4662001EBE9F /* LeftMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EDC09B1CAA4662001EBE9F /* LeftMessageHandler.swift */; };
@@ -89,6 +93,10 @@
 		74CD31651CA431AD0051909B /* Int-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Int-Extension.swift"; path = "Classes/Int-Extension.swift"; sourceTree = "<group>"; };
 		74D68BBF1CABA8DF0030321A /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		74DFE2F31CA6F62500B8DB73 /* NSColor-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSColor-Extension.swift"; path = "Classes/NSColor-Extension.swift"; sourceTree = "<group>"; };
+		74DFFE2F1CB0449E00441DA6 /* Contact+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Contact+CoreDataProperties.swift"; path = "Classes/Contact+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		74DFFE301CB0449E00441DA6 /* Contact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Contact.swift; path = Classes/Contact.swift; sourceTree = "<group>"; };
+		74DFFE311CB0449E00441DA6 /* PhoneNumber+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PhoneNumber+CoreDataProperties.swift"; path = "Classes/PhoneNumber+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		74DFFE321CB0449E00441DA6 /* PhoneNumber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhoneNumber.swift; path = Classes/PhoneNumber.swift; sourceTree = "<group>"; };
 		74E3FAE01CAB2AAA00C9D3BB /* compose@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "compose@2x.png"; path = "images/compose@2x.png"; sourceTree = "<group>"; };
 		74EDC0981CAA2F85001EBE9F /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimplePing.h; path = Classes/SimplePing/SimplePing.h; sourceTree = "<group>"; };
 		74EDC0991CAA2F85001EBE9F /* SimplePing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SimplePing.m; path = Classes/SimplePing/SimplePing.m; sourceTree = "<group>"; };
@@ -226,6 +234,10 @@
 				74C63E2B1CA871AE006C1DEE /* Message+CoreDataProperties.swift */,
 				74BEFFEB1CA655C900F7A15E /* MessagePart.swift */,
 				74BEFFEA1CA655C900F7A15E /* MessagePart+CoreDataProperties.swift */,
+				74DFFE2F1CB0449E00441DA6 /* Contact+CoreDataProperties.swift */,
+				74DFFE301CB0449E00441DA6 /* Contact.swift */,
+				74DFFE311CB0449E00441DA6 /* PhoneNumber+CoreDataProperties.swift */,
+				74DFFE321CB0449E00441DA6 /* PhoneNumber.swift */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -478,16 +490,20 @@
 			files = (
 				745007951CA0DE0C0047673A /* ViewController.swift in Sources */,
 				74F037BC1CA1C8F800669F03 /* CoreDataHandler.swift in Sources */,
+				74DFFE361CB0449E00441DA6 /* PhoneNumber.swift in Sources */,
+				74DFFE341CB0449E00441DA6 /* Contact.swift in Sources */,
 				74C63E301CA87622006C1DEE /* MessageHandler.swift in Sources */,
 				74EDC09A1CAA2F85001EBE9F /* SimplePing.m in Sources */,
 				74F037B41CA1921F00669F03 /* MessageCell.swift in Sources */,
 				74F037B91CA1B84A00669F03 /* MainModel.xcdatamodeld in Sources */,
 				74F037C21CA1D6C200669F03 /* Common.swift in Sources */,
 				74BEFFEE1CA655C900F7A15E /* MessagePart+CoreDataProperties.swift in Sources */,
+				74DFFE351CB0449E00441DA6 /* PhoneNumber+CoreDataProperties.swift in Sources */,
 				740C3F011CA34D270034E553 /* ChatMessageCell.swift in Sources */,
 				74C63E2E1CA871AE006C1DEE /* Message.swift in Sources */,
 				74EDC09C1CAA4662001EBE9F /* LeftMessageHandler.swift in Sources */,
 				745007C01CA0F5CD0047673A /* ConnectWindow.swift in Sources */,
+				74DFFE331CB0449E00441DA6 /* Contact+CoreDataProperties.swift in Sources */,
 				74CD31661CA431AD0051909B /* Int-Extension.swift in Sources */,
 				74466B3B1CA30FFA001C8D1B /* ChatMessageHandler.swift in Sources */,
 				74F037C01CA1D43300669F03 /* NetworkingUtil.swift in Sources */,

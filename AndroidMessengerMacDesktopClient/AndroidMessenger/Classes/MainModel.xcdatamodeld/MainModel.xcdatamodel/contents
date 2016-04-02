@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10171" systemVersion="15E65" minimumToolsVersion="Xcode 7.0">
+    <entity name="Contact" representedClassName=".Contact" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="numbers" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="PhoneNumber" inverseName="contact" inverseEntity="PhoneNumber" syncable="YES"/>
+    </entity>
     <entity name="Message" representedClassName="Message" syncable="YES">
         <attribute name="address" attributeType="String" syncable="YES"/>
         <attribute name="error" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -13,7 +18,8 @@
         <attribute name="thread_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="time" attributeType="Date" indexed="YES" syncable="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="messageparts" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MessagePart" syncable="YES"/>
+        <relationship name="contacts" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Contact" syncable="YES"/>
+        <relationship name="messageparts" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="MessagePart" syncable="YES"/>
     </entity>
     <entity name="MessagePart" representedClassName=".MessagePart" syncable="YES">
         <attribute name="content_type" optional="YES" attributeType="String" syncable="YES"/>
@@ -21,8 +27,14 @@
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="message_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
     </entity>
+    <entity name="PhoneNumber" representedClassName=".PhoneNumber" syncable="YES">
+        <attribute name="number" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <relationship name="contact" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contact" inverseName="numbers" inverseEntity="Contact" syncable="YES"/>
+    </entity>
     <elements>
-        <element name="Message" positionX="-63" positionY="-18" width="128" height="240"/>
+        <element name="Message" positionX="-63" positionY="-18" width="128" height="255"/>
         <element name="MessagePart" positionX="-63" positionY="63" width="128" height="105"/>
+        <element name="Contact" positionX="-54" positionY="90" width="128" height="90"/>
+        <element name="PhoneNumber" positionX="-45" positionY="99" width="128" height="75"/>
     </elements>
 </model>

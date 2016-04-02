@@ -75,7 +75,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         
         let msg = results[row] as! Dictionary<String, AnyObject>
         
-        result.nameLabel.stringValue = msg["number"] as! String
+        result.nameLabel.stringValue = getNameFromPhoneNumber(msg["number"] as! String, row: row)
         result.descriptionLabel.stringValue = msg["msg"] as! String
         
         if (msg["read"] as! Bool == false && self.chatHandler.thread_id != msg["thread_id"] as! Int) {
@@ -158,5 +158,26 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         // Set the chat data thread
         self.chatHandler.getAllDataForGroupId(msg["thread_id"] as! Int)
         self.chatHandler.chatTableView.scrollRowToVisible(self.chatHandler.chatTableView.numberOfRows - 1)
+    }
+    
+    func getNameFromPhoneNumber(number: String, row: Int) -> String {
+        var msg = results[row] as! Dictionary<String, AnyObject>
+        if msg["row_title"] != nil {
+            return msg["row_title"] as! String
+        }
+        
+        let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        context.parentContext = delegate.coreDataHandler.managedObjectContext
+        let phoneNumber: PhoneNumber? = self.messageHandler.getPhoneNumberIfContactExists(context, number: number)
+        
+        // If we got a number, then send it
+        if phoneNumber != nil {
+            msg.updateValue(phoneNumber!.contact!.name!, forKey: "row_title")
+        } else {
+            msg.updateValue(number, forKey: "row_title")
+        }
+        results[row] = msg
+        return msg["row_title"] as! String
     }
 }

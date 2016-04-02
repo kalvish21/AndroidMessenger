@@ -162,7 +162,21 @@ class SocketHandler: NSObject, WebSocketDelegate {
             break
             
         case "/new_device":
+            // Parse the contacts that were attained
+            func responseHandler (request: NSURLRequest, response: NSHTTPURLResponse?, data: AnyObject?) -> Void {
+                if (data != nil) {
+                    let dataValue: Dictionary<String, AnyObject>! = data as! Dictionary<String, AnyObject>
+                    let contacts = dataValue["contacts"] as! Array<Dictionary<String, AnyObject>>
+                    self.parseIncomingContactsFromAndroidDevice(contacts)
+                }
+            }
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+                let net = NetworkingUtil()
+                net.request(.GET, url: "contacts", parameters: ["uid": net.generateUUID()], completionHandler: responseHandler)
+            })
+
             NSNotificationCenter.defaultCenter().postNotificationName(websocketHandshake, object: nil)
+
             break
             
         case "/message/received":
@@ -187,6 +201,64 @@ class SocketHandler: NSObject, WebSocketDelegate {
     
     func websocketDidReceiveData(socket: WebSocket, data: NSData) {
         NSLog("Received Data")
+    }
+    
+    func parseIncomingContactsFromAndroidDevice(contacts: Array<Dictionary<String, AnyObject>>) {
+        let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        context.parentContext = delegate.coreDataHandler.managedObjectContext
+        
+        context.performBlock {
+            if (contacts.count > 0) {
+                for i in 0...(contacts.count-1) {
+                    let object = contacts[i] as! Dictionary<String, AnyObject>
+                    NSLog("%@", object)
+                    
+                    // If the SMS id exists, move on
+                    let objectId = Int((object["id"] as! String))
+                    var contact = self.messageHandler.checkIfContactExists(context, idValue: objectId)
+                    if (contact == nil) {
+                        contact = NSEntityDescription.insertNewObjectForEntityForName("Contact", inManagedObjectContext: context) as! Contact
+                        contact!.id = objectId
+                    }
+                    contact!.name = String(object["name"] as! String)
+                    
+                    if contact!.numbers != nil {
+                        for number in contact!.numbers! {
+                            context.deleteObject(number as! PhoneNumber)
+                        }
+                    }
+                    
+                    var numbers = NSMutableOrderedSet()
+                    let array = object["phones"] as! Array<String>
+                    for number in array {
+                        let phone = NSEntityDescription.insertNewObjectForEntityForName("PhoneNumber", inManagedObjectContext: context) as! PhoneNumber
+                        phone.number = number as! String
+                        phone.contact = contact!
+                        numbers.addObject(phone)
+                    }
+                    contact!.numbers = numbers
+                }
+                
+                do {
+                    try context.save()
+                } catch {
+                    fatalError("Failure to save context: \(error)")
+                }
+                
+                delegate.coreDataHandler.managedObjectContext.performBlock({
+                    do {
+                        try delegate.coreDataHandler.managedObjectContext.save()
+                    } catch {
+                        fatalError("Failure to save context: \(error)")
+                    }
+                })
+                
+                dispatch_async(dispatch_get_main_queue(),{
+                    NSNotificationCenter.defaultCenter().postNotificationName(leftDataShouldRefresh, object: nil)
+                })
+            }
+        }
     }
     
     // Parsing SMS/MMS messages from the phone
@@ -246,9 +318,15 @@ class SocketHandler: NSObject, WebSocketDelegate {
                 NSNotificationCenter.defaultCenter().postNotificationName(newMessageReceived, object: userInfo)
                 
                 if (user_address != nil && user_message != nil) {
+                    var title = user_address!
+                    let phoneNumber: PhoneNumber? = self.messageHandler.getPhoneNumberIfContactExists(context, number: user_address!)
+                    if phoneNumber != nil {
+                        title = phoneNumber!.contact!.name! as String
+                    }
+                    
                     // Schedule a local notification
                     let notification = NSUserNotification()
-                    notification.title = user_address!
+                    notification.title = title
                     notification.subtitle = user_message!
                     notification.deliveryDate = NSDate()
                     notification.userInfo = ["thread_id": thread_id!, "phone_number": user_address!]

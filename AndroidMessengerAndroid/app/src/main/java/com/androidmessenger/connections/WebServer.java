@@ -5,12 +5,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.androidmessenger.service.AndroidAppService;
+import com.androidmessenger.urihandler.ContactsUriHandler;
+import com.androidmessenger.urihandler.SmsMmsUriHandler;
 import com.androidmessenger.util.Constants;
-import com.androidmessenger.util.SmsMmsUtil;
 import com.androidmessenger.util.Util;
 
 import org.json.JSONArray;
@@ -30,14 +30,14 @@ public class WebServer extends NanoHTTPD {
     public static final int PORT_NUMBER = 5000;
     private Context context;
     private Util util;
-    private SmsMmsUtil smsMmsUtil;
+    private SmsMmsUriHandler smsMmsUriHandler;
 
     public WebServer(AndroidAppService service) throws IOException {
         super(PORT_NUMBER);
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         this.context = service.getBaseContext();
         this.util = new Util();
-        this.smsMmsUtil = new SmsMmsUtil(service);
+        this.smsMmsUriHandler = new SmsMmsUriHandler(service);
     }
 
     public Response serve(IHTTPSession session) {
@@ -50,7 +50,7 @@ public class WebServer extends NanoHTTPD {
                 }
 
                 String counterString = session.getParms().get("c");
-                JSONArray array = smsMmsUtil.getLatestSmsMmsMessagesFromDate(counterString);
+                JSONArray array = smsMmsUriHandler.getLatestSmsMmsMessagesFromDate(counterString);
                 return newFixedLengthResponse(array.toString());
             }
 
@@ -60,7 +60,7 @@ public class WebServer extends NanoHTTPD {
                     return r;
                 }
 
-                JSONArray array = smsMmsUtil.getLatestSmsMmsMessagesFromDate(null);
+                JSONArray array = smsMmsUriHandler.getLatestSmsMmsMessagesFromDate(null);
                 return newFixedLengthResponse(array.toString());
             }
 
@@ -82,9 +82,9 @@ public class WebServer extends NanoHTTPD {
                     String text = json.getString("t");
                     String counterString = json.getString("c");
                     String uuid = json.getString("id");
-                    smsMmsUtil.sendSms(number, text, uuid);
+                    smsMmsUriHandler.sendSms(number, text, uuid);
 
-                    JSONArray array = smsMmsUtil.getLatestSmsMmsMessagesFromDate(counterString);
+                    JSONArray array = smsMmsUriHandler.getLatestSmsMmsMessagesFromDate(counterString);
                     return newFixedLengthResponse(array.toString());
 
                 } catch (IOException e) {
@@ -119,30 +119,23 @@ public class WebServer extends NanoHTTPD {
                 return newChunkedResponse(Response.Status.OK, mimetype, fis);
             }
 
-            // This API is just for testing. Will be removed in future
             case "/contacts": {
-
-                String phoneNumber = session.getParms().get("p");
-                ContentResolver cr = context.getContentResolver();
-                Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-                Cursor cursor = cr.query(uri, null, null, null, null);
-                if (cursor == null) {
-                    return null;
-                }
-                String response = null;
-                if (cursor.moveToFirst()) {
-                    StringBuffer responseBuffer = new StringBuffer();
-                    for (int i = 0; i < cursor.getColumnCount(); i++) {
-                        responseBuffer.append(cursor.getColumnName(i) + "=" + cursor.getString(cursor.getColumnIndexOrThrow(cursor.getColumnName(i))) + "<br>");
-                    }
-                    response = responseBuffer.toString();
-                }
-                if (cursor != null && !cursor.isClosed()) {
-                    cursor.close();
+                Response r = verifyUuid(session.getParms().get("uid"));
+                if (r != null) {
+                    return r;
                 }
 
-                return newFixedLengthResponse(response);
+                try {
+                    ContactsUriHandler contactsUriHandler = new ContactsUriHandler(context);
+                    JSONObject jobj = new JSONObject();
+                    jobj.put("contacts", contactsUriHandler.getAllContacts());
 
+                    return newFixedLengthResponse(jobj.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return newFixedLengthResponse("");
             }
 
             // This API is just for testing. Will be removed in future
@@ -246,8 +239,8 @@ public class WebServer extends NanoHTTPD {
 //                            for (String col : cols) {
 //                                msg.put(col, c.getString(c.getColumnIndexOrThrow(col)));
 //                            }
-//                            msg.put("address", smsMmsUtil.getAddressesForMmsMessages(id));
-//                            msg.put("parts", smsMmsUtil.getMmsPartsInJsonArray(id));
+//                            msg.put("address", smsMmsUriHandler.getAddressesForMmsMessages(id));
+//                            msg.put("parts", smsMmsUriHandler.getMmsPartsInJsonArray(id));
 //
 //                            response = msg.toString();
 //

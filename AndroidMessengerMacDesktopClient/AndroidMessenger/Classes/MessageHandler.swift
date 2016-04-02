@@ -140,4 +140,42 @@ class MessageHandler {
         }
         return ""
     }
+    
+    func checkIfContactExists(moc: NSManagedObjectContext!, idValue: Int!) -> Contact? {
+        let request = NSFetchRequest(entityName: "Contact")
+        request.fetchLimit = 1
+        request.predicate = NSPredicate(format: "id = %i", idValue)
+        
+        var objs: [Contact]?
+        do {
+            try objs = moc.executeFetchRequest(request) as? [Contact]
+        } catch let error as NSError {
+            NSLog("Unresolved error: %@, %@", error, error.userInfo)
+        }
+        
+        if objs != nil && objs?.count > 0 {
+            return objs![0]
+        }
+        return nil
+    }
+    
+    func getPhoneNumberIfContactExists(moc: NSManagedObjectContext!, number: String!) -> PhoneNumber? {
+        let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        context.parentContext = delegate.coreDataHandler.managedObjectContext
+        
+        let request = NSFetchRequest(entityName: "PhoneNumber")
+        request.predicate = NSPredicate(format: "number CONTAINS[cd] %@", number)
+        
+        var phonenumbers = Array<AnyObject>()
+        do {
+            try phonenumbers = context.executeFetchRequest(request)
+        } catch let error as NSError {
+            NSLog("Unresolved error: %@, %@", error, error.userInfo)
+        }
+        if phonenumbers.count > 0 {
+            return phonenumbers[0] as! PhoneNumber
+        }
+        return nil
+    }
 }

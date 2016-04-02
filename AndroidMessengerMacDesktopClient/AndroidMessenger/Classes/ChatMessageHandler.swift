@@ -112,17 +112,10 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         
         if message_result.count > 0 {
             context.performBlock {
-                var resultIds = Array<String>()
                 for result in message_result {
                     let r = result as! Message
                     r.read = true
-                    
-                    resultIds.append(String(r.id!))
                 }
-
-                // Google wont allow us to update the read status -- no need for the below
-//                let json = JSON(["uid": NetworkingUtil().generateUUID(), "t": self.thread_id!, "is": resultIds, "c": self.getMaxDateFromCoreData(), "action": "/messages/mark_read"])
-//                delegate.socketHandler.socket?.writeString(json.rawString()!)
                 
                 do {
                     try context.save()
