@@ -47,15 +47,25 @@ public class SmsObserver extends ContentObserver {
             if (c.moveToFirst()) {
                 int totalSMS = c.getCount();
                 for (int i = 0; i < totalSMS; i++) {
+
+                    // TODO: Ignore draft and outbox messages for now
+                    if (c.getString(c.getColumnIndexOrThrow("type")).contains("3") || c.getString(c.getColumnIndexOrThrow("type")).contains("4")) {
+                        continue;
+                    }
+
+                    // Update the largest counter
                     long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow("date")));
                     if (currentDate > largestDateCounted) {
                         receivedDate = currentDate;
                     }
 
+                    // Create the JSON object from the cursor
                     JSONObject obj = util.getJsonObjectFromCursorObjectForSmsText(c);
                     array.put(obj);
 
+                    // See if we have any received messages, URL needs to be updated for it
                     messages_received = messages_received || obj.getBoolean("received");
+
                     c.moveToNext();
                 }
             }

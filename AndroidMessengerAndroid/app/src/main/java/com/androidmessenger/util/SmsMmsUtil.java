@@ -102,7 +102,7 @@ public class SmsMmsUtil implements Serializable {
                     MESSAGE_TYPE_QUEUED = 6; // for messages to send later
                 */
 
-                // Ignore draft and outbox messages for now
+                // TODO: Ignore draft and outbox messages for now
                 if (c.getString(c.getColumnIndexOrThrow("type")).contains("3") || c.getString(c.getColumnIndexOrThrow("type")).contains("4")) {
                     continue;
                 }
