@@ -5,6 +5,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Handler;
 
+import com.androidmessenger.R;
 import com.androidmessenger.service.AndroidAppService;
 import com.androidmessenger.util.Constants;
 import com.androidmessenger.util.UserPreferencesManager;
@@ -32,7 +33,7 @@ public class SmsObserver extends ContentObserver {
     public void onChange(boolean selfChange) {
         super.onChange(selfChange);
 
-        Long largestDateCounted = Long.parseLong(UserPreferencesManager.getInstance().getValueFromPreferences(context, Constants.CURRENT_COUNTER, "0"));
+        Long largestDateCounted = Long.parseLong(UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_current_counter), "0"));
         String filter = "creator != ? and date > ?";
         String[] args = new String[]{context.getPackageName(), Long.toString(largestDateCounted)};
         Cursor c = context.getContentResolver().query(Constants.Sms, null, filter, args, null);
@@ -61,7 +62,7 @@ public class SmsObserver extends ContentObserver {
 
             if (receivedDate > largestDateCounted) {
                 largestDateCounted = receivedDate;
-                UserPreferencesManager.getInstance().setStringInPreferences(context, Constants.CURRENT_COUNTER, String.valueOf(largestDateCounted));
+                UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_current_counter), String.valueOf(largestDateCounted));
             }
 
             if (array != null && array.length() > 0) {

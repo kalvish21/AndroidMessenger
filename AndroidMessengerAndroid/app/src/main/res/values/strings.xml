@@ -1,8 +1,12 @@
 <resources>
-\    <string name="app_name">Android Messenger</string>
+    <string name="app_name">Android Messenger</string>
     <string name="scan_title">Scan for Devices</string>
 
     <string name="hello_world">Hello world!</string>
 
-    <string name="preferences_key_should_autostart">SHOULD_AUTOSTART</string>
+    <!-- Shared preferences keys -->
+    <string name="preferences_device_uuid">DEVICE_UUID</string>
+    <string name="preferences_current_counter">CURRENT_COUNTER</string>
+    <string name="preferences_current_phonenumber">CURRENT_PHONENUMBER</string>
+    <string name="preferences_should_autostart">SHOULD_AUTOSTART</string>
 </resources>

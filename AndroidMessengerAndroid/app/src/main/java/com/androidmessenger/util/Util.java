@@ -3,6 +3,8 @@ package com.androidmessenger.util;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.androidmessenger.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,7 +62,7 @@ public class Util implements Serializable {
         if (uuid.equals("testing")) {
             return true;
         }
-        String currentUUID = UserPreferencesManager.getInstance().getValueFromPreferences(context, Constants.DEVICE_UUID);
+        String currentUUID = UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_device_uuid));
         return currentUUID != null && uuid != null && currentUUID.equals(uuid);
     }
 }

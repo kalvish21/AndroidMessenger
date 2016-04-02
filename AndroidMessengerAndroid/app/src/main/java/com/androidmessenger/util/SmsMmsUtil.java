@@ -18,6 +18,7 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.androidmessenger.R;
 import com.androidmessenger.service.AndroidAppService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -118,7 +119,7 @@ public class SmsMmsUtil implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            UserPreferencesManager.getInstance().setStringInPreferences(context, Constants.CURRENT_COUNTER, String.valueOf(largestDateCounted));
+            UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_current_counter), String.valueOf(largestDateCounted));
             c.close();
         }
 
@@ -164,12 +165,12 @@ public class SmsMmsUtil implements Serializable {
         ArrayList<String> addressList = new ArrayList<>();
 
         // Get the current devices phone number
-        String currentPhoneNumber = UserPreferencesManager.getInstance().getValueFromPreferences(context, Constants.CURRENT_PHONENUMBER);
+        String currentPhoneNumber = UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_current_counter));
         if (currentPhoneNumber == null) {
             // Get the current phone number
             TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             if (tMgr.getLine1Number() != null) {
-                UserPreferencesManager.getInstance().setStringInPreferences(context, Constants.CURRENT_PHONENUMBER, tMgr.getLine1Number());
+                UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_current_counter), tMgr.getLine1Number());
                 currentPhoneNumber = tMgr.getLine1Number();
             }
 

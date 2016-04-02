@@ -5,8 +5,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.androidmessenger.R;
 import com.androidmessenger.service.AndroidAppService;
-import com.androidmessenger.util.Constants;
 import com.androidmessenger.util.SmsMmsUtil;
 import com.androidmessenger.util.UserPreferencesManager;
 import com.androidmessenger.util.Util;
@@ -85,7 +85,7 @@ public class WebSocket extends WebSocketServer {
                 switch (action) {
                     case "/new_device": {
                         String uuid = obj.getString("uid");
-                        String currentUUID = UserPreferencesManager.getInstance().getValueFromPreferences(context, Constants.DEVICE_UUID);
+                        String currentUUID = UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_device_uuid));
 
                         if (currentUUID != null && !util.verifyUUID(context, uuid)) {
                             new Handler(context.getMainLooper()).post(new Runnable() {
@@ -96,7 +96,7 @@ public class WebSocket extends WebSocketServer {
                             conn.close();
                             return;
                         } else {
-                            UserPreferencesManager.getInstance().setStringInPreferences(context, Constants.DEVICE_UUID, uuid);
+                            UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_device_uuid), uuid);
                         }
 
                         // Send the success message

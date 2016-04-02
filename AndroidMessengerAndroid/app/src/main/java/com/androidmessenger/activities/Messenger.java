@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.androidmessenger.R;
 import com.androidmessenger.service.AndroidAppService;
-import com.androidmessenger.util.Constants;
 import com.androidmessenger.util.UserPreferencesManager;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -38,6 +37,7 @@ public class Messenger extends AppCompatActivity {
         setContentView(R.layout.activity_messenger);
         ButterKnife.bind(this);
 
+        // Disable ipv6 on the simulator; it doesn't work
         if ("google_sdk".equals( Build.PRODUCT )) {
             java.lang.System.setProperty("java.net.preferIPv6Addresses", "false");
             java.lang.System.setProperty("java.net.preferIPv4Stack", "true");
@@ -66,9 +66,9 @@ public class Messenger extends AppCompatActivity {
 
         // Users phone number -- Will need it later on
         TelephonyManager tMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        UserPreferencesManager.getInstance().setStringInPreferences(this, Constants.CURRENT_PHONENUMBER, tMgr.getLine1Number());
+        UserPreferencesManager.getInstance().setStringInPreferences(this, getString(R.string.preferences_current_phonenumber), tMgr.getLine1Number());
 
-        if (UserPreferencesManager.getInstance().getValueFromPreferences(this, getString(R.string.preferences_key_should_autostart), "NO").equals("YES")) {
+        if (UserPreferencesManager.getInstance().getValueFromPreferences(this, getString(R.string.preferences_should_autostart), "NO").equals("YES")) {
             startServers();
         }
     }
@@ -83,14 +83,14 @@ public class Messenger extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.start_button: {
-                UserPreferencesManager.getInstance().setStringInPreferences(this, getString(R.string.preferences_key_should_autostart), "YES");
+                UserPreferencesManager.getInstance().setStringInPreferences(this, getString(R.string.preferences_should_autostart), "YES");
                 startServers();
 
                 break;
             }
 
             case R.id.stop_button: {
-                UserPreferencesManager.getInstance().removeKeyFromPreferences(this, getString(R.string.preferences_key_should_autostart));
+                UserPreferencesManager.getInstance().removeKeyFromPreferences(this, getString(R.string.preferences_should_autostart));
                 stopService(intent);
                 break;
             }

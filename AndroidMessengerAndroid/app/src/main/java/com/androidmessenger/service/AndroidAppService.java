@@ -16,6 +16,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.androidmessenger.R;
 import com.androidmessenger.connections.WebServer;
 import com.androidmessenger.connections.WebSocket;
 import com.androidmessenger.observer.SmsObserver;
@@ -184,7 +185,7 @@ public class AndroidAppService extends Service {
             Cursor c = null;
             try {
                 Util util = new Util();
-                Long largestDateCounted = Long.parseLong(UserPreferencesManager.getInstance().getValueFromPreferences(context, Constants.CURRENT_COUNTER, "0"));
+                Long largestDateCounted = Long.parseLong(UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_current_counter), "0"));
                 String _id = null;
 
                 String filter = String.format("body='%s' AND date=%s AND address='%s'", message, Long.toString(time), number);
@@ -235,7 +236,7 @@ public class AndroidAppService extends Service {
                 if (receivedDate > largestDateCounted) {
                     largestDateCounted = receivedDate;
                 }
-                UserPreferencesManager.getInstance().setStringInPreferences(context, Constants.CURRENT_COUNTER, String.valueOf(largestDateCounted));
+                UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_current_counter), String.valueOf(largestDateCounted));
 
                 if (array != null && array.length() > 0) {
                     JSONObject obj = new JSONObject();
