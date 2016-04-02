@@ -165,12 +165,12 @@ public class SmsMmsUtil implements Serializable {
         ArrayList<String> addressList = new ArrayList<>();
 
         // Get the current devices phone number
-        String currentPhoneNumber = UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_current_counter));
+        String currentPhoneNumber = UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_current_phonenumber));
         if (currentPhoneNumber == null) {
             // Get the current phone number
             TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             if (tMgr.getLine1Number() != null) {
-                UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_current_counter), tMgr.getLine1Number());
+                UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_current_phonenumber), tMgr.getLine1Number());
                 currentPhoneNumber = tMgr.getLine1Number();
             }
 
