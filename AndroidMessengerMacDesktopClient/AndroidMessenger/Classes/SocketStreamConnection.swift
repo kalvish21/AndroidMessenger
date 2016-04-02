@@ -61,43 +61,53 @@ class SocketHandler: NSObject, WebSocketDelegate {
         
         switch (jsonData["action"].stringValue) {
         case "/message/send":
-            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-            let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-            context.parentContext = delegate.coreDataHandler.managedObjectContext
-            
-            let request = NSFetchRequest(entityName: "Message")
-            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "uuid = %@", jsonData["uuid"].stringValue)])
-            
-            var objs: [Message]?
-            do {
-                try objs = context.executeFetchRequest(request) as? [Message]
-            } catch let error as NSError {
-                NSLog("Unresolved error: %@, %@", error, error.userInfo)
-            }
-            
-            if (objs != nil && objs!.count == 1) {
-                context.performBlock {
-                    let sms = self.messageHandler.setMessageDetailsFromJsonObject(objs![0], object: jsonData, is_pending: false)
-                    do {
-                        try context.save()
-                    } catch {
-                        fatalError("Failure to save context: \(error)")
-                    }
-                    
-                    delegate.coreDataHandler.managedObjectContext.performBlock({
+            let uuid = jsonData["uuid"]
+            if uuid.error != nil {
+                // uuid not present, user probably sent it from another application on their device
+                let messages = jsonData["messages"].array
+                if (messages != nil) {
+                    self.parseIncomingMessages(messages!, show_notification: false)
+                }
+            } else {
+                // uuid is present, we are getting confirmation for a message sent through our application
+                let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+                let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+                context.parentContext = delegate.coreDataHandler.managedObjectContext
+                
+                let request = NSFetchRequest(entityName: "Message")
+                request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "uuid = %@", jsonData["uuid"].stringValue)])
+                
+                var objs: [Message]?
+                do {
+                    try objs = context.executeFetchRequest(request) as? [Message]
+                } catch let error as NSError {
+                    NSLog("Unresolved error: %@, %@", error, error.userInfo)
+                }
+                
+                if (objs != nil && objs!.count == 1) {
+                    context.performBlock {
+                        let sms = self.messageHandler.setMessageDetailsFromJsonObject(objs![0], object: jsonData, is_pending: false)
                         do {
-                            try delegate.coreDataHandler.managedObjectContext.save()
+                            try context.save()
                         } catch {
                             fatalError("Failure to save context: \(error)")
                         }
-                    })
-                    
-                    let objectID = sms.objectID
-                    dispatch_async(dispatch_get_main_queue(),{
-                        let current_sms = delegate.coreDataHandler.managedObjectContext.objectWithID(objectID) as! Message
-                        let userInfo: Dictionary<String, AnyObject> = ["uuid": jsonData["uuid"].stringValue, "id": current_sms.id!, "thread_id": current_sms.thread_id!, "type": current_sms.sms!]
-                        NSNotificationCenter.defaultCenter().postNotificationName(messageSentConfirmation, object: userInfo)
-                    })
+                        
+                        delegate.coreDataHandler.managedObjectContext.performBlock({
+                            do {
+                                try delegate.coreDataHandler.managedObjectContext.save()
+                            } catch {
+                                fatalError("Failure to save context: \(error)")
+                            }
+                        })
+                        
+                        let objectID = sms.objectID
+                        dispatch_async(dispatch_get_main_queue(),{
+                            let current_sms = delegate.coreDataHandler.managedObjectContext.objectWithID(objectID) as! Message
+                            let userInfo: Dictionary<String, AnyObject> = ["uuid": jsonData["uuid"].stringValue, "id": current_sms.id!, "thread_id": current_sms.thread_id!, "type": current_sms.sms!]
+                            NSNotificationCenter.defaultCenter().postNotificationName(messageSentConfirmation, object: userInfo)
+                        })
+                    }
                 }
             }
             break
@@ -109,14 +119,14 @@ class SocketHandler: NSObject, WebSocketDelegate {
         case "/message/received":
             let messages = jsonData["messages"].array
             if (messages != nil) {
-                self.parseIncomingMessages(messages!)
+                self.parseIncomingMessages(messages!, show_notification: true)
             }
             break
 
         case "/messages/mark_read":
             let messages = jsonData["messages"].array
             if (messages != nil) {
-                self.parseIncomingMessages(messages!)
+                self.parseIncomingMessages(messages!, show_notification: true)
             }
             
             break
@@ -131,7 +141,7 @@ class SocketHandler: NSObject, WebSocketDelegate {
     }
     
     // Parsing SMS/MMS messages from the phone
-    func parseIncomingMessages(messages: [JSON]) {
+    func parseIncomingMessages(messages: [JSON], show_notification: Bool) {
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
         let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         context.parentContext = delegate.coreDataHandler.managedObjectContext
@@ -182,25 +192,27 @@ class SocketHandler: NSObject, WebSocketDelegate {
                 })
             }
             
-            dispatch_async(dispatch_get_main_queue(),{
-                let userInfo: Dictionary<String, AnyObject> = ["ids": id_values]
-                NSNotificationCenter.defaultCenter().postNotificationName(newMessageReceived, object: userInfo)
-                
-                if (user_address != nil && user_message != nil) {
-                    // Schedule a local notification
-                    let notification = NSUserNotification()
-                    notification.title = user_address!
-                    notification.subtitle = user_message!
-                    notification.deliveryDate = NSDate()
-                    notification.userInfo = ["thread_id": thread_id!, "phone_number": user_address!]
+            if (show_notification) {
+                dispatch_async(dispatch_get_main_queue(),{
+                    let userInfo: Dictionary<String, AnyObject> = ["ids": id_values]
+                    NSNotificationCenter.defaultCenter().postNotificationName(newMessageReceived, object: userInfo)
                     
-                    // Set reply field
-                    notification.responsePlaceholder = "Reply"
-                    notification.hasReplyButton = true
-                    
-                    NSUserNotificationCenter.defaultUserNotificationCenter().scheduleNotification(notification)
-                }
-            })
+                    if (user_address != nil && user_message != nil) {
+                        // Schedule a local notification
+                        let notification = NSUserNotification()
+                        notification.title = user_address!
+                        notification.subtitle = user_message!
+                        notification.deliveryDate = NSDate()
+                        notification.userInfo = ["thread_id": thread_id!, "phone_number": user_address!]
+                        
+                        // Set reply field
+                        notification.responsePlaceholder = "Reply"
+                        notification.hasReplyButton = true
+                        
+                        NSUserNotificationCenter.defaultUserNotificationCenter().scheduleNotification(notification)
+                    }
+                })
+            }
         }
     }
 }

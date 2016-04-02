@@ -41,6 +41,7 @@ public class SmsObserver extends ContentObserver {
             Util util = new Util();
             long receivedDate = 0;
             JSONArray array = new JSONArray();
+            boolean messages_received = false;
 
             if (c.moveToFirst()) {
                 int totalSMS = c.getCount();
@@ -53,6 +54,7 @@ public class SmsObserver extends ContentObserver {
                     JSONObject obj = util.getJsonObjectFromCursorObjectForSmsText(c);
                     array.put(obj);
 
+                    messages_received = messages_received || obj.getBoolean("received");
                     c.moveToNext();
                 }
             }
@@ -66,7 +68,11 @@ public class SmsObserver extends ContentObserver {
                 JSONObject obj = new JSONObject();
                 obj.put("messages", array);
                 try {
-                    obj.put("action", "/message/received");
+                    if (messages_received) {
+                        obj.put("action", "/message/received");
+                    } else {
+                        obj.put("action", "/message/sent");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
