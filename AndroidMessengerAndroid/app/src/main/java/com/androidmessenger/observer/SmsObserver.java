@@ -3,7 +3,6 @@ package com.androidmessenger.observer;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Handler;
 
 import com.androidmessenger.service.AndroidAppService;
@@ -32,72 +31,51 @@ public class SmsObserver extends ContentObserver {
     @Override
     public void onChange(boolean selfChange) {
         super.onChange(selfChange);
-        Cursor c = context.getContentResolver().query(Uri.parse(Constants.Sms + "/inbox"), null, null, null, null);
-        c.moveToNext();
 
-        if (c.getString(c.getColumnIndex("protocol")) != null) {
-            // Received message
-            try {
-                Util util = new Util();
-                Long largestDateCounted = Long.parseLong(UserPreferencesManager.getInstance().getValueFromPreferences(context, Constants.CURRENT_COUNTER, "0"));
-                String _id = null;
+        Long largestDateCounted = Long.parseLong(UserPreferencesManager.getInstance().getValueFromPreferences(context, Constants.CURRENT_COUNTER, "0"));
+        String filter = "creator != ? and date > ?";
+        String[] args = new String[]{context.getPackageName(), Long.toString(largestDateCounted)};
+        Cursor c = context.getContentResolver().query(Constants.Sms, null, filter, args, null);
 
-                long receivedDate = 0;
-                JSONArray array = new JSONArray();
-                if (c.moveToFirst()) {
+        try {
+            Util util = new Util();
+            long receivedDate = 0;
+            JSONArray array = new JSONArray();
+
+            if (c.moveToFirst()) {
+                int totalSMS = c.getCount();
+                for (int i = 0; i < totalSMS; i++) {
                     long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow("date")));
-                    receivedDate = currentDate;
+                    if (currentDate > largestDateCounted) {
+                        largestDateCounted = currentDate;
+                    }
 
                     JSONObject obj = util.getJsonObjectFromCursorObjectForSmsText(c);
                     array.put(obj);
 
-                    _id = obj.getString("id");
+                    c.moveToNext();
                 }
-
-                // Get all other pending messages for this user
-                if (largestDateCounted != null && largestDateCounted > 0L) {
-                    String filter = "creator != ? and date > ?";
-                    String[] args = new String[]{context.getPackageName(), Long.toString(largestDateCounted)};
-                    c = context.getContentResolver().query(Constants.Sms, null, filter, args, null);
-                    int totalSMS = c.getCount();
-
-                    if (c.moveToFirst()) {
-                        for (int i = 0; i < totalSMS; i++) {
-                            long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow("date")));
-                            if (currentDate > largestDateCounted) {
-                                largestDateCounted = currentDate;
-                            }
-
-                            String currentId = c.getString(c.getColumnIndexOrThrow("_id"));
-                            if (!currentId.equals(_id)) {
-                                JSONObject obj = util.getJsonObjectFromCursorObjectForSmsText(c);
-                                array.put(obj);
-                            }
-
-                            c.moveToNext();
-                        }
-                    }
-                }
-
-                if (receivedDate > largestDateCounted) {
-                    largestDateCounted = receivedDate;
-                }
-                UserPreferencesManager.getInstance().setStringInPreferences(context, Constants.CURRENT_COUNTER, String.valueOf(largestDateCounted));
-
-                if (array != null && array.length() > 0) {
-                    JSONObject obj = new JSONObject();
-                    obj.put("messages", array);
-                    try {
-                        obj.put("action", "/message/received");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    service.getAndroidWebSocket().sendJsonData(obj);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+
+            if (receivedDate > largestDateCounted) {
+                largestDateCounted = receivedDate;
+            }
+            UserPreferencesManager.getInstance().setStringInPreferences(context, Constants.CURRENT_COUNTER, String.valueOf(largestDateCounted));
+
+            if (array != null && array.length() > 0) {
+                JSONObject obj = new JSONObject();
+                obj.put("messages", array);
+                try {
+                    obj.put("action", "/message/received");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                service.getAndroidWebSocket().sendJsonData(obj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            c.close();
         }
-        c.close();
     }
 }
