@@ -32,8 +32,7 @@ public class SmsObserver extends ContentObserver {
     @Override
     public void onChange(boolean selfChange) {
         super.onChange(selfChange);
-        Uri uri = Uri.parse("content://sms/inbox");
-        Cursor c = context.getContentResolver().query(uri, null, null, null, null);
+        Cursor c = context.getContentResolver().query(Uri.parse(Constants.Sms + "/inbox"), null, null, null, null);
         c.moveToNext();
 
         if (c.getString(c.getColumnIndex("protocol")) != null) {
@@ -99,5 +98,6 @@ public class SmsObserver extends ContentObserver {
                 e.printStackTrace();
             }
         }
+        c.close();
     }
 }
