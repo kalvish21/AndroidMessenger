@@ -17,11 +17,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     }()
     
     private lazy var chatHandler: ChatMessageHandler = {
-        return ChatMessageHandler(chatTableView: self.chatTableView, messageTextField: self.messageTextField)
+        return ChatMessageHandler(chatTableView: self.chatTableView, messageTextField: self.messageTextField, tokenField: self.tokenField)
     }()
     
     private lazy var leftMessageHandler: LeftMessageHandler = {
         return LeftMessageHandler(leftTableView: self.tableView, chatHandler: self.chatHandler)
+    }()
+    
+    private lazy var contactHandler: ContactsHandler = {
+        return ContactsHandler()
     }()
     
     @IBOutlet weak var splitView: NSSplitView!
@@ -31,8 +35,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     @IBOutlet weak var chatTableView: NSTableView!
     
     @IBOutlet weak var messageTextField: NSTextField!
-    
+    @IBOutlet weak var tokenField: NSTokenField!
     @IBOutlet weak var filterTextField: NSTextField!
+    
     var results: Array<AnyObject> = Array<AnyObject>()
     var sheetIsOpened: Bool = false
     
@@ -50,6 +55,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         
         NSUserNotificationCenter.defaultUserNotificationCenter().delegate = self
         splitView.delegate = self
+        
+        tokenField.delegate = self.chatHandler
+        filterTextField.delegate = self.leftMessageHandler
         
         tableView.headerView = nil
         tableView.setDataSource(self.leftMessageHandler)
@@ -79,8 +87,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         messageTextField.delegate = self
         messageTextField.placeholderString = "Type message and press enter"
         messageTextField.nextKeyView = tableView
-        
-        filterTextField.delegate = self.leftMessageHandler
         
         // Populate left message view box
         self.leftMessageHandler.getDataForLeftTableView(false)
@@ -173,6 +179,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     
     @IBAction func getLatestData(sender: AnyObject) {
         getLatestDataFromApp(sender.tag == 1)
+    }
+    
+    @IBAction func refreshContacts(sender: AnyObject) {
+        self.contactHandler.requestContactsFromPhone()
     }
     
     func getLatestDataFromApp(forceRefresh: Bool) {
@@ -280,7 +290,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     }
     
     func sendMessageToUser(address: String, message: String, identifier: String) {
-        if (chatHandler.phoneNumber == nil) {
+        if (chatHandler.phoneNumbers == nil) {
             let alert = NSAlert()
             alert.messageText = "There is no user selected"
             alert.addButtonWithTitle("Okay")
@@ -366,7 +376,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                 return true
             }
             
-            prepareSendMessage(self.chatHandler.phoneNumber!, message: self.messageTextField.stringValue, thread_id: self.chatHandler.thread_id!)
+            prepareSendMessage(self.chatHandler.phoneNumbers![0], message: self.messageTextField.stringValue, thread_id: self.chatHandler.thread_id!)
             return true
         } else if (commandSelector == #selector(insertNewlineIgnoringFieldEditor)) {
             let rect = messageTextField.frame

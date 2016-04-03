@@ -69,12 +69,19 @@
                                                 <action selector="connectToDevice:" target="Ady-hI-5gd" id="ov1-Tp-Eqt"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Get Latest Data" keyEquivalent="r" id="dzx-oZ-dgr">
+                                        <menuItem isSeparatorItem="YES" id="pBJ-DM-HQh"/>
+                                        <menuItem title="Refresh Contacts" keyEquivalent="c" id="Miz-6i-gse">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES"/>
+                                            <connections>
+                                                <action selector="refreshContacts:" target="Ady-hI-5gd" id="6Fp-aQ-tha"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Get Latest Messages" keyEquivalent="r" id="dzx-oZ-dgr">
                                             <connections>
                                                 <action selector="getLatestData:" target="Ady-hI-5gd" id="bBI-w7-VYq"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Refresh All Data" tag="1" keyEquivalent="R" id="b8k-lb-i9a">
+                                        <menuItem title="Refresh All Messages" tag="1" keyEquivalent="R" id="b8k-lb-i9a">
                                             <connections>
                                                 <action selector="getLatestData:" target="Ady-hI-5gd" id="7KH-tg-DYq"/>
                                             </connections>
@@ -506,13 +513,13 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <scrollView misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iRb-ub-nel">
-                                                <rect key="frame" x="0.0" y="67" width="438" height="437"/>
+                                                <rect key="frame" x="0.0" y="67" width="438" height="371"/>
                                                 <clipView key="contentView" id="L4e-Sw-DGO">
-                                                    <rect key="frame" x="1" y="0.0" width="436" height="436"/>
+                                                    <rect key="frame" x="1" y="0.0" width="436" height="370"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="IJs-Yn-w6z" viewBased="YES" id="K39-s6-VUX">
-                                                            <rect key="frame" x="0.0" y="0.0" width="436" height="413"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="436" height="347"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -532,7 +539,7 @@
                                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                                                     <prototypeCellViews>
                                                                         <tableCellView id="MVx-kR-SX7">
-                                                                            <rect key="frame" x="1" y="1" width="433.40165168397209" height="17"/>
+                                                                            <rect key="frame" x="1" y="1" width="433" height="17"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
                                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3kY-fd-hjQ">
@@ -590,15 +597,38 @@
                                                     <constraint firstAttribute="bottom" secondItem="N3e-9M-ggR" secondAttribute="bottom" constant="5" id="ifC-LZ-66M"/>
                                                 </constraints>
                                             </customView>
+                                            <customView misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kW6-Sd-i2X">
+                                                <rect key="frame" x="0.0" y="473" width="443.5" height="31"/>
+                                                <subviews>
+                                                    <tokenField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="faa-bK-Twv">
+                                                        <rect key="frame" x="122" y="5" width="96" height="21"/>
+                                                        <tokenFieldCell key="cell" selectable="YES" editable="YES" alignment="left" drawsBackground="YES" allowsEditingTextAttributes="YES" id="LCf-Y6-sTI">
+                                                            <font key="font" metaFont="cellTitle"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlHighlightColor" catalog="System" colorSpace="catalog"/>
+                                                        </tokenFieldCell>
+                                                    </tokenField>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="faa-bK-Twv" firstAttribute="top" secondItem="kW6-Sd-i2X" secondAttribute="top" constant="5" id="BTu-Zl-4M4"/>
+                                                    <constraint firstAttribute="bottom" secondItem="faa-bK-Twv" secondAttribute="bottom" constant="5" id="OBe-NJ-SLz"/>
+                                                    <constraint firstAttribute="height" constant="30" id="WiQ-qA-nlc"/>
+                                                    <constraint firstItem="faa-bK-Twv" firstAttribute="leading" secondItem="kW6-Sd-i2X" secondAttribute="leading" constant="5" id="jsp-Ow-vsL"/>
+                                                    <constraint firstAttribute="trailing" secondItem="faa-bK-Twv" secondAttribute="trailing" constant="5" id="kmy-VE-MIt"/>
+                                                </constraints>
+                                            </customView>
                                         </subviews>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="JuV-Pq-qYF" secondAttribute="trailing" id="03U-tc-K4s"/>
                                             <constraint firstAttribute="trailing" secondItem="iRb-ub-nel" secondAttribute="trailing" id="AoD-v9-TNc"/>
                                             <constraint firstItem="iRb-ub-nel" firstAttribute="leading" secondItem="eeC-Dz-1q6" secondAttribute="leading" id="B93-JD-wym"/>
                                             <constraint firstItem="JuV-Pq-qYF" firstAttribute="top" secondItem="iRb-ub-nel" secondAttribute="bottom" id="Mdq-T9-Xz4"/>
-                                            <constraint firstItem="iRb-ub-nel" firstAttribute="top" secondItem="eeC-Dz-1q6" secondAttribute="top" id="N0e-2m-O77"/>
+                                            <constraint firstItem="iRb-ub-nel" firstAttribute="top" secondItem="kW6-Sd-i2X" secondAttribute="bottom" id="Try-A7-fbL"/>
                                             <constraint firstAttribute="bottom" secondItem="JuV-Pq-qYF" secondAttribute="bottom" id="cri-Oh-DCJ"/>
+                                            <constraint firstAttribute="trailing" secondItem="kW6-Sd-i2X" secondAttribute="trailing" id="gmb-rv-wPQ"/>
+                                            <constraint firstItem="kW6-Sd-i2X" firstAttribute="leading" secondItem="eeC-Dz-1q6" secondAttribute="leading" id="p8Z-VN-jTX"/>
                                             <constraint firstItem="JuV-Pq-qYF" firstAttribute="leading" secondItem="eeC-Dz-1q6" secondAttribute="leading" id="pXP-Nc-XIR"/>
+                                            <constraint firstItem="kW6-Sd-i2X" firstAttribute="top" secondItem="eeC-Dz-1q6" secondAttribute="top" id="y1O-rX-3Su"/>
                                         </constraints>
                                     </customView>
                                 </subviews>
@@ -625,6 +655,7 @@
                         <outlet property="rightView" destination="eeC-Dz-1q6" id="HuK-Ix-rrz"/>
                         <outlet property="splitView" destination="rsW-Nh-X2e" id="aR5-wt-GfM"/>
                         <outlet property="tableView" destination="NQ4-9N-JIR" id="diW-JV-aCf"/>
+                        <outlet property="tokenField" destination="faa-bK-Twv" id="52t-AI-lTx"/>
                     </connections>
                 </viewController>
                 <customObject id="IZN-p4-obJ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

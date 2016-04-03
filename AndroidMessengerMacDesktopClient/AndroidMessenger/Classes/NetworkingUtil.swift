@@ -34,7 +34,21 @@ class NetworkingUtil: NSObject {
             if (response.result.error != nil || response.result.value == nil) {
                 NetworkingUtil.checkForSevereError(response.request!.URL!.absoluteString)
             } else {
-                completionHandler(response.request!, response.response, response.result.value)
+                var should_continue = true
+                if ((response.result.value as? Dictionary<String, AnyObject>) != nil) {
+                    let dict = response.result.value as! Dictionary<String, AnyObject>
+                    if dict["UUID"] != nil {
+                        let alert = NSAlert()
+                        alert.messageText = "Seems like this device is not valid. Please check to make sure it is not synced with a different desktop."
+                        alert.addButtonWithTitle("Okay")
+                        alert.runModal()
+                        should_continue = false
+                    }
+                }
+                
+                if (should_continue) {
+                    completionHandler(response.request!, response.response, response.result.value)
+                }
             }
         }
     }

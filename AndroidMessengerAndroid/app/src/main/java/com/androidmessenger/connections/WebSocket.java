@@ -1,7 +1,13 @@
 package com.androidmessenger.connections;
 
+import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -102,6 +108,51 @@ public class WebSocket extends WebSocketServer {
                         JSONObject returnObj = new JSONObject();
                         returnObj.put("action", action);
                         conn.send(returnObj.toString());
+                        break;
+                    }
+
+                    case "/phone_call": {
+                        String uuid = obj.getString("uid");
+                        if (!util.verifyUUID(context, uuid)) {
+                            return;
+                        }
+
+                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                            // Permission not granted
+                            JSONObject returnObj = new JSONObject();
+                            returnObj.put("permission", "not_granted");
+                            returnObj.put("action", action);
+                            conn.send(returnObj.toString());
+
+                        } else {
+                            // Permission granted or not required
+                            String phonenumber = obj.getString("p");
+                            final String number = "tel:" + phonenumber.trim();
+
+                            new Handler(context.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Intent intent = new Intent(Intent.ACTION_CALL);
+                                        intent.setPackage("com.android.phone");
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.setData(Uri.parse(number));
+                                        context.startActivity(intent);
+
+                                    } catch (ActivityNotFoundException e) {
+
+                                        Intent intent = new Intent(Intent.ACTION_CALL);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.setData(Uri.parse(number));
+                                        context.startActivity(intent);
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+
+                        }
                         break;
                     }
 

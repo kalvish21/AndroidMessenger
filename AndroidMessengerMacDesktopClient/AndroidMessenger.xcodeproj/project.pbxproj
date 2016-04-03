@@ -21,6 +21,7 @@
 		745007B01CA0DE0C0047673A /* AndroidMessengerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745007AF1CA0DE0C0047673A /* AndroidMessengerUITests.swift */; };
 		745007C01CA0F5CD0047673A /* ConnectWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745007BE1CA0F5CD0047673A /* ConnectWindow.swift */; };
 		745007C11CA0F5CD0047673A /* ConnectWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 745007BF1CA0F5CD0047673A /* ConnectWindow.xib */; };
+		747170111CB1C3B900CF436C /* ContactsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747170101CB1C3B900CF436C /* ContactsHandler.swift */; };
 		748E5E8A1CAC4A3400EE8713 /* ChatScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748E5E891CAC4A3400EE8713 /* ChatScrollView.swift */; };
 		748E5E8C1CAC4FD800EE8713 /* MessageTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748E5E8B1CAC4FD800EE8713 /* MessageTextField.swift */; };
 		74BDE61F1CB0C26700491705 /* String-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74BDE61E1CB0C26700491705 /* String-Extension.swift */; };
@@ -85,6 +86,7 @@
 		745007B11CA0DE0C0047673A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		745007BE1CA0F5CD0047673A /* ConnectWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConnectWindow.swift; path = Classes/ConnectWindow.swift; sourceTree = "<group>"; };
 		745007BF1CA0F5CD0047673A /* ConnectWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ConnectWindow.xib; path = Classes/ConnectWindow.xib; sourceTree = "<group>"; };
+		747170101CB1C3B900CF436C /* ContactsHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsHandler.swift; path = Classes/ContactsHandler.swift; sourceTree = "<group>"; };
 		748E5E891CAC4A3400EE8713 /* ChatScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatScrollView.swift; path = Classes/ChatScrollView.swift; sourceTree = "<group>"; };
 		748E5E8B1CAC4FD800EE8713 /* MessageTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageTextField.swift; path = Classes/MessageTextField.swift; sourceTree = "<group>"; };
 		749F80941CAA18D800FFE841 /* AndroidMessenger-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AndroidMessenger-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -288,6 +290,7 @@
 			children = (
 				749F80941CAA18D800FFE841 /* AndroidMessenger-Bridging-Header.h */,
 				74F037C11CA1D6C200669F03 /* Common.swift */,
+				747170101CB1C3B900CF436C /* ContactsHandler.swift */,
 				74F037BB1CA1C8F800669F03 /* CoreDataHandler.swift */,
 				74C63E2F1CA87622006C1DEE /* MessageHandler.swift */,
 				74F037BF1CA1D43300669F03 /* NetworkingUtil.swift */,
@@ -519,6 +522,7 @@
 				74466B3B1CA30FFA001C8D1B /* ChatMessageHandler.swift in Sources */,
 				74F037C01CA1D43300669F03 /* NetworkingUtil.swift in Sources */,
 				74DFE2F41CA6F62500B8DB73 /* NSColor-Extension.swift in Sources */,
+				747170111CB1C3B900CF436C /* ContactsHandler.swift in Sources */,
 				74F037BE1CA1D0ED00669F03 /* SocketStreamConnection.swift in Sources */,
 				748E5E8A1CAC4A3400EE8713 /* ChatScrollView.swift in Sources */,
 				748E5E8C1CAC4FD800EE8713 /* MessageTextField.swift in Sources */,

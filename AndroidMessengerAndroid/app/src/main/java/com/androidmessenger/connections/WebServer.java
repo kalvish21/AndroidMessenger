@@ -1,10 +1,14 @@
 package com.androidmessenger.connections;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.androidmessenger.service.AndroidAppService;
@@ -126,10 +130,13 @@ public class WebServer extends NanoHTTPD {
                 }
 
                 try {
-                    ContactsUriHandler contactsUriHandler = new ContactsUriHandler(context);
                     JSONObject jobj = new JSONObject();
-                    jobj.put("contacts", contactsUriHandler.getAllContacts());
-
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                        jobj.put("permission", "denied");
+                    } else {
+                        ContactsUriHandler contactsUriHandler = new ContactsUriHandler(context);
+                        jobj.put("contacts", contactsUriHandler.getAllContacts());
+                    }
                     return newFixedLengthResponse(jobj.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();

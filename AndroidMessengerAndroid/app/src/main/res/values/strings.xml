@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">Android Messenger</string>
+    <string name="button_text_start_server">Start Server</string>
+    <string name="button_text_stop_server">Stop Server</string>
+
+    <string name="permission_contacts_text">Granting access to contacts allows you to view your contacts names and numbers on the desktop application.</string>
+    <string name="button_text_contacts">Grant Access to Contacts</string>
+
+    <string name="permission_text_call">Granting phone call permissions allows you to initiate phone calls from the desktop application. Please grant them below if not already done so.</string>
+    <string name="button_text_call">Grant Phone Call Permissions</string>
+
+    <string name="permission_granted">Permissions Granted</string>
 
     <!-- Shared preferences keys -->
     <string name="preferences_device_uuid">DEVICE_UUID</string>

@@ -38,14 +38,10 @@ public class AndroidAppService extends Service {
 
     @Override
     public void onCreate() {
-        // Start up the thread running the service.  Note that we create a
-        // separate thread because the service normally runs in the process's
-        // main thread, which we don't want to block.  We also make it
-        // background priority so CPU-intensive work will not disrupt our UI.
         HandlerThread thread = new HandlerThread("ServiceStartArguments");
         thread.start();
 
-        // Start websocket and HTTP server
+        // Start servers
         startServers();
 
         Intent intent = new Intent(this, AndroidAppService.class);

@@ -11,13 +11,13 @@ import Foundation
 extension String {
     func isValidIPv4() -> Bool {
         var throwaway: in_addr? = nil
-        let success = inet_pton(AF_INET, self, &throwaway);
+        let success = inet_pton(AF_INET, self, &throwaway)
         return success == 1
     }
     
     func isValidIPv6() -> Bool {
         var throwaway: in_addr? = nil
-        let success = inet_pton(AF_INET6, self, &throwaway);
+        let success = inet_pton(AF_INET6, self, &throwaway)
         return success == 1
     }
     

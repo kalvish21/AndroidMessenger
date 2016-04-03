@@ -7,12 +7,14 @@
 //
 
 import Cocoa
+import libPhoneNumber_iOS
 import SwiftyJSON
 
-class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
+class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, NSTokenFieldDelegate {
     
     var results: Array<AnyObject> = Array<AnyObject>()
-    var phoneNumber: String?
+    var phoneNumbers: Array<String>?
+    var contactName: String?
     var thread_id: Int? = nil
     
     lazy var messageHandler: MessageHandler = {
@@ -21,13 +23,17 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     
     weak var chatTableView: NSTableView!
     weak var messageTextField: NSTextField!
+    weak var tokenField: NSTokenField!
 
-    init(chatTableView: NSTableView, messageTextField: NSTextField) {
+    init(chatTableView: NSTableView, messageTextField: NSTextField, tokenField: NSTokenField) {
         super.init()
         
         self.chatTableView = chatTableView
         self.messageTextField = messageTextField
+        self.tokenField = tokenField
         
+        self.tokenField.editable = false
+        self.tokenField.focusRingType = .None
         self.chatTableView.registerNib(NSNib(nibNamed: "ChatMessageCell", bundle: NSBundle.mainBundle())!, forIdentifier: "ChatMessageCellView")
     }
         
@@ -80,6 +86,37 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         if (result_pending != nil) {
             results.appendContentsOf(result_pending!)
         }
+        
+        let number = (results[results.count - 1]).valueForKey("number") as! String
+        var fmt_number = number
+        
+        phoneNumbers = Array<String>()
+        let phone_number = self.messageHandler.getPhoneNumberIfContactExists(context, number: number)
+        if (phone_number != nil) {
+            contactName = phone_number!.contact.name!
+            phoneNumbers!.append(phone_number!.formatted_number)
+            for item in phone_number!.contact.numbers! {
+                let formatted_number = (item as! PhoneNumberData).formatted_number as! String
+                if formatted_number != phone_number!.formatted_number {
+                    phoneNumbers!.append(formatted_number)
+                }
+            }
+            
+        } else {
+            let fmt = NBPhoneNumberUtil()
+            do {
+                var nb_number: NBPhoneNumber? = nil
+                try nb_number = fmt.parse(number, defaultRegion: "US")
+                try fmt_number = fmt.format(nb_number!, numberFormat: .INTERNATIONAL)
+            } catch let error as NSError {
+                NSLog("Unresolved error: %@, %@, %@", error, error.userInfo, number)
+                fmt_number = number
+            }
+            
+            contactName = fmt_number
+            phoneNumbers!.append(fmt_number)
+        }
+        self.tokenField.objectValue = contactName!
         
         return results
     }
@@ -140,7 +177,6 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         var start_index = -1
         for msg_index in 0...ids_for_thread.count - 1 {
             let msg = ids_for_thread[msg_index] as! Message
-//            NSLog("%@", msg)
             
             for index_iterate in 0...new_size {
                 let newIndex = new_size - index_iterate - 1
@@ -268,7 +304,6 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
                 result.descriptionLabel.stringValue = "failed"
             }
             result.is_sending_message = (msg.valueForKey("received") as? Bool) == false
-            phoneNumber = msg.valueForKey("number") as! String
             
         } catch let error as NSError {
             NSLog("Unresolved error: %@, %@", error, error.userInfo)
@@ -291,6 +326,74 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         context.parentContext = delegate.coreDataHandler.managedObjectContext
         return self.messageHandler.getMaxDate(context)
+    }
+    
+    // NSTOkenField delegate methods
+    func tokenField(tokenField: NSTokenField, hasMenuForRepresentedObject representedObject: AnyObject) -> Bool {
+        return true
+    }
+    
+    func tokenField(tokenField: NSTokenField, menuForRepresentedObject representedObject: AnyObject) -> NSMenu? {
+        let userMenu = NSMenu()
+        
+        if phoneNumbers!.count == 1 {
+            let number = phoneNumbers![0]
+            let item = userMenu.addItemWithTitle(number, action: nil, keyEquivalent: "")
+            item?.target = self
+            
+            let call = userMenu.addItemWithTitle("Call", action: #selector(userClickedMenu), keyEquivalent: "")
+            call?.target = self
+            call?.tag = 0
+            
+        } else {
+            let number = phoneNumbers![0]
+            userMenu.addItemWithTitle(number, action: nil, keyEquivalent: "")
+            
+            let call = userMenu.addItemWithTitle("Call", action: #selector(userClickedMenu), keyEquivalent: "")
+            call?.tag = -1
+            call?.target = self
+            let subMenu = NSMenu(title: "Call")
+            userMenu.setSubmenu(subMenu, forItem: call!)
+            
+            for i in 0...phoneNumbers!.count-1 {
+                let number = phoneNumbers![i]
+                let item = subMenu.addItemWithTitle(number, action: #selector(userClickedMenu), keyEquivalent: "")
+                item?.tag = i
+                item?.target = self
+            }
+        }
+        
+        return userMenu
+    }
+    
+    func userClickedMenu(object: AnyObject) {
+        if object is NSMenuItem {
+            if self.phoneNumbers == nil || self.phoneNumbers!.count < 1 {
+                NSLog("This should not happen. We do not have phone numbers for this user")
+                return
+            }
+            
+            if (object as! NSMenuItem).tag == -1 {
+                NSLog("Ignoring. User clicked a menu")
+                return
+            }
+            
+            // TODO: Start call on the phone. Currently NOT implemented
+            let phoneNumber = self.phoneNumbers![(object as! NSMenuItem).tag]
+            NSLog(phoneNumber)
+            
+            let net = NetworkingUtil()
+            let data = ["uid": net.generateUUID(), "p": phoneNumber, "action": "/phone_call"]
+            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+            delegate.socketHandler.socket?.writeString(JSON(rawValue: data)!.rawString()!)
+            
+        } else {
+            NSLog("Not sure what was passed in. Requires NSMenuItem")
+        }
+    }
+    
+    func tokenField(tokenField: NSTokenField, styleForRepresentedObject representedObject: AnyObject) -> NSTokenStyle {
+        return NSRoundedTokenStyle
     }
 }
 
