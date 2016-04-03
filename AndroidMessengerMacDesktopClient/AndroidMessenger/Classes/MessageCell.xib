@@ -46,7 +46,7 @@
                 <outlet property="descriptionLabel" destination="BDP-hu-GP7" id="AR1-fJ-mkT"/>
                 <outlet property="nameLabel" destination="4IK-sA-6Ek" id="MmI-rM-LYl"/>
             </connections>
-            <point key="canvasLocation" x="1040" y="552.5"/>
+            <point key="canvasLocation" x="629" y="540.5"/>
         </customView>
     </objects>
 </document>

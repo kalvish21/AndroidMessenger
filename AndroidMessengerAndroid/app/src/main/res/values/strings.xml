@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">Android Messenger</string>
-    <string name="scan_title">Scan for Devices</string>
-
-    <string name="hello_world">Hello world!</string>
 
     <!-- Shared preferences keys -->
     <string name="preferences_device_uuid">DEVICE_UUID</string>

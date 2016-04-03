@@ -12,7 +12,7 @@
         android:id="@+id/ipaddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world"
+        android:text="@string/preferences_device_uuid"
         android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold"/>

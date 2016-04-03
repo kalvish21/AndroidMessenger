@@ -445,7 +445,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                     delegate.socketHandler.connect()
                 }
                 
-                let _sms = self.chatHandler.getSmsFromBackgroundThread(objectId)
+                let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+                let context = delegate.coreDataHandler.managedObjectContext
+                let _sms = context.objectWithID(objectId) as! Message;
+                
                 if (thread_id == self.chatHandler.thread_id!) {
                     NSLog("%i", self.chatHandler.results.count)
                     NSLog("%i", self.chatHandler.results.count)

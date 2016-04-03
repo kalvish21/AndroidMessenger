@@ -126,14 +126,19 @@ class ConnectWindow: NSWindowController {
     @IBAction func connectButtonClicked(sender: AnyObject) {
         progressLabel.stringValue = "Connecting ..."
         
-        NSUserDefaults.standardUserDefaults().setValue(ipAddressField.stringValue, forKey: ipAddress)
-        NSUserDefaults.standardUserDefaults().synchronize()
-        
-        let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-        if (delegate.socketHandler.isConnected() == false) {
-            delegate.socketHandler.connect()
+        // Validate IP Address before attempting to connect
+        if ipAddressField.stringValue.isValidIPAddress() {
+            NSUserDefaults.standardUserDefaults().setValue(ipAddressField.stringValue, forKey: ipAddress)
+            NSUserDefaults.standardUserDefaults().synchronize()
+            
+            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+            if (delegate.socketHandler.isConnected() == false) {
+                delegate.socketHandler.connect()
+            } else {
+                NSNotificationCenter.defaultCenter().postNotificationName(websocketConnected, object: nil)
+            }
         } else {
-            NSNotificationCenter.defaultCenter().postNotificationName(websocketConnected, object: nil)
+            progressLabel.stringValue = "Invalid."
         }
     }
     

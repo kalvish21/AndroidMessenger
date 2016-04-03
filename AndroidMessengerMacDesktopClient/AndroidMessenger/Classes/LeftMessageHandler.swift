@@ -85,6 +85,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
             result.descriptionLabel.font = NSFont.systemFontOfSize(13)
         }
         
+        
         // Return the result
         return result
     }

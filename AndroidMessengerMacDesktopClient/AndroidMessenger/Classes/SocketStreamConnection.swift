@@ -22,7 +22,7 @@ class SocketHandler: NSObject, WebSocketDelegate {
         if (prefs.valueForKey(ipAddress) == nil) {
             return
         }
-        
+
         let url = String(format: "ws://%@:%@/", arguments: [prefs.valueForKey(ipAddress) as! String, "5555"])
         socket = WebSocket(url: NSURL(string: url)!)
         socket!.delegate = self
