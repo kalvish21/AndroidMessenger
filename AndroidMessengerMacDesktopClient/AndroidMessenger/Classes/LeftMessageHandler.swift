@@ -56,7 +56,11 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
         original_results = self.messageHandler.getLeftMessagePaneWithLatestMessages(delegate.coreDataHandler.managedObjectContext)
         results = original_results
-        self.leftTableView.reloadData()
+        if filter_value.characters.count > 0 {
+            filterTableData(filter_value)
+        } else {
+            self.leftTableView.reloadData()
+        }
         
         if row_data != nil && !new_selection {
             for row_id in 0...results.count - 1 {
