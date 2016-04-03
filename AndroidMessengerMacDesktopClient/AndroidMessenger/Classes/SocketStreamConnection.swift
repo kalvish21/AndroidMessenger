@@ -18,7 +18,7 @@ class SocketHandler: NSObject, WebSocketDelegate {
         return MessageHandler()
     }()
     
-    private lazy var contactsHanlder: ContactsHandler = {
+    private lazy var contactsHandler: ContactsHandler = {
         return ContactsHandler()
     }()
     
@@ -168,7 +168,7 @@ class SocketHandler: NSObject, WebSocketDelegate {
             
         case "/new_device":
             // Parse the contacts that were attained
-            contactsHanlder.requestContactsFromPhone()
+            self.contactsHandler.requestContactsFromPhone()
             NSNotificationCenter.defaultCenter().postNotificationName(websocketHandshake, object: nil)
 
             break
@@ -257,7 +257,7 @@ class SocketHandler: NSObject, WebSocketDelegate {
                 
                 if (user_address != nil && user_message != nil) {
                     var title = user_address!
-                    let phoneNumber: PhoneNumberData? = self.messageHandler.getPhoneNumberIfContactExists(context, number: user_address!)
+                    let phoneNumber: PhoneNumberData? = self.contactsHandler.getPhoneNumberIfContactExists(context, number: user_address!)
                     if phoneNumber != nil {
                         title = phoneNumber!.contact.name! as String
                     }

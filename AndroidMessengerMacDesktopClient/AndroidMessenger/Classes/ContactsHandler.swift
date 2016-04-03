@@ -11,6 +11,41 @@ import libPhoneNumber_iOS
 
 class ContactsHandler: NSObject {
     
+    func checkIfContactExists(moc: NSManagedObjectContext!, idValue: Int!) -> Contact? {
+        let request = NSFetchRequest(entityName: "Contact")
+        request.fetchLimit = 1
+        request.predicate = NSPredicate(format: "id = %i", idValue)
+        
+        var objs: [Contact]?
+        do {
+            try objs = moc.executeFetchRequest(request) as? [Contact]
+        } catch let error as NSError {
+            NSLog("Unresolved error: %@, %@", error, error.userInfo)
+        }
+        
+        if objs != nil && objs?.count > 0 {
+            return objs![0]
+        }
+        return nil
+    }
+    
+    func getPhoneNumberIfContactExists(moc: NSManagedObjectContext!, number: String!) -> PhoneNumberData? {
+        let request = NSFetchRequest(entityName: "PhoneNumberData")
+        request.predicate = NSPredicate(format: "number CONTAINS[cd] %@", number)
+        request.returnsObjectsAsFaults = false
+        
+        var phonenumbers = Array<AnyObject>()
+        do {
+            try phonenumbers = moc.executeFetchRequest(request)
+        } catch let error as NSError {
+            NSLog("Unresolved error: %@, %@", error, error.userInfo)
+        }
+        if phonenumbers.count > 0 {
+            return phonenumbers[0] as! PhoneNumberData
+        }
+        return nil
+    }
+    
     func requestContactsFromPhone() {
         func responseHandler (request: NSURLRequest, response: NSHTTPURLResponse?, data: AnyObject?) -> Void {
             if (data != nil) {

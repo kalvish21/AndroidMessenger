@@ -12,6 +12,10 @@ import libPhoneNumber_iOS
 
 class MessageHandler {
     
+    lazy var contactsHandler: ContactsHandler = {
+        return ContactsHandler()
+    }()
+    
     func setMessageDetailsFromDictionary(sms: Message, dictionary: Dictionary<String, AnyObject>, is_pending: Bool) -> Message {
         NSLog("%@", dictionary)
         sms.id = Int((dictionary["id"] as! NSString).intValue)
@@ -97,7 +101,7 @@ class MessageHandler {
             for i in 0...results!.count-1 {
                 var result = results![i] as! Dictionary<String, AnyObject>
                 let number = result["number"] as! String
-                let phoneNumber: PhoneNumberData? = self.getPhoneNumberIfContactExists(context, number: number)
+                let phoneNumber: PhoneNumberData? = self.contactsHandler.getPhoneNumberIfContactExists(context, number: number)
                 
                 // If we got a number, then send it
                 var fmt_number: String? = nil
@@ -174,40 +178,5 @@ class MessageHandler {
             NSLog("Unresolved error: %@, %@", error, error.userInfo)
         }
         return ""
-    }
-    
-    func checkIfContactExists(moc: NSManagedObjectContext!, idValue: Int!) -> Contact? {
-        let request = NSFetchRequest(entityName: "Contact")
-        request.fetchLimit = 1
-        request.predicate = NSPredicate(format: "id = %i", idValue)
-        
-        var objs: [Contact]?
-        do {
-            try objs = moc.executeFetchRequest(request) as? [Contact]
-        } catch let error as NSError {
-            NSLog("Unresolved error: %@, %@", error, error.userInfo)
-        }
-        
-        if objs != nil && objs?.count > 0 {
-            return objs![0]
-        }
-        return nil
-    }
-    
-    func getPhoneNumberIfContactExists(moc: NSManagedObjectContext!, number: String!) -> PhoneNumberData? {
-        let request = NSFetchRequest(entityName: "PhoneNumberData")
-        request.predicate = NSPredicate(format: "number CONTAINS[cd] %@", number)
-        request.returnsObjectsAsFaults = false
-        
-        var phonenumbers = Array<AnyObject>()
-        do {
-            try phonenumbers = moc.executeFetchRequest(request)
-        } catch let error as NSError {
-            NSLog("Unresolved error: %@, %@", error, error.userInfo)
-        }
-        if phonenumbers.count > 0 {
-            return phonenumbers[0] as! PhoneNumberData
-        }
-        return nil
     }
 }

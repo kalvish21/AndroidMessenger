@@ -19,6 +19,10 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         return MessageHandler()
     }()
     
+    lazy var contactsHandler: ContactsHandler = {
+        return ContactsHandler()
+    }()
+    
     init(leftTableView: NSTableView, chatHandler: ChatMessageHandler) {
         super.init()
         

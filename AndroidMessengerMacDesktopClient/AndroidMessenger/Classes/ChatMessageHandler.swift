@@ -21,6 +21,10 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         return MessageHandler()
     }()
     
+    private lazy var contactsHandler: ContactsHandler = {
+        return ContactsHandler()
+    }()
+    
     weak var chatTableView: NSTableView!
     weak var messageTextField: NSTextField!
     weak var tokenField: NSTokenField!
@@ -91,7 +95,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         var fmt_number = number
         
         phoneNumbers = Array<String>()
-        let phone_number = self.messageHandler.getPhoneNumberIfContactExists(context, number: number)
+        let phone_number = self.contactsHandler.getPhoneNumberIfContactExists(context, number: number)
         if (phone_number != nil) {
             contactName = phone_number!.contact.name!
             phoneNumbers!.append(phone_number!.formatted_number)
