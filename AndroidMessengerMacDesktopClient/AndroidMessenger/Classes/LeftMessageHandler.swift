@@ -27,12 +27,12 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
     }
     
     func filterTableData(filter_string: String) {
-        filter_value = filter_string.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        filter_value = filter_string.lowercaseString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         if filter_value.characters.count > 0 {
             results = original_results.filter( { (result: AnyObject) -> Bool in
                 let msg_title = (result as! Dictionary<String, AnyObject>)["row_title"] as! String
                 let number = (result as! Dictionary<String, AnyObject>)["number"] as! String
-                return msg_title.rangeOfString(filter_value) != nil || number.rangeOfString(filter_value) != nil
+                return msg_title.lowercaseString.rangeOfString(filter_value) != nil || number.lowercaseString.rangeOfString(filter_value) != nil
             })
         } else {
             results = original_results
@@ -110,7 +110,6 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         } else {
             result.descriptionLabel.font = NSFont.systemFontOfSize(13)
         }
-        
         
         // Return the result
         return result

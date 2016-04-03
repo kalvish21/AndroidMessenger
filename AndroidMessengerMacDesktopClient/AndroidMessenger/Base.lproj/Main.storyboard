@@ -393,13 +393,13 @@
                                         <rect key="frame" x="0.0" y="0.0" width="272.5" height="504"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-                                            <scrollView misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="27" horizontalPageScroll="10" verticalLineScroll="27" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KxF-FI-4Vo">
+                                            <scrollView misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="85" horizontalPageScroll="10" verticalLineScroll="85" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KxF-FI-4Vo">
                                                 <rect key="frame" x="0.0" y="58" width="269" height="411"/>
                                                 <clipView key="contentView" id="acy-G3-M6c">
                                                     <rect key="frame" x="1" y="0.0" width="267" height="410"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="25" rowSizeStyle="automatic" headerView="Zqt-JS-0u2" viewBased="YES" id="NQ4-9N-JIR">
+                                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="83" headerView="Zqt-JS-0u2" viewBased="YES" id="NQ4-9N-JIR">
                                                             <rect key="frame" x="0.0" y="0.0" width="267" height="387"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>

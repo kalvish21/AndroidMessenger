@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.database.Cursor;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,16 +15,10 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
-import com.androidmessenger.R;
 import com.androidmessenger.connections.WebServer;
 import com.androidmessenger.connections.WebSocket;
 import com.androidmessenger.observer.SmsObserver;
 import com.androidmessenger.util.Constants;
-import com.androidmessenger.util.UserPreferencesManager;
-import com.androidmessenger.util.Util;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Created by Kalyan Vishnubhatla on 3/24/16.
@@ -41,10 +34,6 @@ public class AndroidAppService extends Service {
 
     public AndroidAppService() {
         super();
-    }
-
-    public WebSocket getAndroidWebSocket() {
-        return webSocket;
     }
 
     @Override
@@ -77,6 +66,10 @@ public class AndroidAppService extends Service {
     public void onDestroy() {
         super.onDestroy();
         stopServers();
+    }
+
+    public WebSocket getAndroidWebSocket() {
+        return webSocket;
     }
 
     public void startServers() {
@@ -169,90 +162,6 @@ public class AndroidAppService extends Service {
 //                        AndroidAppService.this.stopServers();
 //                    }
                     break;
-                }
-
-                case "sms": {
-                    String number = bundle.getString("phoneNumber");
-                    Long time = bundle.getLong("time");
-                    String message = bundle.getString("message");
-                    smsWasReceived(number, time, message);
-                    break;
-                }
-            }
-        }
-
-        private void smsWasReceived(String number, Long time, String message) {
-            Cursor c = null;
-            try {
-                Util util = new Util();
-                Long largestDateCounted = Long.parseLong(UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_current_counter), "0"));
-                String _id = null;
-
-                String filter = String.format("body='%s' AND date=%s AND address='%s'", message, Long.toString(time), number);
-                c = context.getContentResolver().query(Constants.Sms, null, filter, null, null);
-
-                // This should not happen, but we were unable to find the message that was received in the SMS database
-                if (c.getCount() == 0) {
-                    return;
-                }
-
-                long receivedDate = 0;
-                JSONArray array = new JSONArray();
-                if (c.moveToFirst()) {
-                    long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow("date")));
-                    receivedDate = currentDate;
-
-                    JSONObject obj = util.getJsonObjectFromCursorObjectForSmsText(c);
-                    array.put(obj);
-
-                    _id = obj.getString("id");
-                }
-
-                // Get all other pending messages for this user
-                if (largestDateCounted != null && largestDateCounted > 0L) {
-                    filter = "date > ?";
-                    String[] args = new String[] {Long.toString(largestDateCounted)};
-                    c = context.getContentResolver().query(Constants.Sms, null, filter, args, null);
-                    int totalSMS = c.getCount();
-
-                    if (c.moveToFirst()) {
-                        for (int i = 0; i < totalSMS; i++) {
-                            long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow("date")));
-                            if (currentDate > largestDateCounted) {
-                                largestDateCounted = currentDate;
-                            }
-
-                            String currentId = c.getString(c.getColumnIndexOrThrow("_id"));
-                            if (!currentId.equals(_id)) {
-                                JSONObject obj = util.getJsonObjectFromCursorObjectForSmsText(c);
-                                array.put(obj);
-                            }
-
-                            c.moveToNext();
-                        }
-                    }
-                }
-
-                if (receivedDate > largestDateCounted) {
-                    largestDateCounted = receivedDate;
-                }
-                UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_current_counter), String.valueOf(largestDateCounted));
-
-                if (array != null && array.length() > 0) {
-                    JSONObject obj = new JSONObject();
-                    obj.put("messages", array);
-                    try {
-                        obj.put("action", "/message/received");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    webSocket.sendJsonData(obj);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (c!= null) {
-                    c.close();
                 }
             }
         }

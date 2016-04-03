@@ -6,4 +6,5 @@
     <string name="preferences_current_counter">CURRENT_COUNTER</string>
     <string name="preferences_current_phonenumber">CURRENT_PHONENUMBER</string>
     <string name="preferences_should_autostart">SHOULD_AUTOSTART</string>
+    <string name="preferences_properties_messenger">USER_PROPERTIES_ANDROID_MESSENGER</string>
 </resources>
