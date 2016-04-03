@@ -159,22 +159,19 @@ class MessageHandler {
         return nil
     }
     
-    func getPhoneNumberIfContactExists(moc: NSManagedObjectContext!, number: String!) -> PhoneNumber? {
-        let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-        let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-        context.parentContext = delegate.coreDataHandler.managedObjectContext
-        
-        let request = NSFetchRequest(entityName: "PhoneNumber")
+    func getPhoneNumberIfContactExists(moc: NSManagedObjectContext!, number: String!) -> PhoneNumberData? {
+        let request = NSFetchRequest(entityName: "PhoneNumberData")
         request.predicate = NSPredicate(format: "number CONTAINS[cd] %@", number)
+        request.returnsObjectsAsFaults = false
         
         var phonenumbers = Array<AnyObject>()
         do {
-            try phonenumbers = context.executeFetchRequest(request)
+            try phonenumbers = moc.executeFetchRequest(request)
         } catch let error as NSError {
             NSLog("Unresolved error: %@, %@", error, error.userInfo)
         }
         if phonenumbers.count > 0 {
-            return phonenumbers[0] as! PhoneNumber
+            return phonenumbers[0] as! PhoneNumberData
         }
         return nil
     }

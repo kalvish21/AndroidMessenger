@@ -1,5 +1,5 @@
 //
-//  PhoneNumber+CoreDataProperties.swift
+//  PhoneNumberData+CoreDataProperties.swift
 //  AndroidMessenger
 //
 //  Created by Kalyan Vishnubhatla on 4/2/16.
@@ -12,9 +12,9 @@
 import Foundation
 import CoreData
 
-extension PhoneNumber {
+extension PhoneNumberData {
 
-    @NSManaged var number: String?
-    @NSManaged var contact: Contact?
+    @NSManaged var number: String
+    @NSManaged var contact: Contact
 
 }

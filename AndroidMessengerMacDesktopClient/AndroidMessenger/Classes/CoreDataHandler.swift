@@ -89,6 +89,11 @@ class CoreDataHandler: NSObject {
             if (_managedObjectContext == nil) {
                 _managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
                 _managedObjectContext!.persistentStoreCoordinator = self.persistentStoreCoordinator
+                if #available(OSX 10.11, *) {
+                    _managedObjectContext?.shouldDeleteInaccessibleFaults = true
+                } else {
+                    // Fallback on earlier versions
+                }
             }
             return _managedObjectContext!
         }

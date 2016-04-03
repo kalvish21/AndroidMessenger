@@ -27,6 +27,5 @@ extension Message {
     @NSManaged var uuid: String?
     @NSManaged var sms: NSNumber?
     @NSManaged var messageparts: NSOrderedSet?
-    @NSManaged var contacts: NSOrderedSet?
 
 }

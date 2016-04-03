@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		740C3F011CA34D270034E553 /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740C3F001CA34D270034E553 /* ChatMessageCell.swift */; };
 		740C3F071CA34E3B0034E553 /* ChatMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 740C3F061CA34E3B0034E553 /* ChatMessageCell.xib */; };
+		740D8CC61CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740D8CC41CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift */; };
+		740D8CC71CB0846800470483 /* PhoneNumberData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740D8CC51CB0846800470483 /* PhoneNumberData.swift */; };
 		74466B3B1CA30FFA001C8D1B /* ChatMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74466B3A1CA30FFA001C8D1B /* ChatMessageHandler.swift */; };
 		74466B3E1CA32597001C8D1B /* NSDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74466B3D1CA32597001C8D1B /* NSDate.swift */; };
 		745007931CA0DE0C0047673A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745007921CA0DE0C0047673A /* AppDelegate.swift */; };
@@ -30,8 +32,6 @@
 		74DFE2F41CA6F62500B8DB73 /* NSColor-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DFE2F31CA6F62500B8DB73 /* NSColor-Extension.swift */; };
 		74DFFE331CB0449E00441DA6 /* Contact+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DFFE2F1CB0449E00441DA6 /* Contact+CoreDataProperties.swift */; };
 		74DFFE341CB0449E00441DA6 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DFFE301CB0449E00441DA6 /* Contact.swift */; };
-		74DFFE351CB0449E00441DA6 /* PhoneNumber+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DFFE311CB0449E00441DA6 /* PhoneNumber+CoreDataProperties.swift */; };
-		74DFFE361CB0449E00441DA6 /* PhoneNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DFFE321CB0449E00441DA6 /* PhoneNumber.swift */; };
 		74E3FAE11CAB2AAA00C9D3BB /* compose@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 74E3FAE01CAB2AAA00C9D3BB /* compose@2x.png */; };
 		74EDC09A1CAA2F85001EBE9F /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = 74EDC0991CAA2F85001EBE9F /* SimplePing.m */; };
 		74EDC09C1CAA4662001EBE9F /* LeftMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EDC09B1CAA4662001EBE9F /* LeftMessageHandler.swift */; };
@@ -66,6 +66,8 @@
 		088338F48C39C2D45A23DD25 /* Pods-AndroidMessenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AndroidMessenger.release.xcconfig"; path = "Pods/Target Support Files/Pods-AndroidMessenger/Pods-AndroidMessenger.release.xcconfig"; sourceTree = "<group>"; };
 		740C3F001CA34D270034E553 /* ChatMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatMessageCell.swift; path = Classes/ChatMessageCell.swift; sourceTree = "<group>"; };
 		740C3F061CA34E3B0034E553 /* ChatMessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChatMessageCell.xib; path = Classes/ChatMessageCell.xib; sourceTree = "<group>"; };
+		740D8CC41CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PhoneNumberData+CoreDataProperties.swift"; path = "Classes/PhoneNumberData+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		740D8CC51CB0846800470483 /* PhoneNumberData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhoneNumberData.swift; path = Classes/PhoneNumberData.swift; sourceTree = "<group>"; };
 		74466B3A1CA30FFA001C8D1B /* ChatMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatMessageHandler.swift; path = Classes/ChatMessageHandler.swift; sourceTree = "<group>"; };
 		74466B3D1CA32597001C8D1B /* NSDate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NSDate.swift; path = Classes/NSDate.swift; sourceTree = "<group>"; };
 		7450078F1CA0DE0C0047673A /* AndroidMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -95,8 +97,6 @@
 		74DFE2F31CA6F62500B8DB73 /* NSColor-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSColor-Extension.swift"; path = "Classes/NSColor-Extension.swift"; sourceTree = "<group>"; };
 		74DFFE2F1CB0449E00441DA6 /* Contact+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Contact+CoreDataProperties.swift"; path = "Classes/Contact+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		74DFFE301CB0449E00441DA6 /* Contact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Contact.swift; path = Classes/Contact.swift; sourceTree = "<group>"; };
-		74DFFE311CB0449E00441DA6 /* PhoneNumber+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PhoneNumber+CoreDataProperties.swift"; path = "Classes/PhoneNumber+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		74DFFE321CB0449E00441DA6 /* PhoneNumber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhoneNumber.swift; path = Classes/PhoneNumber.swift; sourceTree = "<group>"; };
 		74E3FAE01CAB2AAA00C9D3BB /* compose@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "compose@2x.png"; path = "images/compose@2x.png"; sourceTree = "<group>"; };
 		74EDC0981CAA2F85001EBE9F /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimplePing.h; path = Classes/SimplePing/SimplePing.h; sourceTree = "<group>"; };
 		74EDC0991CAA2F85001EBE9F /* SimplePing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SimplePing.m; path = Classes/SimplePing/SimplePing.m; sourceTree = "<group>"; };
@@ -138,6 +138,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		740D8C9E1CB0836800470483 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				74EDC0971CAA2F74001EBE9F /* SimplePing */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
 		7439E4F81CA1013400522C80 /* MainWindow */ = {
 			isa = PBXGroup;
 			children = (
@@ -188,8 +196,8 @@
 				74F037BA1CA1C8E700669F03 /* Common */,
 				745007BD1CA0F59B0047673A /* ConnectionDialog */,
 				74466B3C1CA32587001C8D1B /* Extension */,
+				740D8C9E1CB0836800470483 /* Libraries */,
 				7439E4F81CA1013400522C80 /* MainWindow */,
-				74EDC0971CAA2F74001EBE9F /* SimplePing */,
 				74DFE2F21CA6F0EE00B8DB73 /* UserInterfaces */,
 				745007921CA0DE0C0047673A /* AppDelegate.swift */,
 				745007961CA0DE0C0047673A /* Assets.xcassets */,
@@ -230,14 +238,14 @@
 		74A1A7FA1CA20718004F0B47 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				74DFFE301CB0449E00441DA6 /* Contact.swift */,
+				74DFFE2F1CB0449E00441DA6 /* Contact+CoreDataProperties.swift */,
 				74C63E2C1CA871AE006C1DEE /* Message.swift */,
 				74C63E2B1CA871AE006C1DEE /* Message+CoreDataProperties.swift */,
 				74BEFFEB1CA655C900F7A15E /* MessagePart.swift */,
 				74BEFFEA1CA655C900F7A15E /* MessagePart+CoreDataProperties.swift */,
-				74DFFE2F1CB0449E00441DA6 /* Contact+CoreDataProperties.swift */,
-				74DFFE301CB0449E00441DA6 /* Contact.swift */,
-				74DFFE311CB0449E00441DA6 /* PhoneNumber+CoreDataProperties.swift */,
-				74DFFE321CB0449E00441DA6 /* PhoneNumber.swift */,
+				740D8CC51CB0846800470483 /* PhoneNumberData.swift */,
+				740D8CC41CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -490,15 +498,14 @@
 			files = (
 				745007951CA0DE0C0047673A /* ViewController.swift in Sources */,
 				74F037BC1CA1C8F800669F03 /* CoreDataHandler.swift in Sources */,
-				74DFFE361CB0449E00441DA6 /* PhoneNumber.swift in Sources */,
 				74DFFE341CB0449E00441DA6 /* Contact.swift in Sources */,
 				74C63E301CA87622006C1DEE /* MessageHandler.swift in Sources */,
 				74EDC09A1CAA2F85001EBE9F /* SimplePing.m in Sources */,
 				74F037B41CA1921F00669F03 /* MessageCell.swift in Sources */,
+				740D8CC71CB0846800470483 /* PhoneNumberData.swift in Sources */,
 				74F037B91CA1B84A00669F03 /* MainModel.xcdatamodeld in Sources */,
 				74F037C21CA1D6C200669F03 /* Common.swift in Sources */,
 				74BEFFEE1CA655C900F7A15E /* MessagePart+CoreDataProperties.swift in Sources */,
-				74DFFE351CB0449E00441DA6 /* PhoneNumber+CoreDataProperties.swift in Sources */,
 				740C3F011CA34D270034E553 /* ChatMessageCell.swift in Sources */,
 				74C63E2E1CA871AE006C1DEE /* Message.swift in Sources */,
 				74EDC09C1CAA4662001EBE9F /* LeftMessageHandler.swift in Sources */,
@@ -514,6 +521,7 @@
 				74BEFFEF1CA655C900F7A15E /* MessagePart.swift in Sources */,
 				74C63E2D1CA871AE006C1DEE /* Message+CoreDataProperties.swift in Sources */,
 				74466B3E1CA32597001C8D1B /* NSDate.swift in Sources */,
+				740D8CC61CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift in Sources */,
 				745007931CA0DE0C0047673A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

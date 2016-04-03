@@ -6,4 +6,5 @@ target 'AndroidMessenger' do
     pod 'Starscream', '~> 1.1.1'
     pod 'Alamofire'
     pod 'ReachabilitySwift', :git => 'https://github.com/ashleymills/Reachability.swift'
+    pod 'libPhoneNumber-iOS', '~> 0.8'
 end

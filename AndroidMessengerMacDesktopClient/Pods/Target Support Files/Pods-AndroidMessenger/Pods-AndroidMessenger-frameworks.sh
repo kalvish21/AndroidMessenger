@@ -88,10 +88,12 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-AndroidMessenger/ReachabilitySwift.framework"
   install_framework "Pods-AndroidMessenger/Starscream.framework"
   install_framework "Pods-AndroidMessenger/SwiftyJSON.framework"
+  install_framework "Pods-AndroidMessenger/libPhoneNumber_iOS.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-AndroidMessenger/Alamofire.framework"
   install_framework "Pods-AndroidMessenger/ReachabilitySwift.framework"
   install_framework "Pods-AndroidMessenger/Starscream.framework"
   install_framework "Pods-AndroidMessenger/SwiftyJSON.framework"
+  install_framework "Pods-AndroidMessenger/libPhoneNumber_iOS.framework"
 fi

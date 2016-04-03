@@ -1,5 +1,5 @@
 //
-//  PhoneNumber.swift
+//  PhoneNumberData.swift
 //  AndroidMessenger
 //
 //  Created by Kalyan Vishnubhatla on 4/2/16.
@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 
-class PhoneNumber: NSManagedObject {
+class PhoneNumberData: NSManagedObject {
 
 // Insert code here to add functionality to your managed object subclass
 

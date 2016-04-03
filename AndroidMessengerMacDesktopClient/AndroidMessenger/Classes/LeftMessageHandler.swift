@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import libPhoneNumber_iOS
 
 class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     var results: Array<AnyObject> = Array<AnyObject>()
@@ -167,15 +168,38 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         }
         
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-        let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-        context.parentContext = delegate.coreDataHandler.managedObjectContext
-        let phoneNumber: PhoneNumber? = self.messageHandler.getPhoneNumberIfContactExists(context, number: number)
+//        let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+//        context.parentContext = delegate.coreDataHandler.managedObjectContext
+        let context = delegate.coreDataHandler.managedObjectContext
+        let phoneNumber: PhoneNumberData? = self.messageHandler.getPhoneNumberIfContactExists(context, number: number)
+        let value = phoneNumber?.fault
         
         // If we got a number, then send it
+        var number_attained = false
         if phoneNumber != nil {
-            msg.updateValue(phoneNumber!.contact!.name!, forKey: "row_title")
-        } else {
-            msg.updateValue(number, forKey: "row_title")
+            NSLog("%@", value!)
+            let p = phoneNumber!
+            let contact: Contact? = phoneNumber!.contact
+            if contact != nil {
+                let name: String? = contact!.name
+                msg.updateValue(name!, forKey: "row_title")
+                number_attained = true
+            }
+        }
+        
+        if number_attained == false {
+            let fmt = NBPhoneNumberUtil()
+            var fmt_number = number
+            do {
+                var nb_number: NBPhoneNumber? = nil
+                try nb_number = fmt.parse(number, defaultRegion: "US")
+                try fmt_number = fmt.format(nb_number!, numberFormat: .INTERNATIONAL)
+            } catch let error as NSError {
+                NSLog("Unresolved error: %@, %@, %@", error, error.userInfo, number)
+                fmt_number = number
+            }
+            
+            msg.updateValue(fmt_number, forKey: "row_title")
         }
         results[row] = msg
         return msg["row_title"] as! String

@@ -207,37 +207,61 @@ class SocketHandler: NSObject, WebSocketDelegate {
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
         let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         context.parentContext = delegate.coreDataHandler.managedObjectContext
+//        let context = delegate.coreDataHandler.managedObjectContext
         
         context.performBlock {
             if (contacts.count > 0) {
+                
+                do {
+                    var matches: [PhoneNumberData]?
+                    let deleteAll: NSFetchRequest = NSFetchRequest(entityName: "PhoneNumberData")
+                    try matches = context.executeFetchRequest(deleteAll) as? [PhoneNumberData]
+                    if (matches != nil && matches?.count > 0) {
+                        for match in matches! {
+                            context.deleteObject(match)
+                        }
+                    }
+                } catch let error as NSError {
+                    NSLog("error %@", error.localizedDescription)
+                }
+                
+                do {
+                    var matches: [Contact]?
+                    let deleteAll: NSFetchRequest = NSFetchRequest(entityName: "Contact")
+                    try matches = context.executeFetchRequest(deleteAll) as? [Contact]
+                    if (matches != nil && matches?.count > 0) {
+                        for match in matches! {
+                            context.deleteObject(match)
+                        }
+                    }
+                } catch let error as NSError {
+                    NSLog("error %@", error.localizedDescription)
+                }
+
                 for i in 0...(contacts.count-1) {
                     let object = contacts[i] as! Dictionary<String, AnyObject>
                     NSLog("%@", object)
                     
                     // If the SMS id exists, move on
-                    let objectId = Int((object["id"] as! String))
-                    var contact = self.messageHandler.checkIfContactExists(context, idValue: objectId)
-                    if (contact == nil) {
-                        contact = NSEntityDescription.insertNewObjectForEntityForName("Contact", inManagedObjectContext: context) as! Contact
-                        contact!.id = objectId
-                    }
-                    contact!.name = String(object["name"] as! String)
+                    var contact = NSEntityDescription.insertNewObjectForEntityForName("Contact", inManagedObjectContext: context) as! Contact
+                    contact.id = Int((object["id"] as! String))
+                    contact.name = String(object["name"] as! String)
                     
-                    if contact!.numbers != nil {
-                        for number in contact!.numbers! {
-                            context.deleteObject(number as! PhoneNumber)
-                        }
-                    }
+//                    if contact.numbers != nil {
+//                        for number in contact.numbers! {
+//                            context.deleteObject(number as! PhoneNumberData)
+//                        }
+//                    }
                     
                     var numbers = NSMutableOrderedSet()
                     let array = object["phones"] as! Array<String>
                     for number in array {
-                        let phone = NSEntityDescription.insertNewObjectForEntityForName("PhoneNumber", inManagedObjectContext: context) as! PhoneNumber
+                        let phone = NSEntityDescription.insertNewObjectForEntityForName("PhoneNumberData", inManagedObjectContext: context) as! PhoneNumberData
                         phone.number = number as! String
-                        phone.contact = contact!
+                        phone.contact = contact
                         numbers.addObject(phone)
                     }
-                    contact!.numbers = numbers
+                    contact.numbers = numbers
                 }
                 
                 do {
@@ -319,9 +343,9 @@ class SocketHandler: NSObject, WebSocketDelegate {
                 
                 if (user_address != nil && user_message != nil) {
                     var title = user_address!
-                    let phoneNumber: PhoneNumber? = self.messageHandler.getPhoneNumberIfContactExists(context, number: user_address!)
+                    let phoneNumber: PhoneNumberData? = self.messageHandler.getPhoneNumberIfContactExists(context, number: user_address!)
                     if phoneNumber != nil {
-                        title = phoneNumber!.contact!.name! as String
+                        title = phoneNumber!.contact.name! as String
                     }
                     
                     // Schedule a local notification
