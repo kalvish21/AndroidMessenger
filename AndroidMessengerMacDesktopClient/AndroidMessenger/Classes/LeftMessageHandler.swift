@@ -7,10 +7,11 @@
 //
 
 import Cocoa
-import libPhoneNumber_iOS
 
-class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
+class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate {
     var results: Array<AnyObject> = Array<AnyObject>()
+    var original_results: Array<AnyObject> = Array<AnyObject>()
+    var filter_value: String = ""
     var chatHandler: ChatMessageHandler!
     weak var leftTableView: NSTableView!
     
@@ -25,6 +26,26 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         self.chatHandler = chatHandler
     }
     
+    func filterTableData(filter_string: String) {
+        filter_value = filter_string.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        if filter_value.characters.count > 0 {
+            results = original_results.filter( { (result: AnyObject) -> Bool in
+                let msg_title = (result as! Dictionary<String, AnyObject>)["row_title"] as! String
+                let number = (result as! Dictionary<String, AnyObject>)["number"] as! String
+                return msg_title.rangeOfString(filter_value) != nil || number.rangeOfString(filter_value) != nil
+            })
+        } else {
+            results = original_results
+        }
+        self.leftTableView.reloadData()
+    }
+    
+    override func controlTextDidChange(obj: NSNotification) {
+        let textField = obj.object as! NSTextField
+        let text = textField.stringValue
+        filterTableData(text)
+    }
+    
     func getDataForLeftTableView(new_selection: Bool) {
         let row = self.leftTableView.selectedRow
         var row_data: Dictionary<String, AnyObject>?
@@ -33,7 +54,8 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         }
         
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-        results = self.messageHandler.getLeftMessagePaneWithLatestMessages(delegate.coreDataHandler.managedObjectContext)
+        original_results = self.messageHandler.getLeftMessagePaneWithLatestMessages(delegate.coreDataHandler.managedObjectContext)
+        results = original_results
         self.leftTableView.reloadData()
         
         if row_data != nil && !new_selection {
@@ -76,7 +98,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         
         let msg = results[row] as! Dictionary<String, AnyObject>
         
-        result.nameLabel.stringValue = getNameFromPhoneNumber(msg["number"] as! String, row: row)
+        result.nameLabel.stringValue = msg["row_title"] as! String
         result.descriptionLabel.stringValue = msg["msg"] as! String
         
         if (msg["read"] as! Bool == false && self.chatHandler.thread_id != msg["thread_id"] as! Int) {
@@ -160,41 +182,5 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         // Set the chat data thread
         self.chatHandler.getAllDataForGroupId(msg["thread_id"] as! Int)
         self.chatHandler.chatTableView.scrollRowToVisible(self.chatHandler.chatTableView.numberOfRows - 1)
-    }
-    
-    func getNameFromPhoneNumber(number: String, row: Int) -> String {
-        var msg = results[row] as! Dictionary<String, AnyObject>
-        if msg["row_title"] != nil {
-            return msg["row_title"] as! String
-        }
-        
-        let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-        let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-        context.parentContext = delegate.coreDataHandler.managedObjectContext
-        let phoneNumber: PhoneNumberData? = self.messageHandler.getPhoneNumberIfContactExists(context, number: number)
-        
-        // If we got a number, then send it
-        var number_attained = false
-        if phoneNumber != nil {
-            msg.updateValue(phoneNumber!.contact.name!, forKey: "row_title")
-            number_attained = true
-        }
-        
-        if number_attained == false {
-            let fmt = NBPhoneNumberUtil()
-            var fmt_number = number
-            do {
-                var nb_number: NBPhoneNumber? = nil
-                try nb_number = fmt.parse(number, defaultRegion: "US")
-                try fmt_number = fmt.format(nb_number!, numberFormat: .INTERNATIONAL)
-            } catch let error as NSError {
-                NSLog("Unresolved error: %@, %@, %@", error, error.userInfo, number)
-                fmt_number = number
-            }
-            
-            msg.updateValue(fmt_number, forKey: "row_title")
-        }
-        results[row] = msg
-        return msg["row_title"] as! String
     }
 }

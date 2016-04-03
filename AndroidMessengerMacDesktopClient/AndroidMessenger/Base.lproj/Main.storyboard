@@ -404,7 +404,8 @@
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                                            <tableViewGridLines key="gridStyleMask" horizontal="YES"/>
+                                                            <color key="gridColor" name="controlHighlightColor" catalog="System" colorSpace="catalog"/>
                                                             <tableColumns>
                                                                 <tableColumn width="264.14317730166221" minWidth="40" maxWidth="1000" id="RSW-2q-OPb">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
@@ -515,7 +516,7 @@
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="gridColor" name="windowFrameTextColor" catalog="System" colorSpace="catalog"/>
                                                             <tableColumns>
                                                                 <tableColumn width="433.1824624835358" minWidth="40" maxWidth="10000000" id="ybw-d2-dIA">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
@@ -619,6 +620,7 @@
                     </view>
                     <connections>
                         <outlet property="chatTableView" destination="K39-s6-VUX" id="Cg6-iD-jIc"/>
+                        <outlet property="filterTextField" destination="jIp-57-MAN" id="bXE-ir-dS2"/>
                         <outlet property="messageTextField" destination="N3e-9M-ggR" id="c34-GF-G5d"/>
                         <outlet property="rightView" destination="eeC-Dz-1q6" id="HuK-Ix-rrz"/>
                         <outlet property="splitView" destination="rsW-Nh-X2e" id="aR5-wt-GfM"/>

@@ -15,6 +15,7 @@ import CoreData
 extension PhoneNumberData {
 
     @NSManaged var number: String
+    @NSManaged var formatted_number: String
     @NSManaged var contact: Contact
 
 }

@@ -9,6 +9,7 @@
 import Foundation
 import Starscream
 import SwiftyJSON
+import libPhoneNumber_iOS
 
 class SocketHandler: NSObject, WebSocketDelegate {
     var socket: WebSocket?
@@ -74,7 +75,7 @@ class SocketHandler: NSObject, WebSocketDelegate {
                     context.performBlock {
                         if (messages!.count > 0) {
                             for i in 0...(messages!.count-1) {
-                                let object = messages![i] as! JSON
+                                let object = messages![i]
                                 NSLog("%@", object.stringValue)
                                 
                                 // If the SMS id exists, move on
@@ -185,14 +186,6 @@ class SocketHandler: NSObject, WebSocketDelegate {
                 self.parseIncomingMessagesAndShowNotification(messages!)
             }
             break
-
-//        case "/messages/mark_read":
-//            let messages = jsonData["messages"].array
-//            if (messages != nil) {
-//                self.parseIncomingMessagesAndShowNotification(messages!)
-//            }
-//            
-//            break
             
         default:
             break
@@ -207,7 +200,6 @@ class SocketHandler: NSObject, WebSocketDelegate {
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
         let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         context.parentContext = delegate.coreDataHandler.managedObjectContext
-//        let context = delegate.coreDataHandler.managedObjectContext
         
         context.performBlock {
             if (contacts.count > 0) {
@@ -239,26 +231,33 @@ class SocketHandler: NSObject, WebSocketDelegate {
                 }
 
                 for i in 0...(contacts.count-1) {
-                    let object = contacts[i] as! Dictionary<String, AnyObject>
+                    let object = contacts[i]
                     NSLog("%@", object)
                     
                     // If the SMS id exists, move on
-                    var contact = NSEntityDescription.insertNewObjectForEntityForName("Contact", inManagedObjectContext: context) as! Contact
+                    let contact = NSEntityDescription.insertNewObjectForEntityForName("Contact", inManagedObjectContext: context) as! Contact
                     contact.id = Int((object["id"] as! String))
                     contact.name = String(object["name"] as! String)
                     
-//                    if contact.numbers != nil {
-//                        for number in contact.numbers! {
-//                            context.deleteObject(number as! PhoneNumberData)
-//                        }
-//                    }
-                    
-                    var numbers = NSMutableOrderedSet()
+                    let numbers = NSMutableOrderedSet()
                     let array = object["phones"] as! Array<String>
                     for number in array {
                         let phone = NSEntityDescription.insertNewObjectForEntityForName("PhoneNumberData", inManagedObjectContext: context) as! PhoneNumberData
-                        phone.number = number as! String
+                        phone.number = number
                         phone.contact = contact
+                        
+                        let fmt = NBPhoneNumberUtil()
+                        var fmt_number = number
+                        do {
+                            var nb_number: NBPhoneNumber? = nil
+                            try nb_number = fmt.parse(number, defaultRegion: "US")
+                            try fmt_number = fmt.format(nb_number!, numberFormat: .INTERNATIONAL)
+                        } catch let error as NSError {
+                            NSLog("Unresolved error: %@, %@, %@", error, error.userInfo, number)
+                            fmt_number = number
+                        }
+                        phone.formatted_number = fmt_number
+
                         numbers.addObject(phone)
                     }
                     contact.numbers = numbers

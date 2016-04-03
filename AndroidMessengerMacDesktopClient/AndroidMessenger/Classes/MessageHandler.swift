@@ -8,7 +8,7 @@
 
 import Cocoa
 import SwiftyJSON
-
+import libPhoneNumber_iOS
 
 class MessageHandler {
     
@@ -90,6 +90,41 @@ class MessageHandler {
         }
         
         if (results != nil) {
+            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+            let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+            context.parentContext = delegate.coreDataHandler.managedObjectContext
+            
+            for i in 0...results!.count-1 {
+                var result = results![i] as! Dictionary<String, AnyObject>
+                let number = result["number"] as! String
+                let phoneNumber: PhoneNumberData? = self.getPhoneNumberIfContactExists(context, number: number)
+                
+                // If we got a number, then send it
+                var fmt_number: String? = nil
+                if phoneNumber != nil {
+                    fmt_number = phoneNumber!.contact.name!
+                }
+                
+                if fmt_number == nil {
+                    fmt_number = number
+                    if phoneNumber != nil && phoneNumber?.formatted_number != nil {
+                        fmt_number = phoneNumber?.formatted_number
+                    } else {
+                        let fmt = NBPhoneNumberUtil()
+                        do {
+                            var nb_number: NBPhoneNumber? = nil
+                            try nb_number = fmt.parse(number, defaultRegion: "US")
+                            try fmt_number = fmt.format(nb_number!, numberFormat: .INTERNATIONAL)
+                        } catch let error as NSError {
+                            NSLog("Unresolved error: %@, %@, %@", error, error.userInfo, number)
+                            fmt_number = number
+                        }
+                    }
+                }
+                result.updateValue(fmt_number!, forKey: "row_title")
+                results![i] = result
+
+            }
             return results!
         }
         return []

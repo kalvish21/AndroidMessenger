@@ -27,6 +27,7 @@
         <attribute name="message_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
     </entity>
     <entity name="PhoneNumberData" representedClassName=".PhoneNumberData" syncable="YES">
+        <attribute name="formatted_number" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="number" attributeType="String" indexed="YES" syncable="YES"/>
         <relationship name="contact" maxCount="1" deletionRule="Nullify" destinationEntity="Contact" inverseName="numbers" inverseEntity="Contact" syncable="YES"/>
     </entity>
@@ -34,6 +35,6 @@
         <element name="Contact" positionX="-54" positionY="90" width="128" height="90"/>
         <element name="Message" positionX="-63" positionY="-18" width="128" height="240"/>
         <element name="MessagePart" positionX="-63" positionY="63" width="128" height="105"/>
-        <element name="PhoneNumberData" positionX="-54" positionY="99" width="128" height="75"/>
+        <element name="PhoneNumberData" positionX="-54" positionY="99" width="128" height="90"/>
     </elements>
 </model>

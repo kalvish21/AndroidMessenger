@@ -32,6 +32,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     
     @IBOutlet weak var messageTextField: NSTextField!
     
+    @IBOutlet weak var filterTextField: NSTextField!
     var results: Array<AnyObject> = Array<AnyObject>()
     var sheetIsOpened: Bool = false
     
@@ -78,6 +79,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         messageTextField.delegate = self
         messageTextField.placeholderString = "Type message and press enter"
         messageTextField.nextKeyView = tableView
+        
+        filterTextField.delegate = self.leftMessageHandler
         
         // Populate left message view box
         self.leftMessageHandler.getDataForLeftTableView(false)
