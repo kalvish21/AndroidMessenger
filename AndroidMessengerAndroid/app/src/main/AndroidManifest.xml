@@ -68,7 +68,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.AndroidAppService" android:icon="@mipmap/ic_launcher" />
+        <service android:name=".service.AndroidAppService" android:process=":sms_process" android:icon="@mipmap/ic_launcher" />
 
     </application>
 

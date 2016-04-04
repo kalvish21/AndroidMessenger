@@ -23,10 +23,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -51,6 +49,7 @@ public class WebServer extends NanoHTTPD {
     private Util util;
     private SmsMmsUriHandler smsMmsUriHandler;
 
+    // SSL keystore created in SSLHandler.createSslConfig
     private final String DEFAULT_PASSWORD = "passwordWillChangeForReleases";
     private final String KEY_STORE_NAME = "androidmessenger.keystore";
 
@@ -59,7 +58,7 @@ public class WebServer extends NanoHTTPD {
         this.context = service.getBaseContext();
 
         try {
-            initSSLConfig();
+            initiateSslConfiguration();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,18 +69,20 @@ public class WebServer extends NanoHTTPD {
         this.smsMmsUriHandler = new SmsMmsUriHandler(service);
     }
 
-    private void initSSLConfig() throws NoSuchProviderException, NoSuchAlgorithmException, KeyStoreException, IOException, CertificateException, SignatureException, InvalidKeyException, UnrecoverableKeyException {
+    private void initiateSslConfiguration() throws NoSuchProviderException, NoSuchAlgorithmException, KeyStoreException, IOException, CertificateException, SignatureException, InvalidKeyException, UnrecoverableKeyException {
         String defaultKSType = KeyStore.getDefaultType();
         KeyStore ks = KeyStore.getInstance(defaultKSType);
         File keyStoreFile = new File(context.getExternalCacheDir() + "/" + KEY_STORE_NAME);
         KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 
+        // Copy keystore file from our assets to the external cache if needed.
         if (!keyStoreFile.exists()) {
             InputStream inputStream = context.getAssets().open(KEY_STORE_NAME);
             SSLHandler handler = new SSLHandler(context);
             handler.createFileFromInputStream(inputStream, keyStoreFile);
         }
 
+        // Double check that it exists
         if (keyStoreFile.exists()){
             ks.load(new FileInputStream(keyStoreFile), DEFAULT_PASSWORD.toCharArray());
             kmf.init(ks, DEFAULT_PASSWORD.toCharArray());

@@ -74,11 +74,8 @@ public class SSLHandler {
         certGen.setSignatureAlgorithm("SHA256WithRSAEncryption");
         //certGen.addExtension(X509Extensions.BasicConstraints, true, new BasicConstraints(false));
         //certGen.addExtension(X509Extensions.KeyUsage, true, new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyEncipherment));
-        //certGen.addExtension(X509Extensions.ExtendedKeyUsage, true, new ExtendedKeyUsage(
-        //        KeyPurposeId.id_kp_serverAuth));
-
-        //certGen.addExtension(X509Extensions.SubjectAlternativeName, false, new GeneralNames(
-        // new GeneralName(GeneralName.rfc822Name, "test@test.test")));
+        //certGen.addExtension(X509Extensions.ExtendedKeyUsage, true, new ExtendedKeyUsage(KeyPurposeId.id_kp_serverAuth));
+        //certGen.addExtension(X509Extensions.SubjectAlternativeName, false, new GeneralNames(new GeneralName(GeneralName.rfc822Name, "test@test.test")));
         return certGen.generateX509Certificate(pair.getPrivate(), "BC");
     }
 
