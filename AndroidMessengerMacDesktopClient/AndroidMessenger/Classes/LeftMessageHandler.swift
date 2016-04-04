@@ -101,6 +101,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         // Get an existing cell with the MyView identifier if it exists
         let result: MessageCell = {
             let result: MessageCell? = tableView.makeViewWithIdentifier("MessageCell", owner: nil) as? MessageCell
+            result?.nextKeyView = self.chatHandler.messageTextField
             return result!
         } ()
         

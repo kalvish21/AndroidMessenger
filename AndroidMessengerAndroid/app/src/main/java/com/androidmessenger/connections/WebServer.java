@@ -21,8 +21,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SignatureException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLServerSocketFactory;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -36,12 +51,43 @@ public class WebServer extends NanoHTTPD {
     private Util util;
     private SmsMmsUriHandler smsMmsUriHandler;
 
+    private final String DEFAULT_PASSWORD = "passwordWillChangeForReleases";
+    private final String KEY_STORE_NAME = "androidmessenger.keystore";
+
     public WebServer(AndroidAppService service) throws IOException {
         super(PORT_NUMBER);
+        this.context = service.getBaseContext();
+
+        try {
+            initSSLConfig();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+
         this.context = service.getBaseContext();
         this.util = new Util();
         this.smsMmsUriHandler = new SmsMmsUriHandler(service);
+    }
+
+    private void initSSLConfig() throws NoSuchProviderException, NoSuchAlgorithmException, KeyStoreException, IOException, CertificateException, SignatureException, InvalidKeyException, UnrecoverableKeyException {
+        String defaultKSType = KeyStore.getDefaultType();
+        KeyStore ks = KeyStore.getInstance(defaultKSType);
+        File keyStoreFile = new File(context.getExternalCacheDir() + "/" + KEY_STORE_NAME);
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+
+        if (!keyStoreFile.exists()) {
+            InputStream inputStream = context.getAssets().open(KEY_STORE_NAME);
+            SSLHandler handler = new SSLHandler(context);
+            handler.createFileFromInputStream(inputStream, keyStoreFile);
+        }
+
+        if (keyStoreFile.exists()){
+            ks.load(new FileInputStream(keyStoreFile), DEFAULT_PASSWORD.toCharArray());
+            kmf.init(ks, DEFAULT_PASSWORD.toCharArray());
+            SSLServerSocketFactory sslsf = makeSSLSocketFactory(ks, kmf.getKeyManagers());
+            makeSecure(sslsf, null);
+        }
     }
 
     public Response serve(IHTTPSession session) {

@@ -12,6 +12,17 @@ import IOKit
 import ReachabilitySwift
 
 class NetworkingUtil: NSObject {
+    static let manager: Manager = {
+        let ip = NSUserDefaults.standardUserDefaults().valueForKey(ipAddress) as! String
+        let serverTrustPolicies: [String: ServerTrustPolicy] = [ip : .DisableEvaluation]
+        
+        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        configuration.HTTPAdditionalHeaders = Alamofire.Manager.defaultHTTPHeaders
+        
+        return Alamofire.Manager(configuration: configuration,
+                                 serverTrustPolicyManager: ServerTrustPolicyManager(policies: serverTrustPolicies))
+    }()
+
     let param_methods = [Alamofire.Method.GET, Alamofire.Method.HEAD, Alamofire.Method.DELETE]
     
     // JSON requests
@@ -30,7 +41,7 @@ class NetworkingUtil: NSObject {
             fullUrl = getFullUrlPath(url)
         }
         
-        Alamofire.request(method, fullUrl, parameters: parameters, encoding: encodingEvaluated, headers: headers).responseJSON { (response: Response) in
+        NetworkingUtil.manager.request(method, fullUrl, parameters: parameters, encoding: encodingEvaluated, headers: headers).responseJSON { (response: Response) in
             if (response.result.error != nil || response.result.value == nil) {
                 NetworkingUtil.checkForSevereError(response.request!.URL!.absoluteString)
             } else {

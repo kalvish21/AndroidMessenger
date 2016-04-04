@@ -72,10 +72,6 @@ public class Messenger extends AppCompatActivity {
             textView.setText(ipAddress);
         }
 
-        // Users phone number -- Will need it later on
-//        TelephonyManager tMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-//        UserPreferencesManager.getInstance().setStringInPreferences(this, getString(R.string.preferences_current_phonenumber), tMgr.getLine1Number());
-
         if (UserPreferencesManager.getInstance().getValueFromPreferences(this, getString(R.string.preferences_should_autostart), "NO").equals("YES")) {
             startServers();
         }

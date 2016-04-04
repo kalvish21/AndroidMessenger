@@ -59,12 +59,18 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         tokenField.delegate = self.chatHandler
         filterTextField.delegate = self.leftMessageHandler
         
+        // Message field properties
+        messageTextField.enabled = false
+        messageTextField.delegate = self
+        messageTextField.placeholderString = "Type message and press enter"
+        messageTextField.nextKeyView = tableView
+        
+        // Left navigation bar
         tableView.headerView = nil
         tableView.setDataSource(self.leftMessageHandler)
         tableView.setDelegate(self.leftMessageHandler)
         tableView.registerNib(NSNib(nibNamed: "MessageCell", bundle: NSBundle.mainBundle())!, forIdentifier: "MessageCell")
         tableView.nextKeyView = messageTextField
-        tableView.becomeFirstResponder()
         
         // Main chat tableview settings
         chatTableView.headerView = nil
@@ -81,12 +87,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: messageSentConfirmation, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: newMessageReceived, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: leftDataShouldRefresh, object: nil)
-        
-        // Message field properties
-        messageTextField.enabled = false
-        messageTextField.delegate = self
-        messageTextField.placeholderString = "Type message and press enter"
-        messageTextField.nextKeyView = tableView
         
         // Populate left message view box
         self.leftMessageHandler.getDataForLeftTableView(false)

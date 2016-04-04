@@ -9,8 +9,14 @@
 import Cocoa
 import ReachabilitySwift
 
+extension NSURLRequest {
+    static func allowsAnyHTTPSCertificateForHost(host: String) -> Bool {
+        return true
+    }
+}
+
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate, SimplePingDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, SimplePingDelegate {
     
     let socketHandler: SocketHandler = {
         return SocketHandler()

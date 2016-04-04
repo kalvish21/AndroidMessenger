@@ -74,7 +74,7 @@ class ConnectWindow: NSWindowController {
             delegate.socketHandler.socket?.writeString(json.rawString()!)
             
             let prefs = NSUserDefaults.standardUserDefaults()
-            prefs.setObject(String(format: "http://%@:%@", ipAddressField.stringValue, "5000"), forKey: fullUrlPath)
+            prefs.setObject(String(format: "https://%@:%@", ipAddressField.stringValue, "5000"), forKey: fullUrlPath)
             prefs.setObject(ipAddressField.stringValue, forKey: ipAddress)
             prefs.synchronize()
             break
