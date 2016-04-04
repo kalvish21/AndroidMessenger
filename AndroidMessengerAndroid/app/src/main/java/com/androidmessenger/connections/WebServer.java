@@ -56,17 +56,14 @@ public class WebServer extends NanoHTTPD {
     public WebServer(AndroidAppService service) throws IOException {
         super(PORT_NUMBER);
         this.context = service.getBaseContext();
+        this.util = new Util();
+        this.smsMmsUriHandler = new SmsMmsUriHandler(service);
 
         try {
             initiateSslConfiguration();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
-
-        this.context = service.getBaseContext();
-        this.util = new Util();
-        this.smsMmsUriHandler = new SmsMmsUriHandler(service);
     }
 
     private void initiateSslConfiguration() throws NoSuchProviderException, NoSuchAlgorithmException, KeyStoreException, IOException, CertificateException, SignatureException, InvalidKeyException, UnrecoverableKeyException {
@@ -75,6 +72,7 @@ public class WebServer extends NanoHTTPD {
         File keyStoreFile = new File(context.getExternalCacheDir() + "/" + KEY_STORE_NAME);
         KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 
+        keyStoreFile.delete();
         // Copy keystore file from our assets to the external cache if needed.
         if (!keyStoreFile.exists()) {
             InputStream inputStream = context.getAssets().open(KEY_STORE_NAME);
@@ -136,6 +134,8 @@ public class WebServer extends NanoHTTPD {
                     smsMmsUriHandler.sendSms(number, text, uuid);
 
                     JSONArray array = smsMmsUriHandler.getLatestSmsMmsMessagesFromDate(counterString);
+                    Log.i(TAG, "SENDING MESSAGE: " + Integer.toString(array.length()));
+                    Log.i(TAG, array.toString());
                     return newFixedLengthResponse(array.toString());
 
                 } catch (IOException e) {

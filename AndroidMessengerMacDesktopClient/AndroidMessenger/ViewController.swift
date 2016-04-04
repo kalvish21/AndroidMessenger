@@ -312,6 +312,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                 context.performBlock {
                     // Add each message
                     var id_values: Array<Int> = Array<Int>()
+                    NSLog("ARRAY COUNT--- %i", returnValue.count)
                     for dictionary in returnValue {
                         
                         let id_value = Int((dictionary["id"] as! NSString).intValue)
@@ -322,6 +323,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                         
                         var sms = NSEntityDescription.insertNewObjectForEntityForName("Message", inManagedObjectContext: context) as! Message
                         sms = self.leftMessageHandler.messageHandler.setMessageDetailsFromDictionary(sms, dictionary: dictionary, is_pending: false)
+                        NSLog("ARRAY COUNT--- %@", sms.msg!)
                     }
                     
                     do {

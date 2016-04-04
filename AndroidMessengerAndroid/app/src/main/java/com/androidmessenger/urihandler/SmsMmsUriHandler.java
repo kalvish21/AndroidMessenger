@@ -319,7 +319,7 @@ public class SmsMmsUriHandler implements Serializable {
     public void sendSms(final String phoneNumber, final String message, final String uuid) {
         Intent sentIntent = new Intent(SEND);
         PendingIntent sendingPendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, sentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        context.registerReceiver(new BroadcastReceiver() {
+        BroadcastReceiver receiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK: {
@@ -344,6 +344,7 @@ public class SmsMmsUriHandler implements Serializable {
                     }
                     break;
                 }
+                context.unregisterReceiver(this);
             }
 
             private void smsMmsCallback(String smsUri, String uuid) {
@@ -373,7 +374,8 @@ public class SmsMmsUriHandler implements Serializable {
                 }
             }
 
-        }, new IntentFilter(SEND));
+        };
+        context.registerReceiver(receiver, new IntentFilter(SEND));
 
         SmsManager smsManager = SmsManager.getDefault();
 

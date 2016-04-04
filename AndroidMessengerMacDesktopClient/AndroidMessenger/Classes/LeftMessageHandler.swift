@@ -52,6 +52,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
     
     func getDataForLeftTableView(new_selection: Bool) {
         let row = self.leftTableView.selectedRow
+        NSLog("SELECTED_ROW %i", row)
         var row_data: Dictionary<String, AnyObject>?
         if row > -1 {
             row_data = results[row] as! Dictionary<String, AnyObject>
@@ -171,7 +172,13 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
                 NSLog("Unresolved error: %@, %@", error, error.userInfo)
             }
             
+            // Set the chat data thread
+            self.chatHandler.getAllDataForGroupId(msg["thread_id"] as! Int)
+            self.chatHandler.chatTableView.scrollRowToVisible(self.chatHandler.chatTableView.numberOfRows - 1)
+            
             if (objs?.count > 0) {
+                let selectedRow = self.leftTableView.selectedRow
+                NSLog("SELECTED ROW -- %i", selectedRow)
                 self.chatHandler.performActionsForIncomingMessages(self.leftTableView, threadId: threadId)
                 
                 // Update table
@@ -183,12 +190,12 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
                 self.chatHandler.chatTableView.reloadDataForRowIndexes(rowSet, columnIndexes: col)
                 self.chatHandler.chatTableView.endUpdates()
                 
-                getDataForLeftTableView(true)
+                getDataForLeftTableView(false)
             }
+        } else {
+            // Set the chat data thread
+            self.chatHandler.getAllDataForGroupId(msg["thread_id"] as! Int)
+            self.chatHandler.chatTableView.scrollRowToVisible(self.chatHandler.chatTableView.numberOfRows - 1)
         }
-        
-        // Set the chat data thread
-        self.chatHandler.getAllDataForGroupId(msg["thread_id"] as! Int)
-        self.chatHandler.chatTableView.scrollRowToVisible(self.chatHandler.chatTableView.numberOfRows - 1)
     }
 }

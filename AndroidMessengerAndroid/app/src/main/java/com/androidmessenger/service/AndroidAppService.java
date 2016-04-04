@@ -82,6 +82,7 @@ public class AndroidAppService extends Service {
 
         try {
             webServer = new WebServer(this);
+            webServer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }

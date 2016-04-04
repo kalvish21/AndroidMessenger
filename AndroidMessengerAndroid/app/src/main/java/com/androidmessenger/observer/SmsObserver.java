@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Handler;
+import android.util.Log;
 
 import com.androidmessenger.R;
 import com.androidmessenger.service.AndroidAppService;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
  * Created by Kalyan Vishnubhatla on 4/1/16.
  */
 public class SmsObserver extends ContentObserver {
+    private static final String TAG = SmsObserver.class.getSimpleName();
     private Handler handler = null;
     private Context context;
     private AndroidAppService service;
@@ -78,6 +80,7 @@ public class SmsObserver extends ContentObserver {
             if (array != null && array.length() > 0) {
                 JSONObject obj = new JSONObject();
                 obj.put("messages", array);
+                Log.i(TAG, Integer.toString(array.length()));
                 try {
                     if (messages_received) {
                         obj.put("action", "/message/received");

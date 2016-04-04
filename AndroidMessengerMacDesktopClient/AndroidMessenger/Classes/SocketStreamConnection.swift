@@ -31,6 +31,12 @@ class SocketHandler: NSObject, WebSocketDelegate {
         let url = String(format: "ws://%@:%@/", arguments: [prefs.valueForKey(ipAddress) as! String, "5555"])
         socket = WebSocket(url: NSURL(string: url)!)
         socket!.delegate = self
+        
+        // http://old.dylanbeattie.net/docs/openssl_iis_ssl_howto.html
+        let data: NSData? = NSData(contentsOfFile: NSBundle.mainBundle().pathForResource("ca.cer", ofType: nil)!)
+        if (data != nil) {
+            socket!.security = SSLSecurity(certs: [SSLCert(data: data!)], usePublicKeys: true)
+        }
         socket!.connect()
     }
     
@@ -205,6 +211,7 @@ class SocketHandler: NSObject, WebSocketDelegate {
         let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         context.parentContext = delegate.coreDataHandler.managedObjectContext
         var id_values: Array<Int> = Array<Int>()
+        NSLog("TOTAL: %i", messages.count)
         
         context.performBlock {
             var user_address: String?
@@ -213,7 +220,7 @@ class SocketHandler: NSObject, WebSocketDelegate {
             
             if (messages.count > 0) {
                 for i in 0...(messages.count-1) {
-                    let object = messages[i] as! JSON
+                    let object = messages[i]
                     NSLog("%@", object.stringValue)
                     
                     // If the SMS id exists, move on

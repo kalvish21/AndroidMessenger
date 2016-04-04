@@ -42,7 +42,7 @@ public class SSLHandler {
         String defaultKSType = KeyStore.getDefaultType();
         KeyStore ks = KeyStore.getInstance(defaultKSType);
 
-        File keyStoreFile = new File(context.getExternalCacheDir() + "/" + location);
+        File keyStoreFile = new File(location);
         KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 
         // Delete file if exists
@@ -64,7 +64,7 @@ public class SSLHandler {
 //        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         X509V3CertificateGenerator certGen = new X509V3CertificateGenerator();
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.YEAR, 1);
+        cal.add(Calendar.YEAR, 2);
         certGen.setSerialNumber(BigInteger.valueOf(System.currentTimeMillis()));
         certGen.setIssuerDN(new X500Principal("CN=AndroidMessenger"));
         certGen.setNotBefore(new Date(System.currentTimeMillis() - 10000));
