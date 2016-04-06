@@ -2,8 +2,11 @@ package com.androidmessenger.activities;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -15,6 +18,7 @@ import android.text.format.Formatter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidmessenger.R;
 import com.androidmessenger.service.AndroidAppService;
@@ -76,10 +80,17 @@ public class Messenger extends AppCompatActivity {
             startServers();
         }
 
-        updateButtonVisibilityIfRequired();
+        updateButtonsAndTextIfRequired();
+
+        // Broadcast receiver
+        registerReceiver(new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                updateButtonsAndTextIfRequired();
+            }
+        }, new IntentFilter(getString(R.string.intent_filter_device_pair)));
     }
 
-    private void updateButtonVisibilityIfRequired() {
+    private void updateButtonsAndTextIfRequired() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             int[] view_to_hide = new int[]{R.id.line_contacts_permissions, R.id.contacts_text, R.id.ask_contacts_permissions,
                     R.id.line_call_permissions, R.id.phone_call_text, R.id.ask_phone_call_permission};
@@ -108,6 +119,33 @@ public class Messenger extends AppCompatActivity {
                 button.setText(R.string.button_text_call);
                 button.setEnabled(true);
             }
+        }
+
+        // Set properties for the pairing/unpairing buttons and text
+        String currentDevice = UserPreferencesManager.getInstance().getValueFromPreferences(this, getString(R.string.preferences_device_name));
+        String currentUUID = UserPreferencesManager.getInstance().getValueFromPreferences(this, getString(R.string.preferences_device_uuid));
+        if (currentDevice != null && currentUUID != null) {
+            TextView deviceName = ButterKnife.findById(this, R.id.pairing_device_name);
+            deviceName.setText(currentDevice);
+            deviceName.setVisibility(View.VISIBLE);
+
+            TextView pairingText = ButterKnife.findById(this, R.id.pairing_text);
+            pairingText.setText(R.string.pairing_text);
+
+            Button button = ButterKnife.findById(this, R.id.pairing_unpair);
+            button.setText(R.string.pairing_unpair_button_text);
+            button.setEnabled(true);
+
+        } else {
+            TextView deviceName = ButterKnife.findById(this, R.id.pairing_device_name);
+            deviceName.setVisibility(View.GONE);
+
+            TextView pairingText = ButterKnife.findById(this, R.id.pairing_text);
+            pairingText.setText(R.string.pairing_text_none);
+
+            Button button = ButterKnife.findById(this, R.id.pairing_unpair);
+            button.setText(R.string.pairing_unpair_button_text);
+            button.setEnabled(false);
         }
     }
 
@@ -149,7 +187,7 @@ public class Messenger extends AppCompatActivity {
         }
     }
 
-    @OnClick({R.id.start_button, R.id.stop_button, R.id.ask_contacts_permissions, R.id.ask_phone_call_permission})
+    @OnClick({R.id.start_button, R.id.stop_button, R.id.ask_contacts_permissions, R.id.ask_phone_call_permission, R.id.pairing_unpair})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.start_button: {
@@ -195,6 +233,18 @@ public class Messenger extends AppCompatActivity {
                 break;
             }
 
+            case R.id.pairing_unpair: {
+                UserPreferencesManager.getInstance().removeKeyFromPreferences(this, getString(R.string.preferences_device_name));
+                UserPreferencesManager.getInstance().removeKeyFromPreferences(this, getString(R.string.preferences_device_uuid));
+                Toast.makeText(this, "Unpairing and stopping services", Toast.LENGTH_LONG).show();
+                stopService(intent);
+                updateButtonsAndTextIfRequired();
+
+                Intent intent = new Intent(getString(R.string.intent_filter_device_unpair));
+                sendBroadcast(intent);
+                break;
+            }
+
             default: {
                 break;
             }
@@ -217,7 +267,7 @@ public class Messenger extends AppCompatActivity {
                 } else {
                     AlertUtil.showOkAlert(this, "Error", "Permission was denied. Cannot read phone state. Please grant this permission under Permissions for Android Messenger.");
                 }
-                updateButtonVisibilityIfRequired();
+                updateButtonsAndTextIfRequired();
                 break;
             }
 
@@ -228,7 +278,7 @@ public class Messenger extends AppCompatActivity {
                 } else {
                     AlertUtil.showOkAlert(this, "Error", "Permission was denied. Cannot access SMS and MMS data. Please grant this permission under Permissions for Android Messenger.");
                 }
-                updateButtonVisibilityIfRequired();
+                updateButtonsAndTextIfRequired();
                 break;
             }
 
@@ -238,7 +288,7 @@ public class Messenger extends AppCompatActivity {
                 } else {
                     AlertUtil.showOkAlert(this, "Error", "Permission was denied. Cannot access Contacts. Please grant this permission under Permissions for Android Messenger.");
                 }
-                updateButtonVisibilityIfRequired();
+                updateButtonsAndTextIfRequired();
                 break;
             }
 

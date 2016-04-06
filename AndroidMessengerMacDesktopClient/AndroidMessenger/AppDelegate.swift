@@ -34,12 +34,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
             socketHandler.connect()
         }
         
-        socketHandler.socket?.writeString(dataToSend)
+        socketHandler.writeString(dataToSend)
     }
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(reachabilityChanged), name: ReachabilityChangedNotification, object: nil)
-
         // Insert code here to initialize your application
         if (NSUserDefaults.standardUserDefaults().valueForKey(websocketConnected) != nil && self.socketHandler.isConnected() == false) {
             self.socketHandler.connect()

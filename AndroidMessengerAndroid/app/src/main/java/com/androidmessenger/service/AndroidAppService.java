@@ -1,9 +1,11 @@
 package com.androidmessenger.service;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.Bundle;
@@ -15,10 +17,14 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.androidmessenger.R;
 import com.androidmessenger.connections.WebServer;
 import com.androidmessenger.connections.WebSocket;
 import com.androidmessenger.observer.SmsObserver;
 import com.androidmessenger.util.Constants;
+import com.androidmessenger.util.UserPreferencesManager;
+
+import fi.iki.elonen.NanoHTTPD;
 
 /**
  * Created by Kalyan Vishnubhatla on 3/24/16.
@@ -28,13 +34,10 @@ public class AndroidAppService extends Service {
     private Looper mServiceLooper;
     public static ServiceHandler mServiceHandler;
 
+    private boolean connected;
     private WebSocket webSocket;
     private WebServer webServer;
     private SmsObserver content;
-
-    public AndroidAppService() {
-        super();
-    }
 
     @Override
     public void onCreate() {
@@ -50,6 +53,18 @@ public class AndroidAppService extends Service {
         // Get the HandlerThread's Looper and use it for our Handler
         mServiceLooper = thread.getLooper();
         mServiceHandler = new ServiceHandler(mServiceLooper, getBaseContext());
+
+        // Broadcast receiver
+        registerReceiver(new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                String currentDevice = UserPreferencesManager.getInstance().getValueFromPreferences(context, getString(R.string.preferences_device_name));
+                String currentUUID = UserPreferencesManager.getInstance().getValueFromPreferences(context, getString(R.string.preferences_device_uuid));
+                if (currentDevice == null && currentUUID == null) {
+                    // Close all connections if there are any
+                    webSocket.closeAllConnections();
+                }
+            }
+        }, new IntentFilter(getString(R.string.intent_filter_device_unpair)));
     }
 
     @Override
@@ -69,9 +84,14 @@ public class AndroidAppService extends Service {
     }
 
     public void startServers() {
-        Toast.makeText(this, "Starting servers ...", Toast.LENGTH_LONG).show();
+        if (!connected) {
+            Toast.makeText(this, "Starting Android Messenger ...", Toast.LENGTH_LONG).show();
+        }
+        connected = true;
         try {
-            webSocket = new WebSocket(this);
+            if (webSocket == null) {
+                webSocket = new WebSocket(this);
+            }
             webSocket.start();
         } catch (IllegalStateException e) {
             // Already started
@@ -81,8 +101,10 @@ public class AndroidAppService extends Service {
         }
 
         try {
-            webServer = new WebServer(this);
-            webServer.start();
+            if (webServer == null) {
+                webServer = new WebServer(this);
+                webServer.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -93,7 +115,10 @@ public class AndroidAppService extends Service {
     }
 
     public void stopServers() {
-        Toast.makeText(this, "Stopping servers ...", Toast.LENGTH_LONG).show();
+        if (connected) {
+            Toast.makeText(this, "Stopping Android Messenger ...", Toast.LENGTH_LONG).show();
+        }
+        connected = false;
         try {
             // Shut down websocket
             if (webSocket != null) {
@@ -147,17 +172,21 @@ public class AndroidAppService extends Service {
 
         public void handleMessage(Message msg) {
             Bundle bundle = msg.getData();
-
             String type = bundle.getString("type");
+
             switch (type) {
                 case "wifi": {
                     // Wifi state was changed
-//                    Boolean wifi = bundle.getBoolean("wifi");
-//                    if (wifi) {
-//                        AndroidAppService.this.startServers();
-//                    } else {
-//                        AndroidAppService.this.stopServers();
-//                    }
+                    Boolean wifi = bundle.getBoolean("wifi");
+                    if (wifi) {
+                        AndroidAppService.this.startServers();
+                    } else {
+                        AndroidAppService.this.stopServers();
+                    }
+                    break;
+                }
+
+                default: {
                     break;
                 }
             }

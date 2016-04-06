@@ -17,6 +17,11 @@ class LeftMessageTableView: NSTableView {
     }
     
     override func keyDown(theEvent: NSEvent) {
-        
+        let keyCode = theEvent.keyCode
+        if Int(keyCode) == 48 && self.nextKeyView != nil {
+            self.nextKeyView!.becomeFirstResponder()
+        } else {
+            return super.keyDown(theEvent)
+        }
     }
 }

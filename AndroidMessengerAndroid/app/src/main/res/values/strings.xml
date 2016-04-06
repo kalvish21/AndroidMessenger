@@ -3,6 +3,10 @@
     <string name="button_text_start_server">Start Server</string>
     <string name="button_text_stop_server">Stop Server</string>
 
+    <string name="pairing_text">This is the device you are currently paired with. Only this device can interact with your phone to send and receive SMS messages.</string>
+    <string name="pairing_text_none">There are no devices currently paired with you phone.</string>
+    <string name="pairing_unpair_button_text">Unpair From Device</string>
+
     <string name="permission_contacts_text">Granting access to contacts allows you to view your contacts names and numbers on the desktop application.</string>
     <string name="button_text_contacts">Grant Access to Contacts</string>
 
@@ -11,8 +15,13 @@
 
     <string name="permission_granted">Permissions Granted</string>
 
+    <!-- Broadcast receiver filters -->
+    <string name="intent_filter_device_pair">DEVICE_PAIR</string>
+    <string name="intent_filter_device_unpair">DEVICE_UNPAIR</string>
+
     <!-- Shared preferences keys -->
     <string name="preferences_device_uuid">DEVICE_UUID</string>
+    <string name="preferences_device_name">DEVICE_NAME</string>
     <string name="preferences_current_counter">CURRENT_COUNTER</string>
     <string name="preferences_current_phonenumber">CURRENT_PHONENUMBER</string>
     <string name="preferences_should_autostart">SHOULD_AUTOSTART</string>

@@ -2,7 +2,6 @@ package com.androidmessenger.connections;
 
 import android.Manifest;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -69,11 +68,10 @@ public class WebServer extends NanoHTTPD {
     private void initiateSslConfiguration() throws NoSuchProviderException, NoSuchAlgorithmException, KeyStoreException, IOException, CertificateException, SignatureException, InvalidKeyException, UnrecoverableKeyException {
         String defaultKSType = KeyStore.getDefaultType();
         KeyStore ks = KeyStore.getInstance(defaultKSType);
-        File keyStoreFile = new File(context.getExternalCacheDir() + "/" + KEY_STORE_NAME);
+        File keyStoreFile = new File(context.getExternalFilesDir(null) + "/" + KEY_STORE_NAME);
         KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 
-        keyStoreFile.delete();
-        // Copy keystore file from our assets to the external cache if needed.
+        // Copy keystore file from our assets to the external files directory if needed.
         if (!keyStoreFile.exists()) {
             InputStream inputStream = context.getAssets().open(KEY_STORE_NAME);
             SSLHandler handler = new SSLHandler(context);
@@ -91,6 +89,7 @@ public class WebServer extends NanoHTTPD {
 
     public Response serve(IHTTPSession session) {
         String urlString = session.getUri();
+        Log.i(TAG, urlString);
         switch (urlString) {
             case "/messages/fromcounter": {
                 Response r = verifyUuid(session.getParms().get("uid"));
@@ -190,29 +189,6 @@ public class WebServer extends NanoHTTPD {
                 }
 
                 return newFixedLengthResponse("");
-            }
-
-            // This API is just for testing. Will be removed in future
-            case "/markread": {
-                String id = session.getParms().get("i");
-                Uri uri = Uri.parse("content://sms/inbox");
-                Cursor cursor = context.getContentResolver().query(uri, null, "_id=" + id, null, null);
-                int updated = -1;
-                try {
-                    if (cursor.getCount() == 1) {
-                        ContentValues values = new ContentValues();
-                        values.put("READ", true);
-                        values.put("READ", 1);
-                        values.put("SEEN", true);
-                        values.put("SEEN", 1);
-                        updated = context.getContentResolver().update(Uri.parse("content://sms/"+id), values, null, null);
-                    }
-                } catch (Exception e) {
-                    Log.e("Mark Read", "Error in Read: " + e.toString());
-                } finally {
-                    cursor.close();
-                }
-                return newFixedLengthResponse(Integer.toString(updated));
             }
 
             // This API is just for testing. Will be removed in future

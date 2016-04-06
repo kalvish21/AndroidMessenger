@@ -39,6 +39,10 @@ class ConnectWindow: NSWindowController {
         
         if (delegate.socketHandler.isConnected() == true) {
             progressLabel.stringValue = "Connected"
+            
+            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+            delegate.socketHandler.socket?.writePing(NSData())
+            
         } else if (connectedAlready != nil) {
             // We were already connected, start a count down and try again
             startTimer()
@@ -68,10 +72,9 @@ class ConnectWindow: NSWindowController {
     func handleNotification(notification: NSNotification) {
         switch notification.name {
         case websocketConnected:
-            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-            
-            let json = JSON(["uid": NetworkingUtil().generateUUID(), "action": "/new_device"])
-            delegate.socketHandler.socket?.writeString(json.rawString()!)
+//            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+//            let dict = ["uid": NetworkingUtil().generateUUID(), "action": "/new_device", "device": NSHost.currentHost().name!]
+//            delegate.socketHandler.writeString(JSON(dict).rawString()!)
             
             let prefs = NSUserDefaults.standardUserDefaults()
             prefs.setObject(String(format: "https://%@:%@", ipAddressField.stringValue, "5000"), forKey: fullUrlPath)
@@ -82,6 +85,7 @@ class ConnectWindow: NSWindowController {
         case websocketHandshake:
             // We're done
             progressLabel.stringValue = "Connected"
+            NetworkingUtil._manager = nil
             NSNotificationCenter.defaultCenter().postNotificationName(connectedNotification, object: nil)
             closeWindow()
             break
@@ -89,7 +93,7 @@ class ConnectWindow: NSWindowController {
         case websocketDisconnected:
             if (countDown == 0) {
                 // We did a count down from 3 and it didn't work. User intervention required.
-                progressLabel.stringValue = "Error. Could not connct to phone."
+                progressLabel.stringValue = "Error. Could not connect to phone."
             } else {
                 // Start a timr for the countdown from 3.
                 startTimer()

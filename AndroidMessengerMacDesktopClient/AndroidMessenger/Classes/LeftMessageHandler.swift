@@ -55,7 +55,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         NSLog("SELECTED_ROW %i", row)
         var row_data: Dictionary<String, AnyObject>?
         if row > -1 {
-            row_data = results[row] as! Dictionary<String, AnyObject>
+            row_data = results[row] as? Dictionary<String, AnyObject>
         }
         
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
@@ -70,7 +70,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         if row_data != nil && !new_selection {
             for row_id in 0...results.count - 1 {
                 let row_dict = results[row_id]
-                if self.chatHandler.thread_id == row_dict["thread_id"] as! Int {
+                if self.chatHandler.thread_id == row_dict["thread_id"] as? Int {
                     // Select previously selected row
                     self.leftTableView.selectRowIndexes(NSIndexSet(index: row_id), byExtendingSelection: false)
                     break
@@ -111,7 +111,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         result.nameLabel.stringValue = msg["row_title"] as! String
         result.descriptionLabel.stringValue = msg["msg"] as! String
         
-        if (msg["read"] as! Bool == false && self.chatHandler.thread_id != msg["thread_id"] as! Int) {
+        if (msg["read"] as! Bool == false && self.chatHandler.thread_id != msg["thread_id"] as? Int) {
             result.descriptionLabel.font = NSFont.boldSystemFontOfSize(13)
         } else {
             result.descriptionLabel.font = NSFont.systemFontOfSize(13)
@@ -158,7 +158,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         }
         
         let msg = results[row] as! Dictionary<String, AnyObject>
-        if (msg["read"] as! Bool == false && self.chatHandler.thread_id != msg["thread_id"] as! Int) {
+        if (msg["read"] as! Bool == false && self.chatHandler.thread_id != msg["thread_id"] as? Int) {
             let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
             let context = delegate.coreDataHandler.managedObjectContext
             let threadId = msg["thread_id"] as! Int

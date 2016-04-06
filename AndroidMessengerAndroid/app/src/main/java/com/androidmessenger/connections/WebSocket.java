@@ -30,13 +30,11 @@ import java.net.UnknownHostException;
 public class WebSocket extends WebSocketServer {
     private static final String TAG = WebSocket.class.getSimpleName();
     public static final int PORT_NUMBER = 5555;
-    private AndroidAppService service;
     private Context context;
     private Util util;
 
     public WebSocket(AndroidAppService service) throws UnknownHostException {
         super(new InetSocketAddress(PORT_NUMBER));
-        this.service = service;
         this.context = service.getBaseContext();
         this.util = new Util();
     }
@@ -46,6 +44,7 @@ public class WebSocket extends WebSocketServer {
             if (connections().size() == 0) {
                 Log.e(TAG, "No websocket connection!");
             }
+            Log.i(TAG, obj.toString());
             for (org.java_websocket.WebSocket conn: connections()) {
                 conn.send(obj.toString());
             }
@@ -54,13 +53,17 @@ public class WebSocket extends WebSocketServer {
         }
     }
 
+    public void closeAllConnections() {
+        if (this.connections().size() > 0) {
+            for (org.java_websocket.WebSocket sock:connections()) {
+                sock.close();
+            }
+        }
+    }
+
     public void closeAllConnectionsAndStop() {
         try {
-            if (this.connections().size() > 0) {
-                for (org.java_websocket.WebSocket sock:connections()) {
-                    sock.close();
-                }
-            }
+            closeAllConnections();
             stop();
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,7 +72,36 @@ public class WebSocket extends WebSocketServer {
 
     @Override
     public void onOpen(org.java_websocket.WebSocket conn, ClientHandshake handshake) {
-        Log.i(TAG, conn.toString());
+        Log.i(TAG, conn.getRemoteSocketAddress().getHostName());
+
+        String[] values = handshake.getResourceDescriptor().split("/");
+        if (values.length < 2) {
+            conn.close();
+        }
+
+        String uuid = values[1];
+        String deviceName = values[2];
+        String currentUUID = UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_device_uuid));
+        if (currentUUID != null && !util.verifyUUID(context, uuid)) {
+            new Handler(context.getMainLooper()).post(new Runnable() {
+                public void run() {
+                    Toast.makeText(context, "New device tried to connect! Device ID does not match.", Toast.LENGTH_SHORT).show();
+                }
+            });
+            conn.close();
+            return;
+        } else {
+            UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_device_uuid), uuid);
+            UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_device_name), deviceName);
+
+            try {
+                JSONObject returnObj = new JSONObject();
+                returnObj.put("action", "/new_device");
+                sendJsonData(returnObj);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -88,32 +120,10 @@ public class WebSocket extends WebSocketServer {
 
             if (action != null && action.length() > 0) {
                 switch (action) {
-                    case "/new_device": {
-                        String uuid = obj.getString("uid");
-                        String currentUUID = UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_device_uuid));
-
-                        if (currentUUID != null && !util.verifyUUID(context, uuid)) {
-                            new Handler(context.getMainLooper()).post(new Runnable() {
-                                public void run() {
-                                    Toast.makeText(context, "New device tried to connect! Device ID does not match.", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            conn.close();
-                            return;
-                        } else {
-                            UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_device_uuid), uuid);
-                        }
-
-                        // Send the success message
-                        JSONObject returnObj = new JSONObject();
-                        returnObj.put("action", action);
-                        conn.send(returnObj.toString());
-                        break;
-                    }
-
                     case "/phone_call": {
                         String uuid = obj.getString("uid");
                         if (!util.verifyUUID(context, uuid)) {
+                            conn.close();
                             return;
                         }
 
@@ -122,7 +132,7 @@ public class WebSocket extends WebSocketServer {
                             JSONObject returnObj = new JSONObject();
                             returnObj.put("permission", "not_granted");
                             returnObj.put("action", action);
-                            conn.send(returnObj.toString());
+                            sendJsonData(returnObj);
 
                         } else {
                             // Permission granted or not required
@@ -195,7 +205,9 @@ public class WebSocket extends WebSocketServer {
 
     @Override
     public void onError(org.java_websocket.WebSocket conn, Exception ex) {
-        Log.i(TAG, conn.toString());
+        if (conn != null) {
+            Log.i(TAG, conn.toString());
+        }
         Log.i(TAG, ex.getMessage());
     }
 }

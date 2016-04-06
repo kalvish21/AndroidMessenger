@@ -22,7 +22,7 @@ public class WifiReciever extends WakefulBroadcastReceiver {
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
             Bundle args = new Bundle();
-            args.putBoolean("wifi", activeNetwork.getType() == ConnectivityManager.TYPE_WIFI);
+            args.putBoolean("wifi", activeNetwork.getType() == ConnectivityManager.TYPE_WIFI && activeNetwork.isConnected());
             args.putString("type", "wifi");
 
             Message msg = new Message();

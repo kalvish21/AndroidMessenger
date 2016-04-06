@@ -61,14 +61,16 @@
         </receiver>
         -->
 
-        <receiver android:name=".receiver.WifiReciever" android:process=":sms_process" >
+        <!--<receiver android:name=".receiver.WifiReciever" android:process=":sms_process" >-->
+        <receiver android:name=".receiver.WifiReciever" >
             <intent-filter>
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
                 <action android:name="android.net.wifi.STATE_CHANGE"/>
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.AndroidAppService" android:process=":sms_process" android:icon="@mipmap/ic_launcher" />
+        <!--<service android:name=".service.AndroidAppService" android:process=":sms_process" android:icon="@mipmap/ic_launcher" />-->
+        <service android:name=".service.AndroidAppService" android:icon="@mipmap/ic_launcher" />
 
     </application>
 

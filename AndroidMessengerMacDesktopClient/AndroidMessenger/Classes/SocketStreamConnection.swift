@@ -11,8 +11,10 @@ import Starscream
 import SwiftyJSON
 import libPhoneNumber_iOS
 
-class SocketHandler: NSObject, WebSocketDelegate {
+
+class SocketHandler: NSObject, WebSocketDelegate, WebSocketPongDelegate {
     var socket: WebSocket?
+    var connection_checker: dispatch_source_t?
     
     private lazy var messageHandler: MessageHandler = {
         return MessageHandler()
@@ -22,13 +24,19 @@ class SocketHandler: NSObject, WebSocketDelegate {
         return ContactsHandler()
     }()
     
+    func writeString(string: String) {
+        if socket != nil && self.socket!.isConnected {
+            self.socket!.writeString(string)
+        }
+    }
+    
     func connect() {
         let prefs = NSUserDefaults.standardUserDefaults()
         if (prefs.valueForKey(ipAddress) == nil) {
             return
         }
 
-        let url = String(format: "ws://%@:%@/", arguments: [prefs.valueForKey(ipAddress) as! String, "5555"])
+        let url = String(format: "ws://%@:%@/%@/%@", arguments: [prefs.valueForKey(ipAddress) as! String, "5555", NetworkingUtil().generateUUID(), NSHost.currentHost().name!])
         socket = WebSocket(url: NSURL(string: url)!)
         socket!.delegate = self
         
@@ -56,12 +64,33 @@ class SocketHandler: NSObject, WebSocketDelegate {
     func websocketDidConnect(socket: WebSocket) {
         NSLog("Connected")
         
+        let queue = dispatch_queue_create("com.androidmessenger.AndroidMessenger", nil)
+        connection_checker = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue)
+        dispatch_source_set_timer(connection_checker!, DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC, 1 * NSEC_PER_SEC)
+        dispatch_source_set_event_handler(connection_checker!) {
+            if self.socket != nil {
+                self.socket!.writePing(NSData())
+            } else {
+                self.stopTimer()
+            }
+        }
+        dispatch_resume(connection_checker!)
+        
         NSNotificationCenter.defaultCenter().postNotificationName(websocketConnected, object: nil)
         NSUserDefaults.standardUserDefaults().setValue(websocketConnected, forKey: websocketConnected)
     }
     
+    func stopTimer() {
+        if (connection_checker != nil) {
+            dispatch_source_cancel(connection_checker!)
+            connection_checker = nil
+        }
+    }
+    
     func websocketDidDisconnect(socket: WebSocket, error: NSError?) {
         NSLog("Disconnected")
+        
+        stopTimer()
         NSNotificationCenter.defaultCenter().postNotificationName(websocketDisconnected, object: nil)
     }
     
@@ -202,9 +231,13 @@ class SocketHandler: NSObject, WebSocketDelegate {
     }
     
     func websocketDidReceiveData(socket: WebSocket, data: NSData) {
-        NSLog("Received Data")
+        NSLog("websocketDidReceiveData")
     }
-        
+    
+    func websocketDidReceivePong(socket: WebSocket) {
+        NSLog("websocketDidReceivePong")
+    }
+    
     // Parsing SMS/MMS messages from the phone
     func parseIncomingMessagesAndShowNotification(messages: [JSON]) {
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate

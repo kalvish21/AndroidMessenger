@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.TreeSet;
 
 /**
  * Created by Kalyan Vishnubhatla on 4/2/16.
@@ -38,12 +39,13 @@ public class ContactsUriHandler implements Serializable {
                         JSONObject obj = new JSONObject();
                         obj.put("id", id);
                         obj.put("name", name);
-                        JSONArray phoneArray = new JSONArray();
+
+                        TreeSet<String> phoneSet = new TreeSet<>();
                         while (phones.moveToNext()) {
                             try {
                                 String cNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER));
                                 if (cNumber != null) {
-                                    phoneArray.put(cNumber);
+                                    phoneSet.add(cNumber);
                                 }
 
                             } catch (Exception e) {
@@ -51,8 +53,8 @@ public class ContactsUriHandler implements Serializable {
                             }
                         }
                         phones.close();
-                        if (phoneArray.length() > 0) {
-                            obj.put("phones", phoneArray);
+                        if (phoneSet.size() > 0) {
+                            obj.put("phones", new JSONArray(phoneSet));
                             contactsarray.put(obj);
                         }
                     }

@@ -12,16 +12,24 @@ import IOKit
 import ReachabilitySwift
 
 class NetworkingUtil: NSObject {
-    static let manager: Manager = {
-        let ip = NSUserDefaults.standardUserDefaults().valueForKey(ipAddress) as! String
-        let serverTrustPolicies: [String: ServerTrustPolicy] = [ip : .DisableEvaluation]
-        
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-        configuration.HTTPAdditionalHeaders = Alamofire.Manager.defaultHTTPHeaders
-        
-        return Alamofire.Manager(configuration: configuration,
-                                 serverTrustPolicyManager: ServerTrustPolicyManager(policies: serverTrustPolicies))
-    }()
+    static var _manager: Manager? = nil
+    static var manager: Manager {
+        get {
+            if (_manager == nil) {
+                let ip = NSUserDefaults.standardUserDefaults().valueForKey(ipAddress) as? String
+                var serverTrustPolicies: [String: ServerTrustPolicy] = [String: ServerTrustPolicy]()
+                if (ip != nil) {
+                    serverTrustPolicies = [ip! : .DisableEvaluation]
+                }
+                
+                let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+                configuration.HTTPAdditionalHeaders = Alamofire.Manager.defaultHTTPHeaders
+                
+                _manager = Alamofire.Manager(configuration: configuration, serverTrustPolicyManager: ServerTrustPolicyManager(policies: serverTrustPolicies))
+            }
+            return _manager!
+        }
+    }
 
     let param_methods = [Alamofire.Method.GET, Alamofire.Method.HEAD, Alamofire.Method.DELETE]
     

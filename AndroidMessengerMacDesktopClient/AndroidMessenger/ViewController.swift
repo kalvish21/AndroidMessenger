@@ -90,6 +90,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         
         // Populate left message view box
         self.leftMessageHandler.getDataForLeftTableView(false)
+        self.tableView  .becomeFirstResponder()
         
         // Get latest data from app if we're connected
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
@@ -379,10 +380,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             }
             
             prepareSendMessage(self.chatHandler.phoneNumbers![0], message: self.messageTextField.stringValue, thread_id: self.chatHandler.thread_id!)
+            
+//            let net = NetworkingUtil()
+//            let data = ["uid": net.generateUUID(), "p": "9085080677", "action": "/phone_call"]
+//            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+//            delegate.socketHandler.socket?.writeString(JSON(rawValue: data)!.rawString()!)
+
             return true
-        } else if (commandSelector == #selector(insertNewlineIgnoringFieldEditor)) {
-            let rect = messageTextField.frame
-            messageTextField.frame = NSMakeRect(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height + 550)
         }
         return false
     }
@@ -456,10 +460,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             
             let objectId = sms.objectID
             dispatch_async(dispatch_get_main_queue(),{
-                if (!delegate.socketHandler.isConnected()) {
-                    delegate.socketHandler.connect()
-                }
-                
                 let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
                 let context = delegate.coreDataHandler.managedObjectContext
                 let _sms = context.objectWithID(objectId) as! Message;

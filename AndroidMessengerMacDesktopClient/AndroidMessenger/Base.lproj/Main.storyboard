@@ -389,7 +389,7 @@
         <scene sceneID="FLK-eg-EVb">
             <objects>
                 <viewController title="MessageMe" storyboardIdentifier="ViewController" id="zNX-T9-ezd" userLabel="ViewController" customClass="ViewController" customModule="AndroidMessenger" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="YxL-hO-aMk">
+                    <view key="view" focusRingType="none" id="YxL-hO-aMk">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="504"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -406,7 +406,7 @@
                                                     <rect key="frame" x="1" y="0.0" width="267" height="410"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="83" headerView="Zqt-JS-0u2" viewBased="YES" id="NQ4-9N-JIR">
+                                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="83" headerView="Zqt-JS-0u2" viewBased="YES" id="NQ4-9N-JIR" customClass="LeftMessageTableView" customModule="AndroidMessenger" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="267" height="387"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -483,9 +483,9 @@
                                                     <font key="font" metaFont="cellTitle"/>
                                                 </buttonCell>
                                             </button>
-                                            <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jIp-57-MAN">
+                                            <textField focusRingType="none" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jIp-57-MAN">
                                                 <rect key="frame" x="9" y="475" width="215" height="22"/>
-                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Type to filter by name ..." drawsBackground="YES" id="pcw-6C-8EF">
+                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" focusRingType="none" placeholderString="Type to filter by name ..." drawsBackground="YES" id="pcw-6C-8EF">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -578,9 +578,9 @@
                                             <customView misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JuV-Pq-qYF">
                                                 <rect key="frame" x="0.0" y="0.0" width="438" height="35"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="N3e-9M-ggR" customClass="MessageTextField" customModule="AndroidMessenger" customModuleProvider="target">
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="N3e-9M-ggR" customClass="MessageTextField" customModule="AndroidMessenger" customModuleProvider="target">
                                                         <rect key="frame" x="3" y="6" width="244" height="22"/>
-                                                        <textFieldCell key="cell" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="eSH-eQ-68R">
+                                                        <textFieldCell key="cell" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" focusRingType="none" drawsBackground="YES" id="eSH-eQ-68R">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -600,9 +600,9 @@
                                             <customView misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kW6-Sd-i2X">
                                                 <rect key="frame" x="0.0" y="473" width="443.5" height="31"/>
                                                 <subviews>
-                                                    <tokenField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="faa-bK-Twv">
+                                                    <tokenField focusRingType="none" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="faa-bK-Twv">
                                                         <rect key="frame" x="122" y="5" width="96" height="21"/>
-                                                        <tokenFieldCell key="cell" selectable="YES" editable="YES" alignment="left" drawsBackground="YES" allowsEditingTextAttributes="YES" id="LCf-Y6-sTI">
+                                                        <tokenFieldCell key="cell" selectable="YES" editable="YES" focusRingType="none" alignment="left" drawsBackground="YES" allowsEditingTextAttributes="YES" id="LCf-Y6-sTI">
                                                             <font key="font" metaFont="cellTitle"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlHighlightColor" catalog="System" colorSpace="catalog"/>
