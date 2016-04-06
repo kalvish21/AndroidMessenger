@@ -18,6 +18,7 @@
     <!-- Broadcast receiver filters -->
     <string name="intent_filter_device_pair">DEVICE_PAIR</string>
     <string name="intent_filter_device_unpair">DEVICE_UNPAIR</string>
+    <string name="intent_filter_wifi_changed">WIFI_CHANGED</string>
 
     <!-- Shared preferences keys -->
     <string name="preferences_device_uuid">DEVICE_UUID</string>

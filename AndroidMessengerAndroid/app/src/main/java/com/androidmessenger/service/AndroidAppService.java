@@ -183,6 +183,11 @@ public class AndroidAppService extends Service {
                     } else {
                         AndroidAppService.this.stopServers();
                     }
+
+                    Intent intent = new Intent(getString(R.string.intent_filter_wifi_changed));
+                    intent.putExtra("WIFI", wifi);
+                    sendBroadcast(intent);
+
                     break;
                 }
 

@@ -18,7 +18,6 @@ import android.text.format.Formatter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidmessenger.R;
 import com.androidmessenger.service.AndroidAppService;
@@ -55,6 +54,34 @@ public class Messenger extends AppCompatActivity {
             java.lang.System.setProperty("java.net.preferIPv4Stack", "true");
         }
 
+        if (UserPreferencesManager.getInstance().getValueFromPreferences(this, getString(R.string.preferences_should_autostart), "NO").equals("YES")) {
+            startServers();
+        }
+
+        updateButtonsAndTextIfRequired();
+        setIpAddress();
+
+        // Broadcast receiver
+        registerReceiver(new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                updateButtonsAndTextIfRequired();
+            }
+        }, new IntentFilter(getString(R.string.intent_filter_device_unpair)));
+
+        registerReceiver(new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                boolean wifi = intent.getBooleanExtra("WIFI", false);
+                if (!wifi) {
+                    TextView textView = ButterKnife.findById(Messenger.this, R.id.ipaddress);
+                    textView.setText("DISCONNECTED");
+                } else {
+                    setIpAddress();
+                }
+            }
+        }, new IntentFilter(getString(R.string.intent_filter_wifi_changed)));
+    }
+
+    private void setIpAddress() {
         TextView textView = ButterKnife.findById(this, R.id.ipaddress);
         try {
             WifiManager manager = (WifiManager) getSystemService(WIFI_SERVICE);
@@ -75,19 +102,6 @@ public class Messenger extends AppCompatActivity {
             String ipAddress = Formatter.formatIpAddress(ip);
             textView.setText(ipAddress);
         }
-
-        if (UserPreferencesManager.getInstance().getValueFromPreferences(this, getString(R.string.preferences_should_autostart), "NO").equals("YES")) {
-            startServers();
-        }
-
-        updateButtonsAndTextIfRequired();
-
-        // Broadcast receiver
-        registerReceiver(new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-                updateButtonsAndTextIfRequired();
-            }
-        }, new IntentFilter(getString(R.string.intent_filter_device_pair)));
     }
 
     private void updateButtonsAndTextIfRequired() {
@@ -236,9 +250,7 @@ public class Messenger extends AppCompatActivity {
             case R.id.pairing_unpair: {
                 UserPreferencesManager.getInstance().removeKeyFromPreferences(this, getString(R.string.preferences_device_name));
                 UserPreferencesManager.getInstance().removeKeyFromPreferences(this, getString(R.string.preferences_device_uuid));
-                Toast.makeText(this, "Unpairing and stopping services", Toast.LENGTH_LONG).show();
                 stopService(intent);
-                updateButtonsAndTextIfRequired();
 
                 Intent intent = new Intent(getString(R.string.intent_filter_device_unpair));
                 sendBroadcast(intent);
