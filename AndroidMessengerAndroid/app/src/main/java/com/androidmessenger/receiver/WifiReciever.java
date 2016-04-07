@@ -18,12 +18,9 @@ public class WifiReciever extends WakefulBroadcastReceiver {
 
     public void onReceive(Context context, Intent intent) {
         try {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-
             Bundle args = new Bundle();
-            args.putBoolean("wifi", activeNetwork.getType() == ConnectivityManager.TYPE_WIFI && activeNetwork.isConnected());
-            args.putString("type", "wifi");
+            args.putBoolean("wifi", isConnectedToWifi(context));
+            args.putString("call_type", "wifi");
 
             Message msg = new Message();
             msg.setData(args);
@@ -31,5 +28,11 @@ public class WifiReciever extends WakefulBroadcastReceiver {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean isConnectedToWifi(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork.getType() == ConnectivityManager.TYPE_WIFI && activeNetwork.isConnected();
     }
 }

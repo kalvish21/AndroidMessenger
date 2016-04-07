@@ -31,7 +31,7 @@ class ContactsHandler: NSObject {
     
     func getPhoneNumberIfContactExists(moc: NSManagedObjectContext!, number: String!) -> PhoneNumberData? {
         let request = NSFetchRequest(entityName: "PhoneNumberData")
-        request.predicate = NSPredicate(format: "number CONTAINS[cd] %@", number)
+        request.predicate = NSPredicate(format: "number CONTAINS[cd] %@ OR formatted_number = %@", number, number)
         request.returnsObjectsAsFaults = false
         
         var phonenumbers = Array<AnyObject>()

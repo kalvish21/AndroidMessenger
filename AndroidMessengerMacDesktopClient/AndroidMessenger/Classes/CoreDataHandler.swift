@@ -13,11 +13,6 @@ class CoreDataHandler: NSObject {
     let applicationDocumentsDirectoryName = NSBundle.mainBundle().bundleIdentifier!
     let errorDomain = "CoreDataHandler"
     
-    private lazy var sqlLiteFileName: String = {
-        let array: [String] = self.applicationDocumentsDirectoryName.componentsSeparatedByString(".")
-        return String(format: "%@.sqlite", arguments: [array.last!])
-    } ()
-    
     var _applicationSupportDirectory: NSURL?
     var applicationSupportDirectory: NSURL {
         get {
@@ -34,7 +29,7 @@ class CoreDataHandler: NSObject {
                         throw NSError(domain: self.errorDomain, code: 201, userInfo: [
                             NSLocalizedDescriptionKey: description,
                             NSLocalizedFailureReasonErrorKey: reason
-                        ])
+                            ])
                     }
                 } catch let error as NSError where error.code != NSFileReadNoSuchFileError {
                     fatalError("Error occured: \(error).")
@@ -48,6 +43,17 @@ class CoreDataHandler: NSObject {
                 }
             }
             return _applicationSupportDirectory!
+        }
+    }
+    
+    var _sqlLiteFileName: String?
+    var sqlLiteFileName: String {
+        get {
+            if (_sqlLiteFileName == nil) {
+                let array: [String] = self.applicationDocumentsDirectoryName.componentsSeparatedByString(".")
+                _sqlLiteFileName = String(format: "%@.sqlite", arguments: [array.last!])
+            }
+            return _sqlLiteFileName!
         }
     }
     
@@ -91,8 +97,6 @@ class CoreDataHandler: NSObject {
                 _managedObjectContext!.persistentStoreCoordinator = self.persistentStoreCoordinator
                 if #available(OSX 10.11, *) {
                     _managedObjectContext?.shouldDeleteInaccessibleFaults = true
-                } else {
-                    // Fallback on earlier versions
                 }
             }
             return _managedObjectContext!
@@ -109,9 +113,11 @@ class CoreDataHandler: NSObject {
         _managedObjectContext?.reset()
         
         // Reset all core data variables
-        self._persistentStorePath = nil;
-        self._persistentStoreCoordinator = nil;
-        self._managedObjectContext = nil;
+        self._applicationSupportDirectory = nil
+        self._sqlLiteFileName = nil
+        self._persistentStorePath = nil
+        self._persistentStoreCoordinator = nil
+        self._managedObjectContext = nil
     }
     
     func deleteAllObjectsForEntityDescription(entityDescription: NSEntityDescription) {

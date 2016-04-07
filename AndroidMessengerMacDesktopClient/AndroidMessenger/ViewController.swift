@@ -209,7 +209,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                 alert.runModal()
                 
             } else {
-                let dataValue: Dictionary<String, AnyObject>? = data as? Dictionary<String, AnyObject>
                 let returnValue: Array<Dictionary<String, AnyObject>> = data as! Array<Dictionary<String, AnyObject>>
 //                NSLog("RESPONSE %@", returnValue)
                 
@@ -313,7 +312,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                 context.performBlock {
                     // Add each message
                     var id_values: Array<Int> = Array<Int>()
-                    NSLog("ARRAY COUNT--- %i", returnValue.count)
                     for dictionary in returnValue {
                         
                         let id_value = Int((dictionary["id"] as! NSString).intValue)
@@ -360,9 +358,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     }
     
     func userNotificationCenter(center: NSUserNotificationCenter, didActivateNotification notification: NSUserNotification) {
-        if (notification.response == nil) {
+        if (notification.response == nil && notification.userInfo!["thread_id"] != nil) {
             // User clicked on that notification. See if we should navigate to a new message window.
-            if (notification.userInfo!["thread_id"] as! Int != self.chatHandler.thread_id) {
+            if (notification.userInfo!["thread_id"] as? Int != self.chatHandler.thread_id) {
                 self.leftMessageHandler.navigateToThread(notification.userInfo!["thread_id"] as! Int)
             }
             return
@@ -380,11 +378,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             }
             
             prepareSendMessage(self.chatHandler.phoneNumbers![0], message: self.messageTextField.stringValue, thread_id: self.chatHandler.thread_id!)
-            
-//            let net = NetworkingUtil()
-//            let data = ["uid": net.generateUUID(), "p": "9085080677", "action": "/phone_call"]
-//            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-//            delegate.socketHandler.socket?.writeString(JSON(rawValue: data)!.rawString()!)
 
             return true
         }
@@ -462,10 +455,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             dispatch_async(dispatch_get_main_queue(),{
                 let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
                 let context = delegate.coreDataHandler.managedObjectContext
-                let _sms = context.objectWithID(objectId) as! Message;
+                let _sms = context.objectWithID(objectId) as! Message
                 
                 if (thread_id == self.chatHandler.thread_id!) {
-                    NSLog("%i", self.chatHandler.results.count)
                     NSLog("%i", self.chatHandler.results.count)
                     
                     self.chatHandler.results.append(_sms)
@@ -519,6 +511,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         context.parentContext = delegate.coreDataHandler.managedObjectContext
         return self.leftMessageHandler.messageHandler.getMaxDate(context)
+    }
+    
+    @IBAction func newMessageAction(sender: AnyObject) {
+        // user clicked on a new message button
+        if (leftMessageHandler.userComposingNewMessage == true) {
+            // User is already composing a new message
+            return
+        }
+        
+        leftMessageHandler.userComposingNewMessage = true
+        tableView.reloadData()
     }
 }
 

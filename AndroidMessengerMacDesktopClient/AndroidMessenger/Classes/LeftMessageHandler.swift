@@ -13,6 +13,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
     var original_results: Array<AnyObject> = Array<AnyObject>()
     var filter_value: String = ""
     var chatHandler: ChatMessageHandler!
+    var userComposingNewMessage: Bool = false
     weak var leftTableView: NSTableView!
     
     lazy var messageHandler: MessageHandler = {
@@ -72,7 +73,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
                 let row_dict = results[row_id]
                 if self.chatHandler.thread_id == row_dict["thread_id"] as? Int {
                     // Select previously selected row
-                    self.leftTableView.selectRowIndexes(NSIndexSet(index: row_id), byExtendingSelection: false)
+                    self.leftTableView.selectRowIndexes(NSIndexSet(index: row_id + Int(userComposingNewMessage)), byExtendingSelection: false)
                     break
                 }
             }
@@ -84,14 +85,14 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             let msg = results[value] as! Dictionary<String, AnyObject>
             let thread_id_row = msg["thread_id"] as! Int
             if thread_id_row == thread_id {
-                self.leftTableView.selectRowIndexes(NSIndexSet(index: value), byExtendingSelection: false)
+                self.leftTableView.selectRowIndexes(NSIndexSet(index: value + Int(userComposingNewMessage)), byExtendingSelection: false)
                 break
             }
         }
     }
     
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
-        return results.count
+        return results.count + Int(userComposingNewMessage)
     }
     
     func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
@@ -106,15 +107,20 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             return result!
         } ()
         
-        let msg = results[row] as! Dictionary<String, AnyObject>
-        
-        result.nameLabel.stringValue = msg["row_title"] as! String
-        result.descriptionLabel.stringValue = msg["msg"] as! String
-        
-        if (msg["read"] as! Bool == false && self.chatHandler.thread_id != msg["thread_id"] as? Int) {
-            result.descriptionLabel.font = NSFont.boldSystemFontOfSize(13)
+        if (userComposingNewMessage && row == 0) {
+            result.nameLabel.stringValue = "New Message"
+            result.descriptionLabel.stringValue = ""
         } else {
-            result.descriptionLabel.font = NSFont.systemFontOfSize(13)
+            let calculatedRow = row - Int(userComposingNewMessage)
+            let msg = results[calculatedRow] as! Dictionary<String, AnyObject>
+            result.nameLabel.stringValue = msg["row_title"] as! String
+            result.descriptionLabel.stringValue = msg["msg"] as! String
+            
+            if (msg["read"] as! Bool == false && self.chatHandler.thread_id != msg["thread_id"] as? Int) {
+                result.descriptionLabel.font = NSFont.boldSystemFontOfSize(13)
+            } else {
+                result.descriptionLabel.font = NSFont.systemFontOfSize(13)
+            }
         }
         
         // Return the result
@@ -145,13 +151,19 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
     }
     
     func tableViewSelectionDidChange(notification: NSNotification) {
-        userSelectedANewRowRefresh()
+        self.chatHandler.messageTextField.enabled = true
+        if userComposingNewMessage && self.leftTableView.selectedRow == 0 {
+            self.chatHandler.getAllDataForGroupId(nil)
+            self.chatHandler.tokenField.editable = true
+        } else {
+            userSelectedANewRowRefresh()
+            self.chatHandler.tokenField.editable = false
+        }
     }
     
     func userSelectedANewRowRefresh() {
         // User selected a new row
-        self.chatHandler.messageTextField.enabled = true
-        let row = self.leftTableView.selectedRow
+        let row = self.leftTableView.selectedRow - Int(userComposingNewMessage)
         
         if (row == -1) {
             return

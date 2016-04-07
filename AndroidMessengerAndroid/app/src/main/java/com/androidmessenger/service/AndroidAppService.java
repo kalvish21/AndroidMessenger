@@ -14,6 +14,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import com.androidmessenger.R;
 import com.androidmessenger.connections.WebServer;
 import com.androidmessenger.connections.WebSocket;
 import com.androidmessenger.observer.SmsObserver;
+import com.androidmessenger.receiver.WifiReciever;
 import com.androidmessenger.util.Constants;
 import com.androidmessenger.util.UserPreferencesManager;
 
@@ -38,6 +40,7 @@ public class AndroidAppService extends Service {
     private WebSocket webSocket;
     private WebServer webServer;
     private SmsObserver content;
+    private PowerManager.WakeLock wakeLock;
 
     @Override
     public void onCreate() {
@@ -45,7 +48,9 @@ public class AndroidAppService extends Service {
         thread.start();
 
         // Start servers
-        startServers();
+        if (WifiReciever.isConnectedToWifi(getBaseContext())) {
+            startServers();
+        }
 
         Intent intent = new Intent(this, AndroidAppService.class);
         bindService(intent, m_serviceConnection, BIND_AUTO_CREATE);
@@ -112,6 +117,13 @@ public class AndroidAppService extends Service {
         // Add observer
         content = new SmsObserver(new Handler(), this);
         getContentResolver().registerContentObserver(Constants.Sms, true, content);
+
+        // Get wake lock
+        if (wakeLock == null) {
+            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AndroidAppServiceWakeLock");
+            wakeLock.acquire();
+        }
     }
 
     public void stopServers() {
@@ -134,6 +146,12 @@ public class AndroidAppService extends Service {
 
             // Remove observers
             getContentResolver().unregisterContentObserver(content);
+
+            // Remove wakelock
+            if (wakeLock != null) {
+                wakeLock.release();
+                wakeLock = null;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -172,9 +190,9 @@ public class AndroidAppService extends Service {
 
         public void handleMessage(Message msg) {
             Bundle bundle = msg.getData();
-            String type = bundle.getString("type");
+            String callType = bundle.getString("call_type");
 
-            switch (type) {
+            switch (callType) {
                 case "wifi": {
                     // Wifi state was changed
                     Boolean wifi = bundle.getBoolean("wifi");

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
@@ -192,55 +191,54 @@ public class WebServer extends NanoHTTPD {
             }
 
             // This API is just for testing. Will be removed in future
-            case "/unreadmessages": {
-
-                ContentResolver cr = context.getContentResolver();
-                Cursor cursor = cr.query(Constants.Sms, null, "read=0", null, null);
-                if (cursor == null) {
-                    return null;
-                }
-                String response = null;
-                StringBuffer responseBuffer = new StringBuffer();
-                if (cursor.moveToFirst()) {
-                    for (int i = 0; i < cursor.getColumnCount(); i++) {
-                        responseBuffer.append(cursor.getColumnName(i) + "=" + cursor.getString(cursor.getColumnIndexOrThrow(cursor.getColumnName(i))) + "<br>");
-                    }
-                }
-                responseBuffer.append(Integer.toString(cursor.getCount()));
-                if (cursor != null && !cursor.isClosed()) {
-                    cursor.close();
-                }
-                response = responseBuffer.toString();
-
-                return newFixedLengthResponse(response);
-
-            }
+//            case "/unreadmessages": {
+//
+//                ContentResolver cr = context.getContentResolver();
+//                android.database.Cursor cursor = cr.query(Constants.Sms, null, "read=0", null, null);
+//                if (cursor == null) {
+//                    return null;
+//                }
+//                String response = null;
+//                StringBuffer responseBuffer = new StringBuffer();
+//                if (cursor.moveToFirst()) {
+//                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+//                        responseBuffer.append(cursor.getColumnName(i) + "=" + cursor.getString(cursor.getColumnIndexOrThrow(cursor.getColumnName(i))) + "<br>");
+//                    }
+//                }
+//                responseBuffer.append(Integer.toString(cursor.getCount()));
+//                if (cursor != null && !cursor.isClosed()) {
+//                    cursor.close();
+//                }
+//                response = responseBuffer.toString();
+//
+//                return newFixedLengthResponse(response);
+//
+//            }
 
             // This API is just for testing. Will be removed in future
-            case "/message": {
-                Response r = verifyUuid(session.getParms().get("uid"));
-                if (r != null) {
-                    return r;
-                }
-
-                String response = "";
-                String msgId = session.getParms().get("id");
-
-                String filter = "_id=" + msgId;
-                Cursor c = context.getContentResolver().query(Constants.Sms, null, filter, null, null);
-
-                if (c.moveToFirst()) {
-                    Cursor mCursor = context.getContentResolver().query(Constants.Sms, null, null, null, null);
-                    StringBuffer responseBuffer = new StringBuffer();
-                    for (int i = 0; i < mCursor.getColumnCount(); i++) {
-                        responseBuffer.append(mCursor.getColumnName(i) + "=" + c.getString(c.getColumnIndexOrThrow(mCursor.getColumnName(i))) + "<br>");
-                    }
-                    response = responseBuffer.toString();
-                }
-                c.close();
-
-                return newFixedLengthResponse(response);
-            }
+//            case "/message": {
+//                Response r = verifyUuid(session.getParms().get("uid"));
+//                if (r != null) {
+//                    return r;
+//                }
+//
+//                String response = "";
+//                String msgId = session.getParms().get("id");
+//
+//                android.database.Cursor c = context.getContentResolver().query(Constants.Sms, null, "_id="+msgId, null, null);
+//
+//                if (c.moveToFirst()) {
+//                    android.database.Cursor mCursor = context.getContentResolver().query(Constants.Sms, null, null, null, null);
+//                    StringBuffer responseBuffer = new StringBuffer();
+//                    for (int i = 0; i < mCursor.getColumnCount(); i++) {
+//                        responseBuffer.append(mCursor.getColumnName(i) + "=" + c.getString(c.getColumnIndexOrThrow(mCursor.getColumnName(i))) + "<br>");
+//                    }
+//                    response = responseBuffer.toString();
+//                }
+//                c.close();
+//
+//                return newFixedLengthResponse(response);
+//            }
 
             // This API is just for testing. Will be removed in future
 //            case "/messages/mms": {
@@ -256,7 +254,7 @@ public class WebServer extends NanoHTTPD {
 //                    filter = "_id=" + msgId;
 //                }
 //
-//                Cursor c = context.getContentResolver().query(Constants.Mms, null, filter, null, null);
+//                android.database.Cursor c = context.getContentResolver().query(Constants.Mms, null, filter, null, null);
 //
 //                if (c.moveToFirst()) {
 //                    do {

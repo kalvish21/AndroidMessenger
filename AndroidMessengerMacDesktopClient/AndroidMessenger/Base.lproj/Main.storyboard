@@ -482,6 +482,9 @@
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="cellTitle"/>
                                                 </buttonCell>
+                                                <connections>
+                                                    <action selector="newMessageAction:" target="zNX-T9-ezd" id="p4K-qJ-XAZ"/>
+                                                </connections>
                                             </button>
                                             <textField focusRingType="none" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jIp-57-MAN">
                                                 <rect key="frame" x="9" y="475" width="215" height="22"/>

@@ -14,7 +14,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
     
     var results: Array<AnyObject> = Array<AnyObject>()
     var phoneNumbers: Array<String>?
-    var contactName: String?
+    var contact: AnyObject?
     var thread_id: Int? = nil
     
     lazy var messageHandler: MessageHandler = {
@@ -40,15 +40,14 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         self.tokenField.focusRingType = .None
         self.chatTableView.registerNib(NSNib(nibNamed: "ChatMessageCell", bundle: NSBundle.mainBundle())!, forIdentifier: "ChatMessageCellView")
     }
-        
+    
     func addSmsFromIdArray(array: Array<Int>) {
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
         let context = delegate.coreDataHandler.managedObjectContext
         
         let request = NSFetchRequest(entityName: "Message")
         request.sortDescriptors = [NSSortDescriptor(key: "time", ascending: true)]
-        
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "thread_id = %i AND pending = %@ AND id in %@", thread_id!, false, array)])
+        request.predicate = NSPredicate(format: "thread_id = %i AND pending = %@ AND id in %@", thread_id!, false, array)
         
         var current_results: Array<AnyObject> = Array<AnyObject>()
         do {
@@ -65,9 +64,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         
         let request = NSFetchRequest(entityName: "Message")
         request.sortDescriptors = [NSSortDescriptor(key: "time", ascending: true)]
-        
-        var predicate = NSPredicate(format: "thread_id = %i AND pending = %@", thread_id!, false)
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate])
+        request.predicate = NSPredicate(format: "thread_id = %i AND pending = %@", thread_id!, false)
         
         var results: Array<AnyObject> = Array<AnyObject>()
         do {
@@ -77,8 +74,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         }
         
         // Now get pending messages
-        predicate = NSPredicate(format: "thread_id = %i AND pending = %@", thread_id!, true)
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate])
+        request.predicate = NSPredicate(format: "thread_id = %i AND pending = %@", thread_id!, true)
         
         var result_pending: Array<AnyObject>?
         do {
@@ -97,7 +93,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         phoneNumbers = Array<String>()
         let phone_number = self.contactsHandler.getPhoneNumberIfContactExists(context, number: number)
         if (phone_number != nil) {
-            contactName = phone_number!.contact.name!
+            contact = phone_number!.contact.name!
             phoneNumbers!.append(phone_number!.formatted_number)
             for item in phone_number!.contact.numbers! {
                 let formatted_number = (item as! PhoneNumberData).formatted_number as! String
@@ -117,10 +113,10 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
                 fmt_number = number
             }
             
-            contactName = fmt_number
+            contact = fmt_number
             phoneNumbers!.append(fmt_number)
         }
-        self.tokenField.objectValue = contactName!
+        self.tokenField.objectValue = contact!
         
         return results
     }
@@ -255,9 +251,16 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         return []
     }
     
-    func getAllDataForGroupId(threadId: Int) {
-        if (thread_id != threadId) {
-            NSLog("THREAD: %i", threadId)
+    func getAllDataForGroupId(threadId: Int?) {
+        if (threadId == nil) {
+            thread_id = -1
+            results = []
+            
+            // Update the messages
+            self.chatTableView.reloadData()
+            
+        } else if (thread_id != threadId && threadId != nil) {
+            NSLog("THREAD: %i", threadId!)
             thread_id = threadId
             results = self.refreshDataFromCoreData()
             
@@ -396,8 +399,98 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         }
     }
     
+    // NSTokenField Delegate
     func tokenField(tokenField: NSTokenField, styleForRepresentedObject representedObject: AnyObject) -> NSTokenStyle {
         return NSRoundedTokenStyle
+    }
+    
+    func tokenField(tokenField: NSTokenField, displayStringForRepresentedObject representedObject: AnyObject) -> String? {
+        if representedObject is PhoneNumberData {
+            return String(format: "%@ %@", (representedObject as! PhoneNumberData).contact.name!, (representedObject as! PhoneNumberData).number)
+        }
+        return representedObject.stringValue
+    }
+    
+    func tokenField(tokenField: NSTokenField, completionsForSubstring substring: String, indexOfToken tokenIndex: Int, indexOfSelectedItem selectedIndex: UnsafeMutablePointer<Int>) -> [AnyObject]? {
+        if (phoneNumbers == nil || phoneNumbers?.count == 0) {
+            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+            let context = delegate.coreDataHandler.managedObjectContext
+            
+            let request = NSFetchRequest(entityName: "PhoneNumberData")
+            request.predicate = NSPredicate(format: "contact.name CONTAINS[cd] %@ OR number CONTAINS[cd] %@", substring, substring)
+            request.fetchLimit = 10
+            
+            var results: Array<AnyObject> = Array<AnyObject>()
+            do {
+                try results = context.executeFetchRequest(request)
+            } catch let error as NSError {
+                NSLog("Unresolved error: %@, %@", error, error.userInfo)
+            }
+            
+            if selectedIndex != nil {
+                selectedIndex.memory = -1
+            }
+            if results.count > 0 {
+                var contacts: [String] = Array<String>()
+                for representedObject in results {
+                    contacts.append(String(format: "%@ <%@>", (representedObject as! PhoneNumberData).contact.name!, (representedObject as! PhoneNumberData).formatted_number))
+                }
+                return contacts
+            }
+        }
+        return []
+    }
+    
+    func tokenField(tokenField: NSTokenField, representedObjectForEditingString editingString: String) -> AnyObject {
+        return editingString
+    }
+    
+    func tokenField(tokenField: NSTokenField, editingStringForRepresentedObject representedObject: AnyObject) -> String? {
+        if representedObject is PhoneNumberData {
+            return String(format: "%@ <%@>", (representedObject as! PhoneNumberData).contact.name!, (representedObject as! PhoneNumberData).number)
+        }
+        return representedObject.stringValue
+    }
+    
+    func tokenField(tokenField: NSTokenField, readFromPasteboard pboard: NSPasteboard) -> [AnyObject]? {
+        return []
+    }
+    
+    func tokenField(tokenField: NSTokenField, writeRepresentedObjects objects: [AnyObject], toPasteboard pboard: NSPasteboard) -> Bool {
+        return false
+    }
+    
+    func tokenField(tokenField: NSTokenField, shouldAddObjects tokens: [AnyObject], atIndex index: Int) -> [AnyObject] {
+        if (phoneNumbers == nil || phoneNumbers?.count == 0) {
+            let contact_name = tokens[0] as! String
+            var index = contact_name.rangeOfString("<")
+            let endIndex = contact_name.rangeOfString(">")
+            if index == nil || endIndex == nil {
+                return []
+            }
+            
+            index!.endIndex = endIndex!.startIndex
+            index!.startIndex = index!.startIndex.advancedBy(1)
+            let contact_number = contact_name.substringWithRange(index!)
+            NSLog(contact_number)
+            
+            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+            let context = delegate.coreDataHandler.managedObjectContext
+            let phone_number = self.contactsHandler.getPhoneNumberIfContactExists(context, number: contact_number)
+            if (phone_number != nil) {
+                phoneNumbers = Array<String>()
+                contact = phone_number!.contact.name!
+                phoneNumbers!.append(phone_number!.formatted_number)
+                for item in phone_number!.contact.numbers! {
+                    let formatted_number = (item as! PhoneNumberData).formatted_number
+                    if formatted_number != phone_number!.formatted_number {
+                        phoneNumbers!.append(formatted_number)
+                    }
+                }
+                return [contact!]
+            }
+        }
+        return []
     }
 }
 
