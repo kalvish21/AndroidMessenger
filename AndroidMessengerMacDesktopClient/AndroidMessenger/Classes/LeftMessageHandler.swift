@@ -9,11 +9,11 @@
 import Cocoa
 
 class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate {
+    var compose_results: Array<AnyObject> = Array<AnyObject>()
     var results: Array<AnyObject> = Array<AnyObject>()
     var original_results: Array<AnyObject> = Array<AnyObject>()
     var filter_value: String = ""
     var chatHandler: ChatMessageHandler!
-    var userComposingNewMessage: Bool = false
     weak var leftTableView: NSTableView!
     
     lazy var messageHandler: MessageHandler = {
@@ -73,7 +73,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
                 let row_dict = results[row_id]
                 if self.chatHandler.thread_id == row_dict["thread_id"] as? Int {
                     // Select previously selected row
-                    self.leftTableView.selectRowIndexes(NSIndexSet(index: row_id + Int(userComposingNewMessage)), byExtendingSelection: false)
+                    self.leftTableView.selectRowIndexes(NSIndexSet(index: row_id + compose_results.count), byExtendingSelection: false)
                     break
                 }
             }
@@ -85,14 +85,14 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             let msg = results[value] as! Dictionary<String, AnyObject>
             let thread_id_row = msg["thread_id"] as! Int
             if thread_id_row == thread_id {
-                self.leftTableView.selectRowIndexes(NSIndexSet(index: value + Int(userComposingNewMessage)), byExtendingSelection: false)
+                self.leftTableView.selectRowIndexes(NSIndexSet(index: value + compose_results.count), byExtendingSelection: false)
                 break
             }
         }
     }
     
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
-        return results.count + Int(userComposingNewMessage)
+        return results.count + compose_results.count
     }
     
     func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
@@ -107,11 +107,12 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             return result!
         } ()
         
-        if (userComposingNewMessage && row == 0) {
-            result.nameLabel.stringValue = "New Message"
-            result.descriptionLabel.stringValue = ""
+        if (row <= compose_results.count-1) {
+            let msg = compose_results[row] as! Dictionary<String, AnyObject>
+            result.nameLabel.stringValue = msg["row_title"] as! String
+            result.descriptionLabel.stringValue = msg["msg"] as! String
         } else {
-            let calculatedRow = row - Int(userComposingNewMessage)
+            let calculatedRow = row - compose_results.count
             let msg = results[calculatedRow] as! Dictionary<String, AnyObject>
             result.nameLabel.stringValue = msg["row_title"] as! String
             result.descriptionLabel.stringValue = msg["msg"] as! String
@@ -152,8 +153,11 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
     
     func tableViewSelectionDidChange(notification: NSNotification) {
         self.chatHandler.messageTextField.enabled = true
-        if userComposingNewMessage && self.leftTableView.selectedRow == 0 {
-            self.chatHandler.getAllDataForGroupId(nil)
+        if self.leftTableView.selectedRow <= compose_results.count-1 {
+            let row = self.leftTableView.selectedRow
+            let msg = compose_results[row] as! Dictionary<String, AnyObject>
+            
+            self.chatHandler.getAllDataForGroupId(msg["thread_id"] as! Int)
             self.chatHandler.tokenField.editable = true
         } else {
             userSelectedANewRowRefresh()
@@ -163,7 +167,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
     
     func userSelectedANewRowRefresh() {
         // User selected a new row
-        let row = self.leftTableView.selectedRow - Int(userComposingNewMessage)
+        let row = self.leftTableView.selectedRow - compose_results.count
         
         if (row == -1) {
             return

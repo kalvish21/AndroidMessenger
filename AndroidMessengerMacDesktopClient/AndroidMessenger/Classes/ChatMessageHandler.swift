@@ -87,36 +87,40 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             results.appendContentsOf(result_pending!)
         }
         
-        let number = (results[results.count - 1]).valueForKey("number") as! String
-        var fmt_number = number
-        
         phoneNumbers = Array<String>()
-        let phone_number = self.contactsHandler.getPhoneNumberIfContactExists(context, number: number)
-        if (phone_number != nil) {
-            contact = phone_number!.contact.name!
-            phoneNumbers!.append(phone_number!.formatted_number)
-            for item in phone_number!.contact.numbers! {
-                let formatted_number = (item as! PhoneNumberData).formatted_number as! String
-                if formatted_number != phone_number!.formatted_number {
-                    phoneNumbers!.append(formatted_number)
+        if results.count > 0 {
+            let number = (results[results.count - 1]).valueForKey("number") as! String
+            var fmt_number = number
+            
+            let phone_number = self.contactsHandler.getPhoneNumberIfContactExists(context, number: number)
+            if (phone_number != nil) {
+                contact = phone_number!.contact.name!
+                phoneNumbers!.append(phone_number!.formatted_number)
+                for item in phone_number!.contact.numbers! {
+                    let formatted_number = (item as! PhoneNumberData).formatted_number
+                    if formatted_number != phone_number!.formatted_number {
+                        phoneNumbers!.append(formatted_number)
+                    }
                 }
+                
+            } else {
+                let fmt = NBPhoneNumberUtil()
+                do {
+                    var nb_number: NBPhoneNumber? = nil
+                    try nb_number = fmt.parse(number, defaultRegion: "US")
+                    try fmt_number = fmt.format(nb_number!, numberFormat: .INTERNATIONAL)
+                } catch let error as NSError {
+                    NSLog("Unresolved error: %@, %@, %@", error, error.userInfo, number)
+                    fmt_number = number
+                }
+                
+                contact = fmt_number
+                phoneNumbers!.append(fmt_number)
             }
-            
+            self.tokenField.objectValue = contact!
         } else {
-            let fmt = NBPhoneNumberUtil()
-            do {
-                var nb_number: NBPhoneNumber? = nil
-                try nb_number = fmt.parse(number, defaultRegion: "US")
-                try fmt_number = fmt.format(nb_number!, numberFormat: .INTERNATIONAL)
-            } catch let error as NSError {
-                NSLog("Unresolved error: %@, %@, %@", error, error.userInfo, number)
-                fmt_number = number
-            }
-            
-            contact = fmt_number
-            phoneNumbers!.append(fmt_number)
+            self.tokenField.objectValue = nil
         }
-        self.tokenField.objectValue = contact!
         
         return results
     }
@@ -251,16 +255,9 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         return []
     }
     
-    func getAllDataForGroupId(threadId: Int?) {
-        if (threadId == nil) {
-            thread_id = -1
-            results = []
-            
-            // Update the messages
-            self.chatTableView.reloadData()
-            
-        } else if (thread_id != threadId && threadId != nil) {
-            NSLog("THREAD: %i", threadId!)
+    func getAllDataForGroupId(threadId: Int) {
+        if (thread_id != threadId) {
+            NSLog("THREAD: %i", threadId)
             thread_id = threadId
             results = self.refreshDataFromCoreData()
             

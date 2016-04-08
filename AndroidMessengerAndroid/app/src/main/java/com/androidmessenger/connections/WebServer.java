@@ -216,29 +216,28 @@ public class WebServer extends NanoHTTPD {
 //            }
 
             // This API is just for testing. Will be removed in future
-//            case "/message": {
-//                Response r = verifyUuid(session.getParms().get("uid"));
-//                if (r != null) {
-//                    return r;
-//                }
-//
-//                String response = "";
-//                String msgId = session.getParms().get("id");
-//
-//                android.database.Cursor c = context.getContentResolver().query(Constants.Sms, null, "_id="+msgId, null, null);
-//
-//                if (c.moveToFirst()) {
-//                    android.database.Cursor mCursor = context.getContentResolver().query(Constants.Sms, null, null, null, null);
-//                    StringBuffer responseBuffer = new StringBuffer();
-//                    for (int i = 0; i < mCursor.getColumnCount(); i++) {
-//                        responseBuffer.append(mCursor.getColumnName(i) + "=" + c.getString(c.getColumnIndexOrThrow(mCursor.getColumnName(i))) + "<br>");
-//                    }
-//                    response = responseBuffer.toString();
-//                }
-//                c.close();
-//
-//                return newFixedLengthResponse(response);
-//            }
+            case "/message": {
+                Response r = verifyUuid(session.getParms().get("uid"));
+                if (r != null) {
+                    return r;
+                }
+
+                String response = "";
+                String msgId = session.getParms().get("id");
+
+                android.database.Cursor c = context.getContentResolver().query(Constants.Sms, null, "_id="+msgId, null, null);
+
+                if (c.moveToFirst()) {
+                    StringBuffer responseBuffer = new StringBuffer();
+                    for (int i = 0; i < c.getColumnCount(); i++) {
+                        responseBuffer.append(c.getColumnName(i) + "=" + c.getString(c.getColumnIndexOrThrow(c.getColumnName(i))) + "<br>");
+                    }
+                    response = responseBuffer.toString();
+                }
+                c.close();
+
+                return newFixedLengthResponse(response);
+            }
 
             // This API is just for testing. Will be removed in future
 //            case "/messages/mms": {

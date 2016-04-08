@@ -164,7 +164,7 @@ class SocketHandler: NSObject, WebSocketDelegate, WebSocketPongDelegate {
                 context.parentContext = delegate.coreDataHandler.managedObjectContext
                 
                 let request = NSFetchRequest(entityName: "Message")
-                request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "uuid = %@", jsonData["uuid"].stringValue)])
+                request.predicate = NSPredicate(format: "uuid = %@", jsonData["uuid"].stringValue)
                 
                 var objs: [Message]?
                 do {
@@ -175,7 +175,33 @@ class SocketHandler: NSObject, WebSocketDelegate, WebSocketPongDelegate {
                 
                 if (objs != nil && objs!.count == 1) {
                     context.performBlock {
-                        let sms = self.messageHandler.setMessageDetailsFromJsonObject(objs![0], object: jsonData, is_pending: false)
+                        var sms = objs![0]
+                        var original_thread_id = 0
+                        if sms.thread_id != nil && Int(sms.thread_id!) < 0 {
+                            // This was a new message the user typed in
+                            original_thread_id = Int(sms.thread_id!)
+                        }
+                        sms = self.messageHandler.setMessageDetailsFromJsonObject(sms, object: jsonData, is_pending: false)
+                        
+                        if original_thread_id < 0 {
+                            // We need to update all of the other original thread_ids
+                            let request = NSFetchRequest(entityName: "Message")
+                            request.predicate = NSPredicate(format: "thread_id = %i", original_thread_id)
+                            
+                            var objs: [Message]?
+                            do {
+                                try objs = context.executeFetchRequest(request) as? [Message]
+                            } catch let error as NSError {
+                                NSLog("Unresolved error: %@, %@", error, error.userInfo)
+                            }
+                            
+                            if objs != nil && objs?.count > 0 {
+                                for obj in objs! {
+                                    obj.thread_id = sms.thread_id
+                                }
+                            }
+                        }
+                        
                         do {
                             try context.save()
                         } catch {
@@ -193,7 +219,7 @@ class SocketHandler: NSObject, WebSocketDelegate, WebSocketPongDelegate {
                         let objectID = sms.objectID
                         dispatch_async(dispatch_get_main_queue(),{
                             let current_sms = delegate.coreDataHandler.managedObjectContext.objectWithID(objectID) as! Message
-                            let userInfo: Dictionary<String, AnyObject> = ["uuid": jsonData["uuid"].stringValue, "id": current_sms.id!, "thread_id": current_sms.thread_id!, "type": current_sms.sms!]
+                            let userInfo: Dictionary<String, AnyObject> = ["uuid": jsonData["uuid"].stringValue, "id": current_sms.id!, "thread_id": current_sms.thread_id!, "type": current_sms.sms!, "original_thread_id": original_thread_id]
                             NSNotificationCenter.defaultCenter().postNotificationName(messageSentConfirmation, object: userInfo)
                         })
                     }

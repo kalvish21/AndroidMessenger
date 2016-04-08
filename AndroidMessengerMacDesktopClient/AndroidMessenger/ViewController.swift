@@ -122,34 +122,54 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             }
             
             // Check that the thread id's match
-            if (chatHandler.thread_id != (userInfo!["thread_id"] as! Int)) {
+            if (chatHandler.thread_id != (userInfo!["thread_id"] as! Int) && chatHandler.thread_id != (userInfo!["original_thread_id"] as! Int)) {
                 return
             }
             
             let uuid = userInfo!["uuid"] as! String
             let id = userInfo!["id"] as! Int
+            let original_thread_id = userInfo!["original_thread_id"] as! Int
+            let thread_id = userInfo!["thread_id"] as! Int
             
-            for index in 1...chatHandler.results.count {
-                let newIndex = chatHandler.results.count - index
-                let msg = chatHandler.results[newIndex] as! Message
-                
-                if (msg.uuid == uuid) {
-                    msg.id = id
-                    msg.uuid = nil
-                    msg.pending = false
+            if original_thread_id >= 0 {
+                for index in 1...chatHandler.results.count {
+                    let newIndex = chatHandler.results.count - index
+                    let msg = chatHandler.results[newIndex] as! Message
                     
-                    // Update table
-                    let row = NSIndexSet(index: newIndex)
-                    let col = NSIndexSet(index: 0)
-                    
-                    // Refresh the index paths necesary for this.
-                    self.chatTableView.beginUpdates()
-                    self.chatTableView.reloadDataForRowIndexes(row, columnIndexes: col)
-                    self.chatTableView.endUpdates()
-                    
-                    self.leftMessageHandler.getDataForLeftTableView(false)
-                    break
+                    if (msg.uuid == uuid) {
+                        msg.id = id
+                        msg.uuid = nil
+                        msg.pending = false
+                        
+                        // Update table
+                        let row = NSIndexSet(index: newIndex)
+                        let col = NSIndexSet(index: 0)
+                        
+                        // Refresh the index paths necesary for this.
+                        self.chatTableView.beginUpdates()
+                        self.chatTableView.reloadDataForRowIndexes(row, columnIndexes: col)
+                        self.chatTableView.endUpdates()
+                        
+                        self.leftMessageHandler.getDataForLeftTableView(false)
+                        break
+                    }
                 }
+                
+            } else if (original_thread_id < 0 && thread_id != original_thread_id) {
+                for index in 0...self.leftMessageHandler.compose_results.count-1 {
+                    if (self.leftMessageHandler.compose_results[index]["thread_id"] as! Int) == original_thread_id {
+                        self.leftMessageHandler.compose_results.removeAtIndex(index)
+                        break
+                    }
+                }
+                for index in 0...self.leftMessageHandler.results.count-1 {
+                    if (self.leftMessageHandler.results[index]["thread_id"] as! Int) == thread_id {
+                        self.tableView.selectRowIndexes(NSIndexSet(index: index), byExtendingSelection: false)
+                        break
+                    }
+                }
+                self.leftMessageHandler.getDataForLeftTableView(false)
+                self.leftMessageHandler.userSelectedANewRowRefresh()
             }
             break
         case newMessageReceived:
@@ -230,6 +250,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                         } catch let error as NSError {
                             NSLog("error %@", error.localizedDescription)
                         }
+                        self.leftMessageHandler.compose_results = Array<Dictionary<String, AnyObject>>()
                     }
                     
                     // Add each message
@@ -273,9 +294,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                             self.chatHandler.addSmsFromIdArray(array)
                         })
                     }
+                    
+                    dispatch_async(dispatch_get_main_queue(),{
+                        self.leftMessageHandler.getDataForLeftTableView(false)
+                    })
                 }
-                
-                self.leftMessageHandler.getDataForLeftTableView(false)
             }
         }
         
@@ -376,9 +399,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             if (self.messageTextField.stringValue == "" || self.messageTextField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) == "") {
                 return true
             }
-            
             prepareSendMessage(self.chatHandler.phoneNumbers![0], message: self.messageTextField.stringValue, thread_id: self.chatHandler.thread_id!)
-
             return true
         }
         return false
@@ -515,12 +536,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     
     @IBAction func newMessageAction(sender: AnyObject) {
         // user clicked on a new message button
-        if (leftMessageHandler.userComposingNewMessage == true) {
-            // User is already composing a new message
-            return
-        }
-        
-        leftMessageHandler.userComposingNewMessage = true
+        let compose_values = ["msg": "", "row_title": "New Message", "address": "New Message", "id": Int.random(10000000...1000000000), "thread_id": Int.random(10000000...1000000000) * -1, "read": true]
+        leftMessageHandler.compose_results.append(compose_values)
         tableView.reloadData()
     }
 }
