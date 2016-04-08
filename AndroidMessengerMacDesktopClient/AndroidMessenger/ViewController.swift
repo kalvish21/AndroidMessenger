@@ -162,13 +162,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                         break
                     }
                 }
+                
+                self.leftMessageHandler.getDataForLeftTableView(false)
                 for index in 0...self.leftMessageHandler.results.count-1 {
                     if (self.leftMessageHandler.results[index]["thread_id"] as! Int) == thread_id {
                         self.tableView.selectRowIndexes(NSIndexSet(index: index), byExtendingSelection: false)
                         break
                     }
                 }
-                self.leftMessageHandler.getDataForLeftTableView(false)
                 self.leftMessageHandler.userSelectedANewRowRefresh()
             }
             break
