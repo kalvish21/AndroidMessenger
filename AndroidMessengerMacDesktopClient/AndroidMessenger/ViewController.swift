@@ -558,6 +558,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         // User wants to delete the thread
         let index = self.tableView.selectedRow
         if index < 0 {
+            let alert = NSAlert()
+            alert.messageText = "There is no message thread selected"
+            alert.addButtonWithTitle("Okay")
+            alert.runModal()
             return
         }
         self.leftMessageHandler.askToDeleteThread(index)
