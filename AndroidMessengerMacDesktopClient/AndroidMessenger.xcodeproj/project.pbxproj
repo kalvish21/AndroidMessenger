@@ -25,6 +25,7 @@
 		747170131CB1E1EA00CF436C /* LeftMessageTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747170121CB1E1EA00CF436C /* LeftMessageTableView.swift */; };
 		748E5E8A1CAC4A3400EE8713 /* ChatScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748E5E891CAC4A3400EE8713 /* ChatScrollView.swift */; };
 		748E5E8C1CAC4FD800EE8713 /* MessageTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748E5E8B1CAC4FD800EE8713 /* MessageTextField.swift */; };
+		749495531CB75F5800B27FF2 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749495521CB75F5800B27FF2 /* LoadingView.swift */; };
 		74A82B831CB2D651006BEF34 /* ca.cer in Resources */ = {isa = PBXBuildFile; fileRef = 74A82B821CB2D651006BEF34 /* ca.cer */; };
 		74A82B871CB32C21006BEF34 /* sms@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 74A82B861CB32C21006BEF34 /* sms@2x.png */; };
 		74BDE61F1CB0C26700491705 /* String-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74BDE61E1CB0C26700491705 /* String-Extension.swift */; };
@@ -93,6 +94,7 @@
 		747170121CB1E1EA00CF436C /* LeftMessageTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LeftMessageTableView.swift; path = Classes/LeftMessageTableView.swift; sourceTree = "<group>"; };
 		748E5E891CAC4A3400EE8713 /* ChatScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatScrollView.swift; path = Classes/ChatScrollView.swift; sourceTree = "<group>"; };
 		748E5E8B1CAC4FD800EE8713 /* MessageTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageTextField.swift; path = Classes/MessageTextField.swift; sourceTree = "<group>"; };
+		749495521CB75F5800B27FF2 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoadingView.swift; path = Classes/LoadingView.swift; sourceTree = "<group>"; };
 		749F80941CAA18D800FFE841 /* AndroidMessenger-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AndroidMessenger-Bridging-Header.h"; sourceTree = "<group>"; };
 		74A82B821CB2D651006BEF34 /* ca.cer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ca.cer; sourceTree = "<group>"; };
 		74A82B861CB32C21006BEF34 /* sms@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "sms@2x.png"; path = "images/sms@2x.png"; sourceTree = "<group>"; };
@@ -151,6 +153,7 @@
 		740D8C9E1CB0836800470483 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				749495511CB75F3B00B27FF2 /* LoadingView */,
 				74EDC0971CAA2F74001EBE9F /* SimplePing */,
 			);
 			name = Libraries;
@@ -242,6 +245,14 @@
 				745007BF1CA0F5CD0047673A /* ConnectWindow.xib */,
 			);
 			name = ConnectionDialog;
+			sourceTree = "<group>";
+		};
+		749495511CB75F3B00B27FF2 /* LoadingView */ = {
+			isa = PBXGroup;
+			children = (
+				749495521CB75F5800B27FF2 /* LoadingView.swift */,
+			);
+			name = LoadingView;
 			sourceTree = "<group>";
 		};
 		74A1A7FA1CA20718004F0B47 /* CoreData */ = {
@@ -550,6 +561,7 @@
 				74C63E2D1CA871AE006C1DEE /* Message+CoreDataProperties.swift in Sources */,
 				74466B3E1CA32597001C8D1B /* NSDate.swift in Sources */,
 				740D8CC61CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift in Sources */,
+				749495531CB75F5800B27FF2 /* LoadingView.swift in Sources */,
 				745007931CA0DE0C0047673A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

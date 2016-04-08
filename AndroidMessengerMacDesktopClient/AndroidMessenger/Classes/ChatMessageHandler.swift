@@ -58,6 +58,13 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         self.results.appendContentsOf(current_results)
     }
     
+    func unselectAllAndClearMessageView() {
+        self.tokenField.objectValue = nil
+        results = Array<AnyObject>()
+        self.chatTableView.reloadData()
+        self.messageTextField.enabled = false
+    }
+    
     func refreshDataFromCoreData() -> [AnyObject] {
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
         let context = delegate.coreDataHandler.managedObjectContext
@@ -180,7 +187,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         
         var start_index = -1
         for msg_index in 0...ids_for_thread.count - 1 {
-            let msg = ids_for_thread[msg_index] as! Message
+            let msg = ids_for_thread[msg_index]
             
             for index_iterate in 0...new_size {
                 let newIndex = new_size - index_iterate - 1

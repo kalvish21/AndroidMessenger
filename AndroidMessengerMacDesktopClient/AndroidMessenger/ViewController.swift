@@ -97,6 +97,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         if (NSUserDefaults.standardUserDefaults().valueForKey(websocketConnected) != nil && delegate.socketHandler.isConnected()) {
             getLatestDataFromApp(false)
         }
+        
     }
     
     func handleNotification(notification: NSNotification) {
@@ -536,6 +537,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     }
     
     @IBAction func newMessageAction(sender: AnyObject) {
+//        LoadingView.showLoadingView(self.view)
+
+        // Only allow one new message at a time
+        if (leftMessageHandler.compose_results.count == 1) {
+            return
+        }
+        
         // user clicked on a new message button
         let compose_values = ["msg": "", "row_title": "New Message", "address": "New Message", "id": Int.random(10000000...1000000000), "thread_id": Int.random(10000000...1000000000) * -1, "read": true]
         leftMessageHandler.compose_results.append(compose_values)
@@ -544,6 +552,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         tableView.selectRowIndexes(NSIndexSet(index: leftMessageHandler.compose_results.count - 1), byExtendingSelection: false)
         self.leftMessageHandler.userSelectedANewRowRefresh()
         tokenField.becomeFirstResponder()
+    }
+    
+    @IBAction func deleteThreadAction(sender: AnyObject) {
+        // User wants to delete the thread
+        let index = self.tableView.selectedRow
+        if index < 0 {
+            return
+        }
+        self.leftMessageHandler.askToDeleteThread(index)
     }
 }
 

@@ -151,9 +151,30 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         return proposedSelectionIndexes
     }
     
+    func tableView(tableView: NSTableView, shouldEditTableColumn tableColumn: NSTableColumn?, row: Int) -> Bool {
+        return true
+    }
+    
+    func tableView(tableView: NSTableView, shouldShowCellExpansionForTableColumn tableColumn: NSTableColumn?, row: Int) -> Bool {
+        return true
+    }
+    
+    @available(OSX 10.11, *)
+    func tableView(tableView: NSTableView, rowActionsForRow row: Int, edge: NSTableRowActionEdge) -> [NSTableViewRowAction] {
+        if #available(OSX 10.11, *) {
+            let deleteAction: NSTableViewRowAction = NSTableViewRowAction(style: .Destructive, title: "Delete", handler: { (action, int) -> Void in
+                self.askToDeleteThread(row)
+            })
+            return [deleteAction]
+        } else {
+            // Fallback on earlier versions
+        }
+        return []
+    }
+    
     func tableViewSelectionDidChange(notification: NSNotification) {
         self.chatHandler.messageTextField.enabled = true
-        if self.leftTableView.selectedRow <= compose_results.count-1 {
+        if self.leftTableView.selectedRow <= compose_results.count-1 && self.leftTableView.selectedRow >= 0 {
             let row = self.leftTableView.selectedRow
             let msg = compose_results[row] as! Dictionary<String, AnyObject>
             
@@ -212,6 +233,74 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             // Set the chat data thread
             self.chatHandler.getAllDataForGroupId(msg["thread_id"] as! Int)
             self.chatHandler.chatTableView.scrollRowToVisible(self.chatHandler.chatTableView.numberOfRows - 1)
+        }
+    }
+    
+    func askToDeleteThread(row: Int) {
+        let alert = NSAlert()
+        alert.messageText = "Are you sure you want to delete this thread?"
+        alert.addButtonWithTitle("Okay")
+        alert.addButtonWithTitle("Cancel")
+        let response = alert.runModal()
+        
+        if response == NSAlertFirstButtonReturn {
+            // User wants to delete
+            NSLog("User wants to delete")
+            NSLog("%i", row)
+            if row < 0 {
+                return
+            }
+            
+            if row <= compose_results.count-1 {
+                // Delete a new message the user was composing
+                compose_results.removeAtIndex(row)
+                self.leftTableView.beginUpdates()
+                self.leftTableView.removeRowsAtIndexes(NSIndexSet(index: row), withAnimation: .SlideLeft)
+                self.leftTableView.endUpdates()
+                
+            } else {
+                // Delete the thread that we have stored locally
+                
+                let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+                let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+                context.parentContext = delegate.coreDataHandler.managedObjectContext
+                
+                let msg = results[row] as! Dictionary<String, AnyObject>
+                let threadId = msg["thread_id"] as! Int
+                let request = NSFetchRequest(entityName: "Message")
+                request.predicate = NSPredicate(format: "thread_id = %i", threadId)
+                
+                var objs: [Message]?
+                do {
+                    // Delete each message
+                    try objs = context.executeFetchRequest(request) as? [Message]
+                    if objs?.count > 0 {
+                        for obj in objs! {
+                            context.deleteObject(obj)
+                        }
+                    }
+                    
+                    // Save the context
+                    try context.save()
+                    delegate.coreDataHandler.managedObjectContext.performBlock({
+                        do {
+                            try delegate.coreDataHandler.managedObjectContext.save()
+                        } catch {
+                            fatalError("Failure to save context: \(error)")
+                        }
+                    })
+                } catch let error as NSError {
+                    NSLog("Unresolved error: %@, %@", error, error.userInfo)
+                }
+                
+                // Remove from the left message pane
+                results.removeAtIndex(row)
+                self.leftTableView.beginUpdates()
+                self.leftTableView.removeRowsAtIndexes(NSIndexSet(index: row), withAnimation: .SlideLeft)
+                self.leftTableView.endUpdates()
+            }
+            
+            self.chatHandler.unselectAllAndClearMessageView()
         }
     }
 }
