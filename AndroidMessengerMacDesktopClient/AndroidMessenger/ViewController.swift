@@ -540,6 +540,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         let compose_values = ["msg": "", "row_title": "New Message", "address": "New Message", "id": Int.random(10000000...1000000000), "thread_id": Int.random(10000000...1000000000) * -1, "read": true]
         leftMessageHandler.compose_results.append(compose_values)
         tableView.reloadData()
+        
+        tableView.selectRowIndexes(NSIndexSet(index: leftMessageHandler.compose_results.count - 1), byExtendingSelection: false)
+        self.leftMessageHandler.userSelectedANewRowRefresh()
+        tokenField.becomeFirstResponder()
     }
 }
 
