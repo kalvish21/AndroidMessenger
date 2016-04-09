@@ -8,6 +8,7 @@
 
 import Cocoa
 import SwiftyJSON
+import CNSplitView
 
 class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate, NSUserNotificationCenterDelegate, ConnectProtocol {
     private lazy var connectWindow: ConnectWindow = {
@@ -28,7 +29,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         return ContactsHandler()
     }()
     
-    @IBOutlet weak var splitView: NSSplitView!
+    @IBOutlet weak var splitView: CNSplitView!
     @IBOutlet weak var tableView: NSTableView!
     
     @IBOutlet weak var rightView: NSView!
@@ -97,7 +98,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         if (NSUserDefaults.standardUserDefaults().valueForKey(websocketConnected) != nil && delegate.socketHandler.isConnected()) {
             getLatestDataFromApp(false)
         }
-        
+    }
+    
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        filterTextField.layer?.cornerRadius = 20
+        filterTextField.layer?.masksToBounds = true
+
     }
     
     func handleNotification(notification: NSNotification) {

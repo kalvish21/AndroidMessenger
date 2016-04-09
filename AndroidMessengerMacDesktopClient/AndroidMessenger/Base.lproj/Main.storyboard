@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="zNX-T9-ezd">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
     </dependencies>
@@ -142,7 +142,6 @@
                                             <string key="keyEquivalent" base64-UTF8="YES">
 CA
 </string>
-                                            <modifierMask key="keyEquivalentModifierMask" shift="YES"/>
                                             <connections>
                                                 <action selector="deleteThreadAction:" target="Ady-hI-5gd" id="nH0-Gp-YIo"/>
                                             </connections>
@@ -379,10 +378,10 @@ CA
         <scene sceneID="R2V-B0-nI4">
             <objects>
                 <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" unifiedTitleAndToolbar="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="196" y="240" width="480" height="270"/>
+                        <rect key="contentRect" x="196" y="240" width="1023" height="571"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
                         <value key="minSize" type="size" width="500" height="300"/>
                         <value key="minFullScreenContentSize" type="size" width="500" height="300"/>
@@ -393,7 +392,7 @@ CA
                 </windowController>
                 <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="250"/>
+            <point key="canvasLocation" x="157.5" y="431.5"/>
         </scene>
         <!--ViewController-->
         <scene sceneID="FLK-eg-EVb">
@@ -403,20 +402,20 @@ CA
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="504"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <splitView misplaced="YES" dividerStyle="thin" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rsW-Nh-X2e">
+                            <splitView misplaced="YES" dividerStyle="thin" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rsW-Nh-X2e" customClass="CNSplitView">
                                 <rect key="frame" x="0.0" y="0.0" width="717" height="504"/>
                                 <subviews>
                                     <customView misplaced="YES" id="Jrg-zQ-2Eu">
                                         <rect key="frame" x="0.0" y="0.0" width="272.5" height="504"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-                                            <scrollView misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="85" horizontalPageScroll="10" verticalLineScroll="85" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KxF-FI-4Vo">
+                                            <scrollView misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="72" horizontalPageScroll="10" verticalLineScroll="72" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" scrollerKnobStyle="light" translatesAutoresizingMaskIntoConstraints="NO" id="KxF-FI-4Vo">
                                                 <rect key="frame" x="0.0" y="58" width="269" height="411"/>
                                                 <clipView key="contentView" id="acy-G3-M6c">
                                                     <rect key="frame" x="1" y="0.0" width="267" height="410"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="83" headerView="Zqt-JS-0u2" viewBased="YES" id="NQ4-9N-JIR" customClass="LeftMessageTableView" customModule="AndroidMessenger" customModuleProvider="target">
+                                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="70" headerView="Zqt-JS-0u2" viewBased="YES" id="NQ4-9N-JIR" customClass="LeftMessageTableView" customModule="AndroidMessenger" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="267" height="387"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -466,7 +465,7 @@ CA
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="qMs-cj-x3G">
-                                                    <rect key="frame" x="-100" y="-100" width="15" height="102"/>
+                                                    <rect key="frame" x="253" y="23" width="15" height="387"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                                 <tableHeaderView key="headerView" id="Zqt-JS-0u2">
@@ -484,13 +483,13 @@ CA
                                                 </constraints>
                                             </containerView>
                                             <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tBx-iJ-Vzz">
-                                                <rect key="frame" x="225" y="476" width="39" height="19"/>
+                                                <rect key="frame" x="232" y="470" width="32" height="25"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="39" id="Vw8-Pv-5CK"/>
                                                 </constraints>
-                                                <buttonCell key="cell" type="roundRect" bezelStyle="roundedRect" image="compose" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="IEE-Sw-ukz">
+                                                <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="compose" imagePosition="only" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="IEE-Sw-ukz">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="cellTitle"/>
+                                                    <font key="font" metaFont="system"/>
                                                 </buttonCell>
                                                 <connections>
                                                     <action selector="newMessageAction:" target="zNX-T9-ezd" id="p4K-qJ-XAZ"/>
@@ -498,7 +497,10 @@ CA
                                             </button>
                                             <textField focusRingType="none" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jIp-57-MAN">
                                                 <rect key="frame" x="9" y="475" width="215" height="22"/>
-                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" focusRingType="none" placeholderString="Type to filter by name ..." drawsBackground="YES" id="pcw-6C-8EF">
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="22" id="lO9-iM-0dU"/>
+                                                </constraints>
+                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" focusRingType="none" placeholderString="Type to filter by name ..." drawsBackground="YES" usesSingleLineMode="YES" id="pcw-6C-8EF">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -513,7 +515,7 @@ CA
                                             <constraint firstAttribute="bottom" secondItem="KxF-FI-4Vo" secondAttribute="bottom" id="Plu-d6-M2e"/>
                                             <constraint firstAttribute="trailing" secondItem="tBx-iJ-Vzz" secondAttribute="trailing" constant="5" id="XKy-D3-djO"/>
                                             <constraint firstItem="tBx-iJ-Vzz" firstAttribute="leading" secondItem="jIp-57-MAN" secondAttribute="trailing" constant="3" id="b59-dk-H4C"/>
-                                            <constraint firstItem="tBx-iJ-Vzz" firstAttribute="top" secondItem="Jrg-zQ-2Eu" secondAttribute="top" constant="9" id="cNJ-JG-Ydq"/>
+                                            <constraint firstItem="tBx-iJ-Vzz" firstAttribute="top" secondItem="Jrg-zQ-2Eu" secondAttribute="top" constant="7" id="cNJ-JG-Ydq"/>
                                             <constraint firstItem="jIp-57-MAN" firstAttribute="top" secondItem="Jrg-zQ-2Eu" secondAttribute="top" constant="8" id="hjp-qN-yUB"/>
                                             <constraint firstItem="KxF-FI-4Vo" firstAttribute="top" secondItem="iN4-Yf-7yh" secondAttribute="bottom" id="hvk-ak-9He"/>
                                             <constraint firstAttribute="trailing" secondItem="KxF-FI-4Vo" secondAttribute="trailing" id="iAd-Ae-Fem"/>
@@ -678,7 +680,7 @@ CA
                     </connections>
                 </customObject>
             </objects>
-            <point key="canvasLocation" x="75" y="791"/>
+            <point key="canvasLocation" x="157" y="1181"/>
         </scene>
     </scenes>
     <resources>

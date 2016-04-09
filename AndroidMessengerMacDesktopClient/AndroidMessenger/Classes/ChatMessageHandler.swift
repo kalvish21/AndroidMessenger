@@ -295,30 +295,25 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             return result!
         } ()
         
-        do {
-            let msg = results[row] as! NSManagedObject
-            
-            let message = msg.valueForKey("msg") as! String
-            let linkedmsg = NSMutableAttributedString(string: message)
-            let detector = try! NSDataDetector(types: NSTextCheckingType.Link.rawValue)
-            detector.enumerateMatchesInString(message, options: [], range: NSMakeRange(0, message.characters.count), usingBlock: { (match, flag, stop) in
-                if (match != nil && match?.URL != nil) {
-                    linkedmsg.addAttributes([NSLinkAttributeName: match!.URL!], range: match!.range)
-                }
-            })
-
-            result.chatTextField.textStorage?.setAttributedString(linkedmsg)
-            result.descriptionLabel.stringValue = (msg.valueForKey("time") as! NSDate).convertToStringDate("EEEE, MMM d, yyyy h:mm a")
-            if (msg.valueForKey("pending") as? Bool == true) {
-                result.descriptionLabel.stringValue = "pending"
-            } else if (msg.valueForKey("error") as? Bool == true) {
-                result.descriptionLabel.stringValue = "failed"
+        let msg = results[row] as! NSManagedObject
+        
+        let message = msg.valueForKey("msg") as! String
+        let linkedmsg = NSMutableAttributedString(string: message)
+        let detector = try! NSDataDetector(types: NSTextCheckingType.Link.rawValue)
+        detector.enumerateMatchesInString(message, options: [], range: NSMakeRange(0, message.characters.count), usingBlock: { (match, flag, stop) in
+            if (match != nil && match?.URL != nil) {
+                linkedmsg.addAttributes([NSLinkAttributeName: match!.URL!], range: match!.range)
             }
-            result.is_sending_message = (msg.valueForKey("received") as? Bool) == false
-            
-        } catch let error as NSError {
-            NSLog("Unresolved error: %@, %@", error, error.userInfo)
+        })
+        
+        result.chatTextField.textStorage?.setAttributedString(linkedmsg)
+        result.descriptionLabel.stringValue = (msg.valueForKey("time") as! NSDate).convertToStringDate("EEEE, MMM d, yyyy h:mm a")
+        if (msg.valueForKey("pending") as? Bool == true) {
+            result.descriptionLabel.stringValue = "pending"
+        } else if (msg.valueForKey("error") as? Bool == true) {
+            result.descriptionLabel.stringValue = "failed"
         }
+        result.is_sending_message = (msg.valueForKey("received") as? Bool) == false
         
         // Return the result
         return result
@@ -403,7 +398,6 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         }
     }
     
-    // NSTokenField Delegate
     func tokenField(tokenField: NSTokenField, styleForRepresentedObject representedObject: AnyObject) -> NSTokenStyle {
         return NSRoundedTokenStyle
     }

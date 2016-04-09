@@ -38,9 +38,9 @@
                 <constraint firstItem="4IK-sA-6Ek" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="8" id="VYT-T7-qzb"/>
                 <constraint firstAttribute="trailing" secondItem="4IK-sA-6Ek" secondAttribute="trailing" constant="6" id="bh7-GN-j06"/>
                 <constraint firstItem="BDP-hu-GP7" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="8" id="g0P-h5-N0D"/>
-                <constraint firstItem="4IK-sA-6Ek" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="12" id="gXh-H5-0Kd"/>
+                <constraint firstItem="4IK-sA-6Ek" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="2" id="gXh-H5-0Kd"/>
                 <constraint firstAttribute="trailing" secondItem="BDP-hu-GP7" secondAttribute="trailing" constant="6" id="mtZ-yl-vxT"/>
-                <constraint firstAttribute="bottom" secondItem="BDP-hu-GP7" secondAttribute="bottom" constant="9" id="un5-ef-799"/>
+                <constraint firstAttribute="bottom" secondItem="BDP-hu-GP7" secondAttribute="bottom" constant="2" id="un5-ef-799"/>
             </constraints>
             <connections>
                 <outlet property="descriptionLabel" destination="BDP-hu-GP7" id="AR1-fJ-mkT"/>

@@ -54,13 +54,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
     
     // Reachability delegate/helper methods
     func setupSimplePingAndRunWithHost(hostName: String) {
-//        do {
-//            try reach = Reachability(hostname: hostName)
-//            try reach!.startNotifier()
-//        } catch let error as NSError {
-//            NSLog("Unresolved error: %@, %@", error, error.userInfo)
-//        }
-        
         simplePing = SimplePing(hostName: hostName)
         simplePing!.sendPingWithData(nil)
         simplePing!.start()
@@ -73,14 +66,5 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
     func simplePing(pinger: SimplePing!, didFailWithError error: NSError!) {
         NSLog("didFailWithError")
     }
-    
-//    func reachabilityChanged(notification:NSNotification) {
-//        let reach = notification.object as? Reachability
-//        if reach?.currentReachabilityStatus == .NotReachable {
-//            print("not reachable")
-//        } else {
-//            print("reachable")
-//        }
-//    }
 }
 

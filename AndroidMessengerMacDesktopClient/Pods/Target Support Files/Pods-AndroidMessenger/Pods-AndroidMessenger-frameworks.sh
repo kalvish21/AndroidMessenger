@@ -85,6 +85,7 @@ strip_invalid_archs() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-AndroidMessenger/Alamofire.framework"
+  install_framework "Pods-AndroidMessenger/CNSplitView.framework"
   install_framework "Pods-AndroidMessenger/ReachabilitySwift.framework"
   install_framework "Pods-AndroidMessenger/Starscream.framework"
   install_framework "Pods-AndroidMessenger/SwiftyJSON.framework"
@@ -92,6 +93,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-AndroidMessenger/Alamofire.framework"
+  install_framework "Pods-AndroidMessenger/CNSplitView.framework"
   install_framework "Pods-AndroidMessenger/ReachabilitySwift.framework"
   install_framework "Pods-AndroidMessenger/Starscream.framework"
   install_framework "Pods-AndroidMessenger/SwiftyJSON.framework"

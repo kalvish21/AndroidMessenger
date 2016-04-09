@@ -95,10 +95,6 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         return results.count + compose_results.count
     }
     
-    func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
-        return 83
-    }
-    
     func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
         // Get an existing cell with the MyView identifier if it exists
         let result: MessageCell = {
@@ -177,9 +173,9 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         if self.leftTableView.selectedRow <= compose_results.count-1 && self.leftTableView.selectedRow >= 0 {
             let row = self.leftTableView.selectedRow
             let msg = compose_results[row] as! Dictionary<String, AnyObject>
-            
             self.chatHandler.getAllDataForGroupId(msg["thread_id"] as! Int)
             self.chatHandler.tokenField.editable = true
+            
         } else {
             userSelectedANewRowRefresh()
             self.chatHandler.tokenField.editable = false
@@ -189,8 +185,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
     func userSelectedANewRowRefresh() {
         // User selected a new row
         let row = self.leftTableView.selectedRow - compose_results.count
-        
-        if (row == -1) {
+        if (row < 0) {
             return
         }
         
