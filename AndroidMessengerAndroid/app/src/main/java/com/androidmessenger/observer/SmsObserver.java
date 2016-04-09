@@ -47,8 +47,7 @@ public class SmsObserver extends ContentObserver {
             boolean messages_received = false;
 
             if (c.moveToFirst()) {
-                int totalSMS = c.getCount();
-                for (int i = 0; i < totalSMS; i++) {
+                for (int i = 0; i < c.getCount(); i++) {
 
                     // TODO: Ignore draft and outbox messages for now
                     if (c.getString(c.getColumnIndexOrThrow("type")).contains("3") || c.getString(c.getColumnIndexOrThrow("type")).contains("4")) {
