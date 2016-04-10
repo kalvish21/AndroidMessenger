@@ -4,6 +4,5 @@
 
 #include <arpa/inet.h>
 
-#import "CNTestView.h"
 #import "SimplePing.h"
 

@@ -84,7 +84,7 @@ class MessageHandler {
             idArray.append(id)
         }
         let predicate = NSPredicate(format: "id in %@", idArray)
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate])
+        request.predicate = predicate
         
         var results: Array<AnyObject>? = nil
         do {
@@ -161,7 +161,7 @@ class MessageHandler {
         expressionDescription.expression = maxExpression
         expressionDescription.expressionResultType = .DateAttributeType
         request.propertiesToFetch = [expressionDescription]
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "pending = %@", false)])
+        request.predicate = NSPredicate(format: "pending = %@", false)
         
         var objs = [Dictionary<String, AnyObject>]()
         do {
@@ -178,5 +178,27 @@ class MessageHandler {
             NSLog("Unresolved error: %@, %@", error, error.userInfo)
         }
         return ""
+    }
+    
+    func setBadgeCount() {
+        let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        context.parentContext = delegate.coreDataHandler.managedObjectContext
+        
+        let request = NSFetchRequest(entityName: "Message")
+        request.predicate = NSPredicate(format: "read = %@", false)
+        
+        var objs = []
+        do {
+            try objs = context.executeFetchRequest(request)
+            
+            var count: String? = nil
+            if objs.count > 0 {
+                count = String(objs.count)
+            }
+            NSApplication.sharedApplication().dockTile.badgeLabel = count
+        } catch let error as NSError {
+            NSLog("Unresolved error: %@, %@", error, error.userInfo)
+        }
     }
 }

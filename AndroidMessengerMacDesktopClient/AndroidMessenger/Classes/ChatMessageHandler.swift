@@ -279,6 +279,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
     
     func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
         let msg = results[row] as! NSManagedObject
+        
         let textField = NSTextField()
         textField.font = NSFont.systemFontOfSize(13)
         textField.stringValue = msg.valueForKey("msg") as! String

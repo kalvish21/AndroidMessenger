@@ -378,7 +378,7 @@ CA
         <scene sceneID="R2V-B0-nI4">
             <objects>
                 <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
-                    <window key="window" title="Android Messenger" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
+                    <window key="window" title="Android Messenger" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA" customClass="INAppStoreWindow">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" unifiedTitleAndToolbar="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="1023" height="571"/>
@@ -402,7 +402,7 @@ CA
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="504"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <splitView misplaced="YES" dividerStyle="thin" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rsW-Nh-X2e" customClass="CNSplitView">
+                            <splitView misplaced="YES" dividerStyle="thin" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rsW-Nh-X2e">
                                 <rect key="frame" x="0.0" y="0.0" width="717" height="504"/>
                                 <subviews>
                                     <customView misplaced="YES" id="Jrg-zQ-2Eu">
@@ -482,19 +482,6 @@ CA
                                                     <constraint firstAttribute="height" constant="35" id="mSv-8a-taA"/>
                                                 </constraints>
                                             </containerView>
-                                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tBx-iJ-Vzz">
-                                                <rect key="frame" x="232" y="470" width="32" height="25"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="39" id="Vw8-Pv-5CK"/>
-                                                </constraints>
-                                                <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="compose" imagePosition="only" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="IEE-Sw-ukz">
-                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="system"/>
-                                                </buttonCell>
-                                                <connections>
-                                                    <action selector="newMessageAction:" target="zNX-T9-ezd" id="p4K-qJ-XAZ"/>
-                                                </connections>
-                                            </button>
                                             <textField focusRingType="none" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jIp-57-MAN">
                                                 <rect key="frame" x="9" y="475" width="215" height="22"/>
                                                 <constraints>
@@ -512,10 +499,8 @@ CA
                                             <constraint firstAttribute="trailing" secondItem="iN4-Yf-7yh" secondAttribute="trailing" id="AUJ-OQ-ZS9"/>
                                             <constraint firstItem="KxF-FI-4Vo" firstAttribute="leading" secondItem="Jrg-zQ-2Eu" secondAttribute="leading" id="JoF-Ux-Z6h"/>
                                             <constraint firstItem="KxF-FI-4Vo" firstAttribute="top" secondItem="jIp-57-MAN" secondAttribute="bottom" constant="6" id="LdC-Og-3dJ"/>
+                                            <constraint firstAttribute="trailing" secondItem="jIp-57-MAN" secondAttribute="trailing" constant="6" id="Npl-3n-vFW"/>
                                             <constraint firstAttribute="bottom" secondItem="KxF-FI-4Vo" secondAttribute="bottom" id="Plu-d6-M2e"/>
-                                            <constraint firstAttribute="trailing" secondItem="tBx-iJ-Vzz" secondAttribute="trailing" constant="5" id="XKy-D3-djO"/>
-                                            <constraint firstItem="tBx-iJ-Vzz" firstAttribute="leading" secondItem="jIp-57-MAN" secondAttribute="trailing" constant="3" id="b59-dk-H4C"/>
-                                            <constraint firstItem="tBx-iJ-Vzz" firstAttribute="top" secondItem="Jrg-zQ-2Eu" secondAttribute="top" constant="7" id="cNJ-JG-Ydq"/>
                                             <constraint firstItem="jIp-57-MAN" firstAttribute="top" secondItem="Jrg-zQ-2Eu" secondAttribute="top" constant="8" id="hjp-qN-yUB"/>
                                             <constraint firstItem="KxF-FI-4Vo" firstAttribute="top" secondItem="iN4-Yf-7yh" secondAttribute="bottom" id="hvk-ak-9He"/>
                                             <constraint firstAttribute="trailing" secondItem="KxF-FI-4Vo" secondAttribute="trailing" id="iAd-Ae-Fem"/>
@@ -683,7 +668,4 @@ CA
             <point key="canvasLocation" x="157" y="1181"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="compose" width="114" height="114"/>
-    </resources>
 </document>

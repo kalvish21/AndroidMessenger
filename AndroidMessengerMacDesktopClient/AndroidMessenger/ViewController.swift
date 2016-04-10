@@ -8,7 +8,7 @@
 
 import Cocoa
 import SwiftyJSON
-import CNSplitView
+import INAppStoreWindow
 
 class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate, NSUserNotificationCenterDelegate, ConnectProtocol {
     private lazy var connectWindow: ConnectWindow = {
@@ -29,7 +29,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         return ContactsHandler()
     }()
     
-    @IBOutlet weak var splitView: CNSplitView!
+    @IBOutlet weak var splitView: NSSplitView!
     @IBOutlet weak var tableView: NSTableView!
     
     @IBOutlet weak var rightView: NSView!
@@ -98,13 +98,26 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         if (NSUserDefaults.standardUserDefaults().valueForKey(websocketConnected) != nil && delegate.socketHandler.isConnected()) {
             getLatestDataFromApp(false)
         }
+        
+        self.leftMessageHandler.messageHandler.setBadgeCount()
     }
     
     override func viewDidAppear() {
         super.viewDidAppear()
-        filterTextField.layer?.cornerRadius = 20
-        filterTextField.layer?.masksToBounds = true
+        
+        let window = (self.view.window as! INAppStoreWindow)
+        window.titleBarHeight = 40
+        
+        let titleBarView = (self.view.window as! INAppStoreWindow).titleBarView
 
+        let buttonSize = NSMakeSize(40, 25)
+        let buttonFrame = NSMakeRect(70, NSMidY(titleBarView.bounds) - (buttonSize.height / 2), buttonSize.width, buttonSize.height)
+        let button = NSButton(frame: buttonFrame)
+        button.bezelStyle = .TexturedRoundedBezelStyle
+        button.action = #selector(newMessageAction)
+        button.image = NSImage(named: "compose@2x.png")
+        (button.cell as! NSButtonCell).imageScaling = .ScaleProportionallyUpOrDown
+        titleBarView.addSubview(button)
     }
     
     func handleNotification(notification: NSNotification) {

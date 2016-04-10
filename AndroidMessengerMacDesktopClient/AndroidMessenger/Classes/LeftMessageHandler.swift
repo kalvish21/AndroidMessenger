@@ -224,6 +224,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
                 
                 getDataForLeftTableView(false)
             }
+            self.messageHandler.setBadgeCount()
         } else {
             // Set the chat data thread
             self.chatHandler.getAllDataForGroupId(msg["thread_id"] as! Int)

@@ -340,6 +340,7 @@ class SocketHandler: NSObject, WebSocketDelegate, WebSocketPongDelegate {
                     notification.hasReplyButton = true
                     
                     NSUserNotificationCenter.defaultUserNotificationCenter().scheduleNotification(notification)
+                    self.messageHandler.setBadgeCount()
                 }
             })
         }
