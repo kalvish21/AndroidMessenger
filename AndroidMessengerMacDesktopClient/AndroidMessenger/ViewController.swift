@@ -37,10 +37,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     
     @IBOutlet weak var messageTextField: NSTextField!
     @IBOutlet weak var tokenField: NSTokenField!
-    @IBOutlet weak var filterTextField: NSTextField!
     
     var results: Array<AnyObject> = Array<AnyObject>()
     var sheetIsOpened: Bool = false
+    var createdBar: Bool = false
     
     override var representedObject: AnyObject? {
         didSet {
@@ -58,7 +58,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         splitView.delegate = self
         
         tokenField.delegate = self.chatHandler
-        filterTextField.delegate = self.leftMessageHandler
         
         // Message field properties
         messageTextField.enabled = false
@@ -68,6 +67,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         
         // Left navigation bar
         tableView.headerView = nil
+//        tableView.selectionHighlightStyle = .None
         tableView.setDataSource(self.leftMessageHandler)
         tableView.setDelegate(self.leftMessageHandler)
         tableView.registerNib(NSNib(nibNamed: "MessageCell", bundle: NSBundle.mainBundle())!, forIdentifier: "MessageCell")
@@ -105,19 +105,30 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     override func viewDidAppear() {
         super.viewDidAppear()
         
-        let window = (self.view.window as! INAppStoreWindow)
-        window.titleBarHeight = 40
-        
-        let titleBarView = (self.view.window as! INAppStoreWindow).titleBarView
+        if (createdBar == false) {
+            let window = (self.view.window as! INAppStoreWindow)
+            window.titleBarHeight = 40
+            let titleBarView = window.titleBarView
 
-        let buttonSize = NSMakeSize(40, 25)
-        let buttonFrame = NSMakeRect(70, NSMidY(titleBarView.bounds) - (buttonSize.height / 2), buttonSize.width, buttonSize.height)
-        let button = NSButton(frame: buttonFrame)
-        button.bezelStyle = .TexturedRoundedBezelStyle
-        button.action = #selector(newMessageAction)
-        button.image = NSImage(named: "compose@2x.png")
-        (button.cell as! NSButtonCell).imageScaling = .ScaleProportionallyUpOrDown
-        titleBarView.addSubview(button)
+            let textFieldSize = NSMakeSize(200, 24)
+            let textField = NSTextField(frame: NSMakeRect(70, NSMidY(titleBarView.bounds) - (textFieldSize.height / 2), textFieldSize.width, textFieldSize.height))
+            textField.placeholderString = "Type to filter by name"
+            textField.layer?.cornerRadius = 5
+            textField.layer?.masksToBounds = true
+            textField.delegate = self.leftMessageHandler
+            
+            let buttonSize = NSMakeSize(40, 25)
+            let buttonFrame = NSMakeRect(70 + textFieldSize.width + 10, NSMidY(titleBarView.bounds) - (buttonSize.height / 2), buttonSize.width, buttonSize.height)
+            let button = NSButton(frame: buttonFrame)
+            button.bezelStyle = .TexturedRoundedBezelStyle
+            button.action = #selector(newMessageAction)
+            button.image = NSImage(named: "compose@2x.png")
+            (button.cell as! NSButtonCell).imageScaling = .ScaleProportionallyUpOrDown
+            
+            titleBarView.addSubview(button)
+            titleBarView.addSubview(textField)
+            createdBar = true
+        }
     }
     
     func handleNotification(notification: NSNotification) {

@@ -181,7 +181,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             self.chatHandler.tokenField.editable = false
         }
     }
-    
+        
     func userSelectedANewRowRefresh() {
         // User selected a new row
         let row = self.leftTableView.selectedRow - compose_results.count

@@ -419,9 +419,9 @@ CA
                                                             <rect key="frame" x="0.0" y="0.0" width="267" height="387"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
-                                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" red="0.90588235289999997" green="0.91764705879999997" blue="0.93333333330000001" alpha="1" colorSpace="calibratedRGB"/>
                                                             <tableViewGridLines key="gridStyleMask" horizontal="YES"/>
-                                                            <color key="gridColor" name="controlHighlightColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                             <tableColumns>
                                                                 <tableColumn width="264.14317730166221" minWidth="40" maxWidth="1000" id="RSW-2q-OPb">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
@@ -458,7 +458,7 @@ CA
                                                             </tableColumns>
                                                         </tableView>
                                                     </subviews>
-                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" red="0.90588235294117647" green="0.91764705882352937" blue="0.93333333333333335" alpha="1" colorSpace="calibratedRGB"/>
                                                 </clipView>
                                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Wyp-gE-oAc">
                                                     <rect key="frame" x="-100" y="-100" width="272" height="15"/>
@@ -476,36 +476,12 @@ CA
                                                     <outlet property="nextKeyView" destination="N3e-9M-ggR" id="IRu-4t-RF5"/>
                                                 </connections>
                                             </scrollView>
-                                            <containerView misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iN4-Yf-7yh">
-                                                <rect key="frame" x="0.0" y="469" width="269" height="35"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="35" id="mSv-8a-taA"/>
-                                                </constraints>
-                                            </containerView>
-                                            <textField focusRingType="none" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jIp-57-MAN">
-                                                <rect key="frame" x="9" y="475" width="215" height="22"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="22" id="lO9-iM-0dU"/>
-                                                </constraints>
-                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" focusRingType="none" placeholderString="Type to filter by name ..." drawsBackground="YES" usesSingleLineMode="YES" id="pcw-6C-8EF">
-                                                    <font key="font" metaFont="system"/>
-                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                </textFieldCell>
-                                            </textField>
                                         </subviews>
                                         <constraints>
-                                            <constraint firstItem="jIp-57-MAN" firstAttribute="leading" secondItem="Jrg-zQ-2Eu" secondAttribute="leading" constant="5" id="7nI-uc-VPO"/>
-                                            <constraint firstAttribute="trailing" secondItem="iN4-Yf-7yh" secondAttribute="trailing" id="AUJ-OQ-ZS9"/>
                                             <constraint firstItem="KxF-FI-4Vo" firstAttribute="leading" secondItem="Jrg-zQ-2Eu" secondAttribute="leading" id="JoF-Ux-Z6h"/>
-                                            <constraint firstItem="KxF-FI-4Vo" firstAttribute="top" secondItem="jIp-57-MAN" secondAttribute="bottom" constant="6" id="LdC-Og-3dJ"/>
-                                            <constraint firstAttribute="trailing" secondItem="jIp-57-MAN" secondAttribute="trailing" constant="6" id="Npl-3n-vFW"/>
                                             <constraint firstAttribute="bottom" secondItem="KxF-FI-4Vo" secondAttribute="bottom" id="Plu-d6-M2e"/>
-                                            <constraint firstItem="jIp-57-MAN" firstAttribute="top" secondItem="Jrg-zQ-2Eu" secondAttribute="top" constant="8" id="hjp-qN-yUB"/>
-                                            <constraint firstItem="KxF-FI-4Vo" firstAttribute="top" secondItem="iN4-Yf-7yh" secondAttribute="bottom" id="hvk-ak-9He"/>
+                                            <constraint firstItem="KxF-FI-4Vo" firstAttribute="top" secondItem="Jrg-zQ-2Eu" secondAttribute="top" id="XUc-wY-NrA"/>
                                             <constraint firstAttribute="trailing" secondItem="KxF-FI-4Vo" secondAttribute="trailing" id="iAd-Ae-Fem"/>
-                                            <constraint firstItem="iN4-Yf-7yh" firstAttribute="top" secondItem="Jrg-zQ-2Eu" secondAttribute="top" id="iLG-dY-flj"/>
-                                            <constraint firstItem="iN4-Yf-7yh" firstAttribute="leading" secondItem="Jrg-zQ-2Eu" secondAttribute="leading" id="rj9-Ap-yJ0"/>
                                         </constraints>
                                     </customView>
                                     <customView misplaced="YES" id="eeC-Dz-1q6">
@@ -650,7 +626,6 @@ CA
                     </view>
                     <connections>
                         <outlet property="chatTableView" destination="K39-s6-VUX" id="Cg6-iD-jIc"/>
-                        <outlet property="filterTextField" destination="jIp-57-MAN" id="bXE-ir-dS2"/>
                         <outlet property="messageTextField" destination="N3e-9M-ggR" id="c34-GF-G5d"/>
                         <outlet property="rightView" destination="eeC-Dz-1q6" id="HuK-Ix-rrz"/>
                         <outlet property="splitView" destination="rsW-Nh-X2e" id="aR5-wt-GfM"/>
