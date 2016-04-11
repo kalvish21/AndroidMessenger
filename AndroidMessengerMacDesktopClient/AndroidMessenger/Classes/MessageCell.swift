@@ -17,8 +17,10 @@ class MessageCell: NSTableCellView {
         didSet {
             if self.backgroundStyle == .Light {
                 self.nameLabel.textColor = NSColor.blackColor()
+                self.descriptionLabel.textColor = NSColor.NSColorFromRGB(0x9A9A9A)
             } else if self.backgroundStyle == .Dark {
                 self.nameLabel.textColor = NSColor.whiteColor()
+                self.descriptionLabel.textColor = NSColor.NSColorFromRGB(0xd6d6d6)
             }
         }
     }

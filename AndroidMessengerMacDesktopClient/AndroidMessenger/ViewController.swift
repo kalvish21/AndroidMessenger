@@ -29,6 +29,51 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         return ContactsHandler()
     }()
     
+    private lazy var deleteButton: NSButton = {
+        let window = (self.view.window as! INAppStoreWindow)
+        let titleBarView = window.titleBarView
+        
+        let deleteButtonSize = NSMakeSize(40, 21)
+        let deleteButtonFrame = NSMakeRect(110 + self.textField.frame.size.width + 10, NSMidY(titleBarView.bounds) - (deleteButtonSize.height / 2), deleteButtonSize.width, deleteButtonSize.height)
+        let deleteButton = NSButton(frame: deleteButtonFrame)
+        deleteButton.bezelStyle = .TexturedRoundedBezelStyle
+        deleteButton.action = #selector(deleteThreadAction)
+        deleteButton.image = NSImage(named: "delete@2x.png")
+        (deleteButton.cell as! NSButtonCell).imageScaling = .ScaleProportionallyUpOrDown
+        deleteButton.enabled = false
+        
+        return deleteButton
+    }()
+    
+    private lazy var textField: NSTextField = {
+        let window = (self.view.window as! INAppStoreWindow)
+        let titleBarView = window.titleBarView
+        
+        let textFieldSize = NSMakeSize(200, 24)
+        let textField = NSTextField(frame: NSMakeRect(70, NSMidY(titleBarView.bounds) - (textFieldSize.height / 2), textFieldSize.width, textFieldSize.height))
+        textField.placeholderString = "Type to filter by name"
+        textField.layer?.cornerRadius = 5
+        textField.layer?.masksToBounds = true
+        textField.delegate = self.leftMessageHandler
+        
+        return textField
+    }()
+    
+    private lazy var composeButton: NSButton = {
+        let window = (self.view.window as! INAppStoreWindow)
+        let titleBarView = window.titleBarView
+        
+        let composeButtonSize = NSMakeSize(40, 25)
+        let composeButtonFrame = NSMakeRect(70 + self.textField.frame.size.width + 10, NSMidY(titleBarView.bounds) - (composeButtonSize.height / 2), composeButtonSize.width, composeButtonSize.height)
+        let composeButton = NSButton(frame: composeButtonFrame)
+        composeButton.bezelStyle = .TexturedRoundedBezelStyle
+        composeButton.action = #selector(newMessageAction)
+        composeButton.image = NSImage(named: "compose@2x.png")
+        (composeButton.cell as! NSButtonCell).imageScaling = .ScaleProportionallyUpOrDown
+        
+        return composeButton
+    }()
+    
     @IBOutlet weak var splitView: NSSplitView!
     @IBOutlet weak var tableView: NSTableView!
     
@@ -67,7 +112,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         
         // Left navigation bar
         tableView.headerView = nil
-//        tableView.selectionHighlightStyle = .None
         tableView.setDataSource(self.leftMessageHandler)
         tableView.setDelegate(self.leftMessageHandler)
         tableView.registerNib(NSNib(nibNamed: "MessageCell", bundle: NSBundle.mainBundle())!, forIdentifier: "MessageCell")
@@ -109,24 +153,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             let window = (self.view.window as! INAppStoreWindow)
             window.titleBarHeight = 40
             let titleBarView = window.titleBarView
-
-            let textFieldSize = NSMakeSize(200, 24)
-            let textField = NSTextField(frame: NSMakeRect(70, NSMidY(titleBarView.bounds) - (textFieldSize.height / 2), textFieldSize.width, textFieldSize.height))
-            textField.placeholderString = "Type to filter by name"
-            textField.layer?.cornerRadius = 5
-            textField.layer?.masksToBounds = true
-            textField.delegate = self.leftMessageHandler
             
-            let buttonSize = NSMakeSize(40, 25)
-            let buttonFrame = NSMakeRect(70 + textFieldSize.width + 10, NSMidY(titleBarView.bounds) - (buttonSize.height / 2), buttonSize.width, buttonSize.height)
-            let button = NSButton(frame: buttonFrame)
-            button.bezelStyle = .TexturedRoundedBezelStyle
-            button.action = #selector(newMessageAction)
-            button.image = NSImage(named: "compose@2x.png")
-            (button.cell as! NSButtonCell).imageScaling = .ScaleProportionallyUpOrDown
+            titleBarView.addSubview(self.composeButton)
+            titleBarView.addSubview(self.deleteButton)
+            titleBarView.addSubview(self.textField)
             
-            titleBarView.addSubview(button)
-            titleBarView.addSubview(textField)
             createdBar = true
         }
     }
@@ -592,10 +623,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             let alert = NSAlert()
             alert.messageText = "There is no message thread selected"
             alert.addButtonWithTitle("Okay")
-            alert.runModal()
+            alert.beginSheetModalForWindow(self.view.window!, completionHandler: nil)
             return
         }
-        self.leftMessageHandler.askToDeleteThread(index)
+        self.leftMessageHandler.askToDeleteThread(index, window: self.view.window!)
     }
 }
 
