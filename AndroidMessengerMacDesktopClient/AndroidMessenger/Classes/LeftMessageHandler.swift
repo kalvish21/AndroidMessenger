@@ -179,43 +179,46 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         
         let msg = results[row] as! Dictionary<String, AnyObject>
         if (msg["read"] as! Bool == false && self.chatHandler.thread_id != msg["thread_id"] as? Int) {
-            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-            let context = delegate.coreDataHandler.managedObjectContext
-            let threadId = msg["thread_id"] as! Int
-            let request = NSFetchRequest(entityName: "Message")
-            request.predicate = NSPredicate(format: "thread_id = %i and read = %@", threadId, false)
+            self.markMessagesAsReadForCurrentThread(row, threadId: msg["thread_id"] as! Int)
+            getDataForLeftTableView(false)
             
-            var objs: [Message]?
-            do {
-                try objs = context.executeFetchRequest(request) as? [Message]
-            } catch let error as NSError {
-                NSLog("Unresolved error: %@, %@", error, error.userInfo)
-            }
-            
-            // Set the chat data thread
-            self.chatHandler.getAllDataForGroupId(msg["thread_id"] as! Int)
-            self.chatHandler.chatTableView.scrollRowToVisible(self.chatHandler.chatTableView.numberOfRows - 1)
-            
-            if (objs?.count > 0) {
-                let selectedRow = self.leftTableView.selectedRow
-                NSLog("SELECTED ROW -- %i", selectedRow)
-                self.chatHandler.performActionsForIncomingMessages(self.leftTableView, threadId: threadId)
-                
-                // Update table
-                let rowSet = NSIndexSet(index: row)
-                let col = NSIndexSet(index: 0)
-                
-                // Refresh the index paths necesary for this.
-                self.chatHandler.chatTableView.beginUpdates()
-                self.chatHandler.chatTableView.reloadDataForRowIndexes(rowSet, columnIndexes: col)
-                self.chatHandler.chatTableView.endUpdates()
-                
-                getDataForLeftTableView(false)
-            }
         } else {
             // Set the chat data thread
             self.chatHandler.getAllDataForGroupId(msg["thread_id"] as! Int)
             self.chatHandler.chatTableView.scrollRowToVisible(self.chatHandler.chatTableView.numberOfRows - 1)
+        }
+    }
+    
+    func markMessagesAsReadForCurrentThread(row: Int, threadId: Int) {
+        let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let context = delegate.coreDataHandler.managedObjectContext
+        let request = NSFetchRequest(entityName: "Message")
+        request.predicate = NSPredicate(format: "thread_id = %i and read = %@", threadId, false)
+        
+        var objs: [Message]?
+        do {
+            try objs = context.executeFetchRequest(request) as? [Message]
+        } catch let error as NSError {
+            NSLog("Unresolved error: %@, %@", error, error.userInfo)
+        }
+        
+        // Set the chat data thread
+        self.chatHandler.getAllDataForGroupId(threadId)
+        self.chatHandler.chatTableView.scrollRowToVisible(self.chatHandler.chatTableView.numberOfRows - 1)
+        
+        if (objs?.count > 0) {
+            let selectedRow = self.leftTableView.selectedRow
+            NSLog("SELECTED ROW -- %i", selectedRow)
+            self.chatHandler.performActionsForIncomingMessages(self.leftTableView, threadId: threadId)
+            
+            // Update table
+            let rowSet = NSIndexSet(index: row)
+            let col = NSIndexSet(index: 0)
+            
+            // Refresh the index paths necesary for this.
+            self.chatHandler.chatTableView.beginUpdates()
+            self.chatHandler.chatTableView.reloadDataForRowIndexes(rowSet, columnIndexes: col)
+            self.chatHandler.chatTableView.endUpdates()
         }
     }
     

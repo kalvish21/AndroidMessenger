@@ -132,6 +132,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: messageSentConfirmation, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: newMessageReceived, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: leftDataShouldRefresh, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: applicationBecameVisible, object: nil)
         
         // Populate left message view box
         self.leftMessageHandler.getDataForLeftTableView(false)
@@ -175,6 +176,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             break
         case leftDataShouldRefresh:
             self.leftMessageHandler.getDataForLeftTableView(false)
+            break
+        case applicationBecameVisible:
+            let row = self.tableView.selectedRow
+            if row > -1 {
+                self.leftMessageHandler.markMessagesAsReadForCurrentThread(row, threadId: self.chatHandler.thread_id!)
+                self.leftMessageHandler.messageHandler.setBadgeCount()
+            }
             break
         case messageSentConfirmation:
             let userInfo: Dictionary<String, AnyObject>? = notification.object as? Dictionary<String, AnyObject>
@@ -599,8 +607,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     }
     
     @IBAction func newMessageAction(sender: AnyObject) {
-//        LoadingView.showLoadingView(self.view)
-
         // Only allow one new message at a time
         if (leftMessageHandler.compose_results.count == 1) {
             return

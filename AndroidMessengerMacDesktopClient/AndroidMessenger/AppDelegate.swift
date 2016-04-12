@@ -44,6 +44,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
         }
     }
     
+    func applicationDidBecomeActive(notification: NSNotification) {
+        // User opened the app again
+        NSNotificationCenter.defaultCenter().postNotificationName(applicationBecameVisible, object: nil)
+    }
+    
     func applicationWillTerminate(aNotification: NSNotification) {
         // Insert code here to tear down your application
         if (self.socketHandler.isConnected()) {
