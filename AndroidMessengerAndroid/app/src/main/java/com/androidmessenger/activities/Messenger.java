@@ -69,11 +69,13 @@ public class Messenger extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        deviceUnpairReceiver = new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-                updateButtonsAndTextIfRequired();
-            }
-        };
+        if (deviceUnpairReceiver == null) {
+            deviceUnpairReceiver = new BroadcastReceiver() {
+                public void onReceive(Context context, Intent intent) {
+                    updateButtonsAndTextIfRequired();
+                }
+            };
+        }
 
         try {
             registerReceiver(deviceUnpairReceiver, new IntentFilter(getString(R.string.intent_filter_device_unpair)));
@@ -82,17 +84,19 @@ public class Messenger extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        wifiReceiver = new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-                boolean wifi = intent.getBooleanExtra("WIFI", false);
-                if (!wifi) {
-                    TextView textView = ButterKnife.findById(Messenger.this, R.id.ipaddress);
-                    textView.setText("DISCONNECTED");
-                } else {
-                    setIpAddress();
+        if (wifiReceiver == null) {
+            wifiReceiver = new BroadcastReceiver() {
+                public void onReceive(Context context, Intent intent) {
+                    boolean wifi = intent.getBooleanExtra("WIFI", false);
+                    if (!wifi) {
+                        TextView textView = ButterKnife.findById(Messenger.this, R.id.ipaddress);
+                        textView.setText("DISCONNECTED");
+                    } else {
+                        setIpAddress();
+                    }
                 }
-            }
-        };
+            };
+        }
 
         try {
             registerReceiver(wifiReceiver, new IntentFilter(getString(R.string.intent_filter_wifi_changed)));
