@@ -22,7 +22,7 @@ public class SendingSmsObserver extends ContentObserver {
     private final String address, body, uuid;
 
     public interface OnSmsSentListener {
-        void onSmsSent(String uuid, String id);
+        void onSmsSent(Uri uri, String uuid);
     }
 
     public SendingSmsObserver(OnSmsSentListener listener, Context context, String address, String body, String uuid) {
@@ -60,7 +60,8 @@ public class SendingSmsObserver extends ContentObserver {
                     final String _id = cursor.getString(cursor.getColumnIndex(Telephony.Sms._ID));
 
                     if (PhoneNumberUtils.compare(address, this.address) && body.equals(this.body)) {
-                        listener.onSmsSent(uuid, _id);
+                        Uri sentSmsUri = Uri.parse(Constants.Sms + "/" + _id);
+                        listener.onSmsSent(sentSmsUri, uuid);
                         resolver.unregisterContentObserver(this);
                     }
                 }
