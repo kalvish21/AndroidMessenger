@@ -1,24 +1,20 @@
 package com.androidmessenger.urihandler;
 
-import android.app.Activity;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
+import android.os.Handler;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.androidmessenger.R;
+import com.androidmessenger.observer.SendingSmsObserver;
 import com.androidmessenger.service.AndroidAppService;
 import com.androidmessenger.util.Constants;
 import com.androidmessenger.util.UserPreferencesManager;
@@ -41,7 +37,7 @@ import java.util.Collections;
 /**
  * Created by Kalyan Vishnubhatla on 3/28/16.
  */
-public class SmsMmsUriHandler implements Serializable {
+public class SmsMmsUriHandler implements Serializable, SendingSmsObserver.OnSmsSentListener {
     private final String TAG = SmsMmsUriHandler.class.getSimpleName();
     private static final long serialVersionUID = 292645201441507838L;
     private AndroidAppService service;
@@ -317,78 +313,115 @@ public class SmsMmsUriHandler implements Serializable {
 
     // Sending an SMS
     public void sendSms(final String phoneNumber, final String message, final String uuid) {
-        Intent sentIntent = new Intent(SEND);
-        PendingIntent sendingPendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, sentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        BroadcastReceiver receiver = new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-                switch (getResultCode()) {
-                    case Activity.RESULT_OK: {
-                        Bundle bundle = intent.getExtras();
-                        String smsUri = bundle.getString("uri");
-
-                        // Multipart text messages will have multiple callbacks but only one will have a uri
-                        if (smsUri != null) {
-                            smsMmsCallback(smsUri, uuid);
-                        }
-                    }
-                    break;
-
-                    default: {
-                        Bundle bundle = intent.getExtras();
-                        String smsUri = bundle.getString("uri");
-
-                        // Depending on the type of failure we may not have a uri
-                        if (smsUri != null) {
-                            smsMmsCallback(smsUri, uuid);
-                        }
-                    }
-                    break;
-                }
-                context.unregisterReceiver(this);
-            }
-
-            private void smsMmsCallback(String smsUri, String uuid) {
-                Cursor c = null;
-                try {
-                    c = context.getContentResolver().query(Uri.parse(smsUri), null, null, null, null);
-                    JSONObject msg = null;
-                    if (c.moveToFirst()) {
-                        msg = util.getJsonObjectFromCursorObjectForSmsText(c);
-                    }
-
-                    if (msg != null) {
-                        try {
-                            msg.put("action", "/message/send");
-                            msg.put("uuid", uuid);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        service.getAndroidWebSocket().sendJsonData(msg);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (c != null) {
-                        c.close();
-                    }
-                }
-            }
-
-        };
-        context.registerReceiver(receiver, new IntentFilter(SEND));
-
         SmsManager smsManager = SmsManager.getDefault();
+
+        new Handler(context.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                new SendingSmsObserver(SmsMmsUriHandler.this, context, phoneNumber, message, uuid).start();
+            }
+        });
 
         // SMS messages can only be 160 characters. If it's greater we need to send a multi-part message
         ArrayList<String> parts = smsManager.divideMessage(message);
         if (parts.size() > 1) {
-            ArrayList<PendingIntent> sendingPendingIntents = new ArrayList<>();
-            for (String s:parts) {
-                sendingPendingIntents.add(sendingPendingIntent);
-            }
-            smsManager.sendMultipartTextMessage(phoneNumber, null, parts, sendingPendingIntents, null);
+            smsManager.sendMultipartTextMessage(phoneNumber, null, parts, null, null);
         } else {
-            smsManager.sendTextMessage(phoneNumber, null, message, sendingPendingIntent, null);
+            smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+
+            // TODO: This sending pending intent doens't work on all devices and on all types of messages (like with multi part messages)
+//            Intent sentIntent = new Intent(SEND);
+//            PendingIntent sendingPendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, sentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//            BroadcastReceiver receiver = new BroadcastReceiver() {
+//                public void onReceive(Context context, Intent intent) {
+//                    switch (getResultCode()) {
+//                        case Activity.RESULT_OK: {
+//                            Bundle bundle = intent.getExtras();
+//                            String smsUri = bundle.getString("uri");
+//
+//                            Map<String, Object> objects = new HashMap<>();
+//                            for (String s: bundle.keySet()) {
+//                                objects.put(s, bundle.get(s));
+//                            }
+//
+//                            // Multipart text messages will have multiple callbacks but only one will have a uri
+//                            if (smsUri != null) {
+//                                smsMmsCallback(smsUri, uuid);
+//                            }
+//                        }
+//                        break;
+//
+//                        default: {
+//                            Bundle bundle = intent.getExtras();
+//                            String smsUri = bundle.getString("uri");
+//
+//                            // Depending on the type of failure we may not have a uri
+//                            if (smsUri != null) {
+//                                smsMmsCallback(smsUri, uuid);
+//                            }
+//                        }
+//                        break;
+//                    }
+//                    context.unregisterReceiver(this);
+//                }
+//
+//                private void smsMmsCallback(String smsUri, String uuid) {
+//                    Cursor c = null;
+//                    try {
+//                        c = context.getContentResolver().query(Uri.parse(smsUri), null, null, null, null);
+//                        JSONObject msg = null;
+//                        if (c.moveToFirst()) {
+//                            msg = util.getJsonObjectFromCursorObjectForSmsText(c);
+//                        }
+//
+//                        if (msg != null) {
+//                            try {
+//                                msg.put("action", "/message/send");
+//                                msg.put("uuid", uuid);
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                            service.getAndroidWebSocket().sendJsonData(msg);
+//                        }
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    } finally {
+//                        if (c != null) {
+//                            c.close();
+//                        }
+//                    }
+//                }
+//            };
+//            context.registerReceiver(receiver, new IntentFilter(SEND));
+//
+//            smsManager.sendTextMessage(phoneNumber, null, message, sendingPendingIntent, null);
+        }
+    }
+
+    public void onSmsSent(String uuid, String id) {
+        Cursor c = null;
+        try {
+            c = context.getContentResolver().query(Constants.Sms, null, "_id="+id, null, null);
+            JSONObject msg = null;
+            if (c.moveToFirst()) {
+                msg = util.getJsonObjectFromCursorObjectForSmsText(c);
+            }
+
+            if (msg != null) {
+                try {
+                    msg.put("action", "/message/send");
+                    msg.put("uuid", uuid);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                service.getAndroidWebSocket().sendJsonData(msg);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (c != null) {
+                c.close();
+            }
         }
     }
 }

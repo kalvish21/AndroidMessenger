@@ -219,6 +219,9 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             self.chatHandler.chatTableView.beginUpdates()
             self.chatHandler.chatTableView.reloadDataForRowIndexes(rowSet, columnIndexes: col)
             self.chatHandler.chatTableView.endUpdates()
+            
+            // Reset badge count after marking messages as read
+            self.messageHandler.setBadgeCount()
         }
     }
     

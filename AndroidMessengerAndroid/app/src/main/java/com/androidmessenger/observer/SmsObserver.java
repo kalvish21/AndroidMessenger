@@ -20,13 +20,11 @@ import org.json.JSONObject;
  */
 public class SmsObserver extends ContentObserver {
     private static final String TAG = SmsObserver.class.getSimpleName();
-    private Handler handler = null;
     private Context context;
     private AndroidAppService service;
 
     public SmsObserver(Handler handler, AndroidAppService service) {
         super(handler);
-        this.handler = handler;
         this.context = service.getBaseContext();
         this.service = service;
     }

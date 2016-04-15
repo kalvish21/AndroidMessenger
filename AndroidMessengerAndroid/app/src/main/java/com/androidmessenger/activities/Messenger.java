@@ -43,6 +43,9 @@ public class Messenger extends AppCompatActivity {
     private static final int SEND_SMS_PERMISSION = 2222;
     private static final int READ_CONTACTS_PERMISSION = 3333;
 
+    private BroadcastReceiver wifiReceiver;
+    private BroadcastReceiver deviceUnpairReceiver;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messenger);
@@ -60,15 +63,26 @@ public class Messenger extends AppCompatActivity {
 
         updateButtonsAndTextIfRequired();
         setIpAddress();
+    }
 
-        // Broadcast receiver
-        registerReceiver(new BroadcastReceiver() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        deviceUnpairReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 updateButtonsAndTextIfRequired();
             }
-        }, new IntentFilter(getString(R.string.intent_filter_device_unpair)));
+        };
 
-        registerReceiver(new BroadcastReceiver() {
+        try {
+            registerReceiver(deviceUnpairReceiver, new IntentFilter(getString(R.string.intent_filter_device_unpair)));
+        } catch (Exception e) {
+            // Probably was already registered
+            e.printStackTrace();
+        }
+
+        wifiReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 boolean wifi = intent.getBooleanExtra("WIFI", false);
                 if (!wifi) {
@@ -78,7 +92,33 @@ public class Messenger extends AppCompatActivity {
                     setIpAddress();
                 }
             }
-        }, new IntentFilter(getString(R.string.intent_filter_wifi_changed)));
+        };
+
+        try {
+            registerReceiver(wifiReceiver, new IntentFilter(getString(R.string.intent_filter_wifi_changed)));
+        } catch (Exception e) {
+            // Probably was already registered
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        try {
+            unregisterReceiver(deviceUnpairReceiver);
+        } catch (Exception e) {
+            // Probably wasn't registered in the first place
+            e.printStackTrace();
+        }
+
+        try {
+            unregisterReceiver(wifiReceiver);
+        } catch (Exception e) {
+            // Probably wasn't registered in the first place
+            e.printStackTrace();
+        }
     }
 
     private void setIpAddress() {
