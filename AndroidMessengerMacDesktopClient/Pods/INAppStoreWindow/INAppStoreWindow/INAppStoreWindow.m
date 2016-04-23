@@ -363,15 +363,21 @@ NS_INLINE CGGradientRef INCreateGradientWithColors(NSColor *startingColor, NSCol
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-	if ([theEvent clickCount] == 2) {
-		// Get settings from "System Preferences" >  "Appearance" > "Double-click on windows title bar to minimize"
-		NSString *const MDAppleMiniaturizeOnDoubleClickKey = @"AppleMiniaturizeOnDoubleClick";
-		NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-		BOOL shouldMiniaturize = [[userDefaults objectForKey:MDAppleMiniaturizeOnDoubleClickKey] boolValue];
-		if (shouldMiniaturize) {
-			[[self window] performMiniaturize:self];
-		}
-	}
+    if ([theEvent clickCount] == 2) {
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        
+        // Get settings from "System Preferences" >  "Appearance" > "Double-click on windows title bar to minimize"
+        NSString *const MDAppleMiniaturizeOnDoubleClickKey = @"AppleMiniaturizeOnDoubleClick";
+        BOOL shouldMiniaturize = [[userDefaults objectForKey:MDAppleMiniaturizeOnDoubleClickKey] boolValue];
+        
+        // In El Capitan and later from "System Preferences" >  "Dock" > "Double-click on windows title bar to ..."
+        NSString *const MDAppleMiniaturizeOnDoubleClickKeyElCapitan = @"AppleActionOnDoubleClick";
+        shouldMiniaturize = shouldMiniaturize || [[userDefaults objectForKey:MDAppleMiniaturizeOnDoubleClickKeyElCapitan] isEqualToString:@"Minimize"];
+        
+        if (shouldMiniaturize) {
+            [[self window] performMiniaturize:self];
+        }
+    }
 }
 
 @end
