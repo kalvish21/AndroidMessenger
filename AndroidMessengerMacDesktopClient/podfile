@@ -9,6 +9,7 @@ target 'AndroidMessenger' do
     pod 'libPhoneNumber-iOS'
     pod 'INAppStoreWindow'
     pod 'Starscream'
+    pod 'SNRFetchedResultsController'
 
 end
 

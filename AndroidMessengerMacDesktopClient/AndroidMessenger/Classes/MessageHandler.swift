@@ -182,6 +182,11 @@ class MessageHandler {
     
     func setBadgeCount() {
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        if delegate.isActive {
+            // No need to set badge when we are active
+            return
+        }
+        
         let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         context.parentContext = delegate.coreDataHandler.managedObjectContext
         

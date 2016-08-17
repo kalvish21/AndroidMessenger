@@ -26,6 +26,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
         return CoreDataHandler()
     } ()
     
+    var isActive: Bool = false
     var reach: Reachability?
     var simplePing: SimplePing?
     
@@ -42,11 +43,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
         if (NSUserDefaults.standardUserDefaults().valueForKey(websocketConnected) != nil && self.socketHandler.isConnected() == false) {
             self.socketHandler.connect()
         }
+        self.isActive = true
     }
     
     func applicationDidBecomeActive(notification: NSNotification) {
         // User opened the app again
         NSNotificationCenter.defaultCenter().postNotificationName(applicationBecameVisible, object: nil)
+        self.isActive = true
     }
     
     func applicationWillTerminate(aNotification: NSNotification) {
@@ -55,6 +58,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
             self.socketHandler.disconnect()
         }
         self.coreDataHandler.saveContext()
+        self.isActive = false
+    }
+    
+    func applicationDidResignActive(notification: NSNotification) {
+        self.isActive = false
     }
     
     // Reachability delegate/helper methods

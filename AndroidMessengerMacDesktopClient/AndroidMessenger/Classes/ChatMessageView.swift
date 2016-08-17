@@ -50,6 +50,8 @@ class ChatMessageView : NSView {
         textLabel.bordered = false
         textLabel.editable = false
         textLabel.drawsBackground = false
+        textLabel.bordered = false
+        textLabel.backgroundColor = NSColor.clearColor()
         textLabel.allowsEditingTextAttributes = true
         textLabel.selectable = true
         addSubview(textLabel)
@@ -66,6 +68,12 @@ class ChatMessageView : NSView {
         backgroundView.image = NSImage(named: orientation == .Right ? "gray_bubble_right" : "gray_bubble_left")
         
         self.dateString = TextMapper.attributedStringForText((msg.valueForKey("time") as! NSDate).convertToStringDate("EEEE, MMM d, yyyy h:mm a"), date: true)
+        
+        if (msg.valueForKey("pending") as? Bool == true) {
+            self.dateString = TextMapper.attributedStringForText("pending", date: true)
+        } else if (msg.valueForKey("error") as? Bool == true) {
+            self.dateString = TextMapper.attributedStringForText("failed", date: true)
+        }
         timeLabel.attributedStringValue = self.dateString!
     }
 
@@ -76,11 +84,11 @@ class ChatMessageView : NSView {
     static let TextBottomBorder: CGFloat = 4
     static let VerticalTextPadding: CGFloat = 4
     static let HorizontalTextMeasurementPadding: CGFloat = 5
-    static let TimeHeight: CGFloat = 30
+    static let TimeHeight: CGFloat = 40
 
     override var frame: NSRect {
         didSet {
-            var backgroundFrame = NSMakeRect(frame.origin.x, 10, frame.size.width, frame.size.height - ChatMessageView.TimeHeight)
+            var backgroundFrame = NSMakeRect(frame.origin.x, 20, frame.size.width, frame.size.height - ChatMessageView.TimeHeight)
 
             backgroundFrame.size.width *= ChatMessageView.WidthPercentage
 
@@ -110,12 +118,13 @@ class ChatMessageView : NSView {
                 
                 timeLabel.frame = NSRect(
                     x: backgroundView.frame.origin.x + 2,
-                    y: backgroundView.frame.origin.y + ChatMessageView.TextTopBorder - (ChatMessageView.VerticalTextPadding / 2) - 10,
+                    y: backgroundView.frame.origin.y + ChatMessageView.TextTopBorder - (ChatMessageView.VerticalTextPadding / 2) - 18,
                     width: dateSize.width,
-                    height: 10
+                    height: 15
                 )
                 
             case .Right:
+                backgroundView.frame.origin.y = backgroundView.frame.origin.y + 10
                 textLabel.frame = NSRect(
                     x: backgroundView.frame.origin.x + ChatMessageView.TextRoundSideBorder,
                     y: backgroundView.frame.origin.y + ChatMessageView.TextTopBorder - (ChatMessageView.VerticalTextPadding / 2),
@@ -125,9 +134,9 @@ class ChatMessageView : NSView {
                 
                 timeLabel.frame = NSRect(
                     x: frame.size.width - dateSize.width - 5,
-                    y: backgroundView.frame.origin.y + ChatMessageView.TextTopBorder - (ChatMessageView.VerticalTextPadding / 2) - 10,
+                    y: backgroundView.frame.origin.y + ChatMessageView.TextTopBorder - (ChatMessageView.VerticalTextPadding / 2) - 18,
                     width: dateSize.width,
-                    height: 10
+                    height: 15
                 )
             }
         }
