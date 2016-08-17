@@ -7,10 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		740C3F011CA34D270034E553 /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740C3F001CA34D270034E553 /* ChatMessageCell.swift */; };
-		740C3F071CA34E3B0034E553 /* ChatMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 740C3F061CA34E3B0034E553 /* ChatMessageCell.xib */; };
+		2FACC0DCC3F820302D7C787A /* Pods_AndroidMessenger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31E4B51FBEE8254701B6BD17 /* Pods_AndroidMessenger.framework */; };
 		740D8CC61CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740D8CC41CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift */; };
 		740D8CC71CB0846800470483 /* PhoneNumberData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740D8CC51CB0846800470483 /* PhoneNumberData.swift */; };
+		74413BBD1D6494210080F24D /* ChatMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74413BBC1D6494210080F24D /* ChatMessageView.swift */; };
+		74413BBF1D64953C0080F24D /* TextMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74413BBE1D64953C0080F24D /* TextMapper.swift */; };
+		74413BC21D6499510080F24D /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74413BC01D6499510080F24D /* ChatMessageCell.swift */; };
+		74413BC31D6499510080F24D /* ChatMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74413BC11D6499510080F24D /* ChatMessageCell.xib */; };
 		74466B3B1CA30FFA001C8D1B /* ChatMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74466B3A1CA30FFA001C8D1B /* ChatMessageHandler.swift */; };
 		74466B3E1CA32597001C8D1B /* NSDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74466B3D1CA32597001C8D1B /* NSDate.swift */; };
 		745007931CA0DE0C0047673A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745007921CA0DE0C0047673A /* AppDelegate.swift */; };
@@ -46,10 +49,9 @@
 		74F037B61CA1962500669F03 /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74F037B51CA1962500669F03 /* MessageCell.xib */; };
 		74F037B91CA1B84A00669F03 /* MainModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 74F037B71CA1B84A00669F03 /* MainModel.xcdatamodeld */; };
 		74F037BC1CA1C8F800669F03 /* CoreDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F037BB1CA1C8F800669F03 /* CoreDataHandler.swift */; };
-		74F037BE1CA1D0ED00669F03 /* SocketStreamConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F037BD1CA1D0ED00669F03 /* SocketStreamConnection.swift */; };
+		74F037BE1CA1D0ED00669F03 /* SocketHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F037BD1CA1D0ED00669F03 /* SocketHandler.swift */; };
 		74F037C01CA1D43300669F03 /* NetworkingUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F037BF1CA1D43300669F03 /* NetworkingUtil.swift */; };
 		74F037C21CA1D6C200669F03 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F037C11CA1D6C200669F03 /* Common.swift */; };
-		E4107BD8E9E31FA34043ACD3 /* Pods_AndroidMessenger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4972A4C814D509010CE3D4D /* Pods_AndroidMessenger.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,11 +72,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		088338F48C39C2D45A23DD25 /* Pods-AndroidMessenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AndroidMessenger.release.xcconfig"; path = "Pods/Target Support Files/Pods-AndroidMessenger/Pods-AndroidMessenger.release.xcconfig"; sourceTree = "<group>"; };
-		740C3F001CA34D270034E553 /* ChatMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatMessageCell.swift; path = Classes/ChatMessageCell.swift; sourceTree = "<group>"; };
-		740C3F061CA34E3B0034E553 /* ChatMessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChatMessageCell.xib; path = Classes/ChatMessageCell.xib; sourceTree = "<group>"; };
+		31E4B51FBEE8254701B6BD17 /* Pods_AndroidMessenger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AndroidMessenger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		740D8CC41CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PhoneNumberData+CoreDataProperties.swift"; path = "Classes/PhoneNumberData+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		740D8CC51CB0846800470483 /* PhoneNumberData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhoneNumberData.swift; path = Classes/PhoneNumberData.swift; sourceTree = "<group>"; };
+		74413BBC1D6494210080F24D /* ChatMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatMessageView.swift; path = Classes/ChatMessageView.swift; sourceTree = "<group>"; };
+		74413BBE1D64953C0080F24D /* TextMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TextMapper.swift; path = Classes/TextMapper.swift; sourceTree = "<group>"; };
+		74413BC01D6499510080F24D /* ChatMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatMessageCell.swift; path = Classes/ChatMessageCell.swift; sourceTree = "<group>"; };
+		74413BC11D6499510080F24D /* ChatMessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChatMessageCell.xib; path = Classes/ChatMessageCell.xib; sourceTree = "<group>"; };
 		74466B3A1CA30FFA001C8D1B /* ChatMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatMessageHandler.swift; path = Classes/ChatMessageHandler.swift; sourceTree = "<group>"; };
 		74466B3D1CA32597001C8D1B /* NSDate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NSDate.swift; path = Classes/NSDate.swift; sourceTree = "<group>"; };
 		7450078F1CA0DE0C0047673A /* AndroidMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -119,11 +123,11 @@
 		74F037B51CA1962500669F03 /* MessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MessageCell.xib; path = Classes/MessageCell.xib; sourceTree = "<group>"; };
 		74F037B81CA1B84A00669F03 /* MainModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MainModel.xcdatamodel; sourceTree = "<group>"; };
 		74F037BB1CA1C8F800669F03 /* CoreDataHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataHandler.swift; path = Classes/CoreDataHandler.swift; sourceTree = "<group>"; };
-		74F037BD1CA1D0ED00669F03 /* SocketStreamConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SocketStreamConnection.swift; path = Classes/SocketStreamConnection.swift; sourceTree = "<group>"; };
+		74F037BD1CA1D0ED00669F03 /* SocketHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SocketHandler.swift; path = Classes/SocketHandler.swift; sourceTree = "<group>"; };
 		74F037BF1CA1D43300669F03 /* NetworkingUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NetworkingUtil.swift; path = Classes/NetworkingUtil.swift; sourceTree = "<group>"; };
 		74F037C11CA1D6C200669F03 /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Common.swift; path = Classes/Common.swift; sourceTree = "<group>"; };
-		982335078B16C200BEA383F5 /* Pods-AndroidMessenger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AndroidMessenger.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AndroidMessenger/Pods-AndroidMessenger.debug.xcconfig"; sourceTree = "<group>"; };
-		B4972A4C814D509010CE3D4D /* Pods_AndroidMessenger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AndroidMessenger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		83C4E385060BED96F002C50F /* Pods-AndroidMessenger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AndroidMessenger.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AndroidMessenger/Pods-AndroidMessenger.debug.xcconfig"; sourceTree = "<group>"; };
+		8C477C6898989765E2395537 /* Pods-AndroidMessenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AndroidMessenger.release.xcconfig"; path = "Pods/Target Support Files/Pods-AndroidMessenger/Pods-AndroidMessenger.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,7 +135,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4107BD8E9E31FA34043ACD3 /* Pods_AndroidMessenger.framework in Frameworks */,
+				2FACC0DCC3F820302D7C787A /* Pods_AndroidMessenger.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,6 +168,8 @@
 		7439E4F81CA1013400522C80 /* MainWindow */ = {
 			isa = PBXGroup;
 			children = (
+				74413BBE1D64953C0080F24D /* TextMapper.swift */,
+				74413BBC1D6494210080F24D /* ChatMessageView.swift */,
 				74466B3A1CA30FFA001C8D1B /* ChatMessageHandler.swift */,
 				74EDC09B1CAA4662001EBE9F /* LeftMessageHandler.swift */,
 				745007941CA0DE0C0047673A /* ViewController.swift */,
@@ -189,8 +195,8 @@
 				745007A31CA0DE0C0047673A /* AndroidMessengerTests */,
 				745007AE1CA0DE0C0047673A /* AndroidMessengerUITests */,
 				745007901CA0DE0C0047673A /* Products */,
-				B33353144F0C9B11846E8EC8 /* Pods */,
 				C861343F9B8DA0A8A4BF0F4D /* Frameworks */,
+				BF6828850572AC16934CAD3A /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -286,8 +292,8 @@
 		74DFE2F21CA6F0EE00B8DB73 /* UserInterfaces */ = {
 			isa = PBXGroup;
 			children = (
-				740C3F001CA34D270034E553 /* ChatMessageCell.swift */,
-				740C3F061CA34E3B0034E553 /* ChatMessageCell.xib */,
+				74413BC01D6499510080F24D /* ChatMessageCell.swift */,
+				74413BC11D6499510080F24D /* ChatMessageCell.xib */,
 				748E5E891CAC4A3400EE8713 /* ChatScrollView.swift */,
 				747170121CB1E1EA00CF436C /* LeftMessageTableView.swift */,
 				74F037B31CA1921F00669F03 /* MessageCell.swift */,
@@ -325,16 +331,16 @@
 				74F037BB1CA1C8F800669F03 /* CoreDataHandler.swift */,
 				74C63E2F1CA87622006C1DEE /* MessageHandler.swift */,
 				74F037BF1CA1D43300669F03 /* NetworkingUtil.swift */,
-				74F037BD1CA1D0ED00669F03 /* SocketStreamConnection.swift */,
+				74F037BD1CA1D0ED00669F03 /* SocketHandler.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";
 		};
-		B33353144F0C9B11846E8EC8 /* Pods */ = {
+		BF6828850572AC16934CAD3A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				982335078B16C200BEA383F5 /* Pods-AndroidMessenger.debug.xcconfig */,
-				088338F48C39C2D45A23DD25 /* Pods-AndroidMessenger.release.xcconfig */,
+				83C4E385060BED96F002C50F /* Pods-AndroidMessenger.debug.xcconfig */,
+				8C477C6898989765E2395537 /* Pods-AndroidMessenger.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -343,7 +349,7 @@
 			isa = PBXGroup;
 			children = (
 				74D68BBF1CABA8DF0030321A /* AddressBook.framework */,
-				B4972A4C814D509010CE3D4D /* Pods_AndroidMessenger.framework */,
+				31E4B51FBEE8254701B6BD17 /* Pods_AndroidMessenger.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -355,12 +361,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 745007B41CA0DE0C0047673A /* Build configuration list for PBXNativeTarget "AndroidMessenger" */;
 			buildPhases = (
-				A9544620864EE2CD8285CD82 /* Check Pods Manifest.lock */,
+				2A0AB60C2B51BBCBC7ABB833 /* [CP] Check Pods Manifest.lock */,
 				7450078B1CA0DE0C0047673A /* Sources */,
 				7450078C1CA0DE0C0047673A /* Frameworks */,
 				7450078D1CA0DE0C0047673A /* Resources */,
-				BB6C916CFF79AAAC3B66BB1B /* Embed Pods Frameworks */,
-				428CE32E046223529779509E /* Copy Pods Resources */,
+				3D93F8246DC435623A30AB69 /* [CP] Embed Pods Frameworks */,
+				9D3D9FA9CA673F9AE3C08696 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -455,12 +461,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				740C3F071CA34E3B0034E553 /* ChatMessageCell.xib in Resources */,
 				745C77FB1CBB7400000034EB /* delete@2x.png in Resources */,
 				745007C11CA0F5CD0047673A /* ConnectWindow.xib in Resources */,
 				74A82B871CB32C21006BEF34 /* sms@2x.png in Resources */,
 				74A82B831CB2D651006BEF34 /* ca.cer in Resources */,
 				74F037B61CA1962500669F03 /* MessageCell.xib in Resources */,
+				74413BC31D6499510080F24D /* ChatMessageCell.xib in Resources */,
 				745007971CA0DE0C0047673A /* Assets.xcassets in Resources */,
 				74E3FAE11CAB2AAA00C9D3BB /* compose@2x.png in Resources */,
 				7450079A1CA0DE0C0047673A /* Main.storyboard in Resources */,
@@ -484,29 +490,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		428CE32E046223529779509E /* Copy Pods Resources */ = {
+		2A0AB60C2B51BBCBC7ABB833 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AndroidMessenger/Pods-AndroidMessenger-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A9544620864EE2CD8285CD82 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -514,19 +505,34 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		BB6C916CFF79AAAC3B66BB1B /* Embed Pods Frameworks */ = {
+		3D93F8246DC435623A30AB69 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AndroidMessenger/Pods-AndroidMessenger-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9D3D9FA9CA673F9AE3C08696 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AndroidMessenger/Pods-AndroidMessenger-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -547,24 +553,26 @@
 				74F037C21CA1D6C200669F03 /* Common.swift in Sources */,
 				74BEFFEE1CA655C900F7A15E /* MessagePart+CoreDataProperties.swift in Sources */,
 				747170131CB1E1EA00CF436C /* LeftMessageTableView.swift in Sources */,
-				740C3F011CA34D270034E553 /* ChatMessageCell.swift in Sources */,
 				74C63E2E1CA871AE006C1DEE /* Message.swift in Sources */,
 				74EDC09C1CAA4662001EBE9F /* LeftMessageHandler.swift in Sources */,
 				745007C01CA0F5CD0047673A /* ConnectWindow.swift in Sources */,
 				74DFFE331CB0449E00441DA6 /* Contact+CoreDataProperties.swift in Sources */,
+				74413BBD1D6494210080F24D /* ChatMessageView.swift in Sources */,
 				74BDE61F1CB0C26700491705 /* String-Extension.swift in Sources */,
 				74CD31661CA431AD0051909B /* Int-Extension.swift in Sources */,
+				74413BC21D6499510080F24D /* ChatMessageCell.swift in Sources */,
 				74466B3B1CA30FFA001C8D1B /* ChatMessageHandler.swift in Sources */,
 				74F037C01CA1D43300669F03 /* NetworkingUtil.swift in Sources */,
 				74DFE2F41CA6F62500B8DB73 /* NSColor-Extension.swift in Sources */,
 				747170111CB1C3B900CF436C /* ContactsHandler.swift in Sources */,
-				74F037BE1CA1D0ED00669F03 /* SocketStreamConnection.swift in Sources */,
+				74F037BE1CA1D0ED00669F03 /* SocketHandler.swift in Sources */,
 				748E5E8A1CAC4A3400EE8713 /* ChatScrollView.swift in Sources */,
 				748E5E8C1CAC4FD800EE8713 /* MessageTextField.swift in Sources */,
 				74BEFFEF1CA655C900F7A15E /* MessagePart.swift in Sources */,
 				74C63E2D1CA871AE006C1DEE /* Message+CoreDataProperties.swift in Sources */,
 				74466B3E1CA32597001C8D1B /* NSDate.swift in Sources */,
 				740D8CC61CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift in Sources */,
+				74413BBF1D64953C0080F24D /* TextMapper.swift in Sources */,
 				749495531CB75F5800B27FF2 /* LoadingView.swift in Sources */,
 				745007931CA0DE0C0047673A /* AppDelegate.swift in Sources */,
 			);
@@ -697,7 +705,7 @@
 		};
 		745007B51CA0DE0C0047673A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 982335078B16C200BEA383F5 /* Pods-AndroidMessenger.debug.xcconfig */;
+			baseConfigurationReference = 83C4E385060BED96F002C50F /* Pods-AndroidMessenger.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -714,7 +722,7 @@
 		};
 		745007B61CA0DE0C0047673A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 088338F48C39C2D45A23DD25 /* Pods-AndroidMessenger.release.xcconfig */;
+			baseConfigurationReference = 8C477C6898989765E2395537 /* Pods-AndroidMessenger.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

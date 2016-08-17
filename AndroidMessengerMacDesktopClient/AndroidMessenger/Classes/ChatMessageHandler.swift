@@ -279,20 +279,20 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
     
     func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
         let msg = results[row] as! NSManagedObject
-        
-        let textField = NSTextField()
-        textField.font = NSFont.systemFontOfSize(13)
-        textField.stringValue = msg.valueForKey("msg") as! String
-        let required_height = textField.cell!.cellSizeForBounds(NSMakeRect(0, 0, tableView.frame.width - 40, CGFloat(FLT_MAX))).height
-        return required_height + 35
+        let message = msg.valueForKey("msg") as! String
+        let linkedmsg = NSMutableAttributedString(string: message)
+        return ChatMessageView.heightForContainerWidth(linkedmsg, width: self.chatTableView.frame.width)
     }
     
     func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
         // Get an existing cell with the MyView identifier if it exists
-        let result: ChatMessageCell = {
-            let result: ChatMessageCell? = tableView.makeViewWithIdentifier("ChatMessageCellView", owner: nil) as? ChatMessageCell
-            result?.chatTextField.automaticDataDetectionEnabled = true
-            result?.chatTextField.font = NSFont.systemFontOfSize(13)
+        let result: ChatMessageView = {
+            var result: ChatMessageView? = tableView.makeViewWithIdentifier("ChatMessageView", owner: nil) as? ChatMessageView
+            
+            if result == nil {
+                result = ChatMessageView(frame: NSZeroRect)
+                result!.identifier = ChatMessageView.className()
+            }
             return result!
         } ()
         
@@ -307,17 +307,9 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             }
         })
         
-        result.chatTextField.textStorage?.setAttributedString(linkedmsg)
-        result.descriptionLabel.stringValue = (msg.valueForKey("time") as! NSDate).convertToStringDate("EEEE, MMM d, yyyy h:mm a")
-        if (msg.valueForKey("pending") as? Bool == true) {
-            result.descriptionLabel.stringValue = "pending"
-        } else if (msg.valueForKey("error") as? Bool == true) {
-            result.descriptionLabel.stringValue = "failed"
-        }
-        result.is_sending_message = (msg.valueForKey("received") as? Bool) == false
-        
-        // Return the result
+        result.configureWithText(msg, orientation: (msg.valueForKey("received") as? Bool) == false ? .Right : .Left)
         return result
+
     }
     
     func tableViewSelectionDidChange(notification: NSNotification) {

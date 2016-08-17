@@ -53,7 +53,7 @@ public class AndroidAppService extends Service {
         }
 
         Intent intent = new Intent(this, AndroidAppService.class);
-        bindService(intent, m_serviceConnection, BIND_AUTO_CREATE);
+        bindService(intent, m_serviceConnection, BIND_ABOVE_CLIENT);
 
         // Get the HandlerThread's Looper and use it for our Handler
         mServiceLooper = thread.getLooper();

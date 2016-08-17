@@ -154,7 +154,7 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
     func tableView(tableView: NSTableView, shouldShowCellExpansionForTableColumn tableColumn: NSTableColumn?, row: Int) -> Bool {
         return true
     }
-        
+    
     func tableViewSelectionDidChange(notification: NSNotification) {
         self.chatHandler.messageTextField.enabled = true
         if self.leftTableView.selectedRow <= compose_results.count-1 && self.leftTableView.selectedRow >= 0 {

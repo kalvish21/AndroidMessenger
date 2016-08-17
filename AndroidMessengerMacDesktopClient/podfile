@@ -2,10 +2,13 @@ platform :osx, '10.10'
 use_frameworks!
 
 target 'AndroidMessenger' do
+
     pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
-    pod 'Starscream'
     pod 'Alamofire'
-    pod 'ReachabilitySwift', :git => 'https://github.com/ashleymills/Reachability.swift'
+    pod 'ReachabilitySwift'
     pod 'libPhoneNumber-iOS'
     pod 'INAppStoreWindow'
+    pod 'Starscream'
+
 end
+
