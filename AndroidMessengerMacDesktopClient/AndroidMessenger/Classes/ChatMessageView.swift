@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import QuartzCore
 
 class ChatMessageView : NSView {
     enum Orientation {
@@ -19,18 +20,23 @@ class ChatMessageView : NSView {
     
     var dateString: NSAttributedString?
     var timeLabel: NSTextField!
-    
-    var backgroundView: NSImageView!
+
+    //var backgroundView: NSImageView!
+    var backgroundView: NSView!
 
     var orientation: Orientation = .Left
     static let font = NSFont.systemFontOfSize(NSFont.systemFontSize())
+    
+    let messagesBlue = "4e69a2"
+    let messagesGray = "2f4779"
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        
-        backgroundView = NSImageView(frame: NSZeroRect)
-        backgroundView.imageScaling = .ScaleAxesIndependently
-        backgroundView.image = NSImage(named: "gray_bubble_left")
+
+        backgroundView = NSView(frame: NSZeroRect)
+        backgroundView.wantsLayer = true
+        backgroundView.layer!.cornerRadius = 5
+        backgroundView.layer!.backgroundColor = NSColor.NSColorFromHex(messagesGray).CGColor
         addSubview(backgroundView)
         
         timeLabel = NSTextField(frame: NSZeroRect)
@@ -38,7 +44,6 @@ class ChatMessageView : NSView {
         timeLabel.textColor = NSColor.blackColor()
         timeLabel.bezeled = false
         timeLabel.bordered = false
-        timeLabel.backgroundColor = NSColor.blackColor()
         timeLabel.editable = false
         timeLabel.drawsBackground = false
         timeLabel.allowsEditingTextAttributes = true
@@ -51,12 +56,14 @@ class ChatMessageView : NSView {
         textLabel.editable = false
         textLabel.drawsBackground = false
         textLabel.bordered = false
-        textLabel.backgroundColor = NSColor.clearColor()
         textLabel.allowsEditingTextAttributes = true
         textLabel.selectable = true
-        addSubview(textLabel)
+        textLabel.wantsLayer = true
+        textLabel.textColor = NSColor.whiteColor()
+        textLabel.layer!.backgroundColor = NSColor.clearColor().CGColor
+        addSubview(textLabel, positioned: .Above, relativeTo: backgroundView)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -65,8 +72,7 @@ class ChatMessageView : NSView {
         self.orientation = orientation
         self.string = TextMapper.attributedStringForText(msg.valueForKey("msg") as! String, date: false)
         textLabel.attributedStringValue = self.string!
-        backgroundView.image = NSImage(named: orientation == .Right ? "gray_bubble_right" : "gray_bubble_left")
-        
+
         self.dateString = TextMapper.attributedStringForText((msg.valueForKey("time") as! NSDate).convertToStringDate("EEEE, MMM d, yyyy h:mm a"), date: true)
         
         if (msg.valueForKey("pending") as? Bool == true) {
@@ -88,8 +94,8 @@ class ChatMessageView : NSView {
 
     override var frame: NSRect {
         didSet {
-            var backgroundFrame = NSMakeRect(frame.origin.x, 20, frame.size.width, frame.size.height - ChatMessageView.TimeHeight)
-
+            let paddingEdges: CGFloat = 5
+            var backgroundFrame = NSMakeRect(frame.origin.x + paddingEdges, 20, frame.size.width, frame.size.height - ChatMessageView.TimeHeight + 2)
             backgroundFrame.size.width *= ChatMessageView.WidthPercentage
 
             let textMaxWidth = ChatMessageView.widthOfText(backgroundWidth: backgroundFrame.size.width)
@@ -100,9 +106,18 @@ class ChatMessageView : NSView {
 
             switch (orientation) {
             case .Left:
-                backgroundFrame.origin.x = frame.origin.x
+                backgroundFrame.origin.x = frame.origin.x + paddingEdges
+                
+                backgroundView.layer!.backgroundColor = NSColor.NSColorFromHex(messagesBlue).CGColor
+                textLabel.layer!.backgroundColor = NSColor.NSColorFromHex(messagesBlue).CGColor
+                break
+
             case .Right:
-                backgroundFrame.origin.x = frame.size.width - backgroundFrame.size.width
+                backgroundFrame.origin.x = frame.size.width - backgroundFrame.size.width - paddingEdges
+                
+                backgroundView.layer!.backgroundColor = NSColor.NSColorFromHex(messagesGray).CGColor
+                textLabel.layer!.backgroundColor = NSColor.NSColorFromHex(messagesGray).CGColor
+                break
             }
             
             backgroundView.frame = backgroundFrame
@@ -110,7 +125,7 @@ class ChatMessageView : NSView {
             switch (orientation) {
             case .Left:
                 textLabel.frame = NSRect(
-                    x: backgroundView.frame.origin.x + ChatMessageView.TextPointySideBorder,
+                    x: backgroundView.frame.origin.x + 5,
                     y: backgroundView.frame.origin.y + ChatMessageView.TextTopBorder - (ChatMessageView.VerticalTextPadding / 2),
                     width: textSize.width,
                     height: textSize.height + ChatMessageView.VerticalTextPadding / 2
