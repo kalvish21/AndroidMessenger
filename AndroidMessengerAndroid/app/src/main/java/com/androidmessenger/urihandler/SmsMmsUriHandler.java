@@ -39,6 +39,8 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Kalyan Vishnubhatla on 3/28/16.
@@ -49,8 +51,6 @@ public class SmsMmsUriHandler implements Serializable, SendingSmsObserver.OnSmsS
     private AndroidAppService service;
     private Context context;
     private Util util;
-
-    private final String SEND = "send";
 
     public SmsMmsUriHandler(AndroidAppService service) {
         this.service = service;
@@ -84,7 +84,7 @@ public class SmsMmsUriHandler implements Serializable, SendingSmsObserver.OnSmsS
         String[] args = null;
         if (largestDate != null) {
             filter = "date >= ?";
-            args = new String[] {largestDate};
+            args = new String[]{largestDate};
         }
 
         ContentResolver contentResolver = context.getContentResolver();
@@ -332,14 +332,19 @@ public class SmsMmsUriHandler implements Serializable, SendingSmsObserver.OnSmsS
             });
             smsManager.sendMultipartTextMessage(phoneNumber, null, parts, null, null);
         } else {
-            Intent sentIntent = new Intent(SEND);
+            Intent sentIntent = new Intent(uuid);
             PendingIntent sendingPendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, sentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             BroadcastReceiver receiver = new BroadcastReceiver() {
                 public void onReceive(Context context, Intent intent) {
                     switch (getResultCode()) {
                         case Activity.RESULT_OK: {
                             Bundle bundle = intent.getExtras();
+                            Map<String, Object> map = new HashMap<>();
+                            for (String key : bundle.keySet()) {
+                                map.put(key, bundle.get(key));
+                            }
                             String smsUri = bundle.getString("uri");
+                            Log.i(TAG, smsUri);
 
                             onSmsSent(Uri.parse(smsUri), uuid);
                         }
@@ -359,7 +364,7 @@ public class SmsMmsUriHandler implements Serializable, SendingSmsObserver.OnSmsS
                     context.unregisterReceiver(this);
                 }
             };
-            context.registerReceiver(receiver, new IntentFilter(SEND));
+            context.registerReceiver(receiver, new IntentFilter(uuid));
 
             smsManager.sendTextMessage(phoneNumber, null, message, sendingPendingIntent, null);
         }

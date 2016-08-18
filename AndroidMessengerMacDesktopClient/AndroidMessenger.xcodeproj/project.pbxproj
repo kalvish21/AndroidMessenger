@@ -45,8 +45,6 @@
 		74E3FAE11CAB2AAA00C9D3BB /* compose@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 74E3FAE01CAB2AAA00C9D3BB /* compose@2x.png */; };
 		74EDC09A1CAA2F85001EBE9F /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = 74EDC0991CAA2F85001EBE9F /* SimplePing.m */; };
 		74EDC09C1CAA4662001EBE9F /* LeftMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EDC09B1CAA4662001EBE9F /* LeftMessageHandler.swift */; };
-		74F037B41CA1921F00669F03 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F037B31CA1921F00669F03 /* MessageCell.swift */; };
-		74F037B61CA1962500669F03 /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74F037B51CA1962500669F03 /* MessageCell.xib */; };
 		74F037B91CA1B84A00669F03 /* MainModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 74F037B71CA1B84A00669F03 /* MainModel.xcdatamodeld */; };
 		74F037BC1CA1C8F800669F03 /* CoreDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F037BB1CA1C8F800669F03 /* CoreDataHandler.swift */; };
 		74F037BE1CA1D0ED00669F03 /* SocketHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F037BD1CA1D0ED00669F03 /* SocketHandler.swift */; };
@@ -119,8 +117,6 @@
 		74EDC0981CAA2F85001EBE9F /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimplePing.h; path = Classes/SimplePing/SimplePing.h; sourceTree = "<group>"; };
 		74EDC0991CAA2F85001EBE9F /* SimplePing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SimplePing.m; path = Classes/SimplePing/SimplePing.m; sourceTree = "<group>"; };
 		74EDC09B1CAA4662001EBE9F /* LeftMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LeftMessageHandler.swift; path = Classes/LeftMessageHandler.swift; sourceTree = "<group>"; };
-		74F037B31CA1921F00669F03 /* MessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageCell.swift; path = Classes/MessageCell.swift; sourceTree = "<group>"; };
-		74F037B51CA1962500669F03 /* MessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MessageCell.xib; path = Classes/MessageCell.xib; sourceTree = "<group>"; };
 		74F037B81CA1B84A00669F03 /* MainModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MainModel.xcdatamodel; sourceTree = "<group>"; };
 		74F037BB1CA1C8F800669F03 /* CoreDataHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataHandler.swift; path = Classes/CoreDataHandler.swift; sourceTree = "<group>"; };
 		74F037BD1CA1D0ED00669F03 /* SocketHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SocketHandler.swift; path = Classes/SocketHandler.swift; sourceTree = "<group>"; };
@@ -296,8 +292,6 @@
 				74413BC11D6499510080F24D /* ChatMessageCell.xib */,
 				748E5E891CAC4A3400EE8713 /* ChatScrollView.swift */,
 				747170121CB1E1EA00CF436C /* LeftMessageTableView.swift */,
-				74F037B31CA1921F00669F03 /* MessageCell.swift */,
-				74F037B51CA1962500669F03 /* MessageCell.xib */,
 				748E5E8B1CAC4FD800EE8713 /* MessageTextField.swift */,
 			);
 			name = UserInterfaces;
@@ -465,7 +459,6 @@
 				745007C11CA0F5CD0047673A /* ConnectWindow.xib in Resources */,
 				74A82B871CB32C21006BEF34 /* sms@2x.png in Resources */,
 				74A82B831CB2D651006BEF34 /* ca.cer in Resources */,
-				74F037B61CA1962500669F03 /* MessageCell.xib in Resources */,
 				74413BC31D6499510080F24D /* ChatMessageCell.xib in Resources */,
 				745007971CA0DE0C0047673A /* Assets.xcassets in Resources */,
 				74E3FAE11CAB2AAA00C9D3BB /* compose@2x.png in Resources */,
@@ -547,7 +540,6 @@
 				74DFFE341CB0449E00441DA6 /* Contact.swift in Sources */,
 				74C63E301CA87622006C1DEE /* MessageHandler.swift in Sources */,
 				74EDC09A1CAA2F85001EBE9F /* SimplePing.m in Sources */,
-				74F037B41CA1921F00669F03 /* MessageCell.swift in Sources */,
 				740D8CC71CB0846800470483 /* PhoneNumberData.swift in Sources */,
 				74F037B91CA1B84A00669F03 /* MainModel.xcdatamodeld in Sources */,
 				74F037C21CA1D6C200669F03 /* Common.swift in Sources */,
