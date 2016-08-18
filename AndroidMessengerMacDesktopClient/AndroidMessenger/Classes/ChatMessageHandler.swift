@@ -316,6 +316,13 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         // User selected a new row
     }
     
+    func tableView(tableView: NSTableView, nextTypeSelectMatchFromRow startRow: Int, toRow endRow: Int, forString searchString: String) -> Int {
+        self.messageTextField.stringValue = searchString
+        self.messageTextField.becomeFirstResponder()
+        
+        return -1
+    }
+    
     func tableViewColumnDidResize(notification: NSNotification) {
         self.chatTableView.reloadData()
     }

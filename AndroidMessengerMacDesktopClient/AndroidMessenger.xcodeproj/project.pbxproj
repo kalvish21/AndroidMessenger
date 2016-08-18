@@ -50,6 +50,8 @@
 		74F037BE1CA1D0ED00669F03 /* SocketHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F037BD1CA1D0ED00669F03 /* SocketHandler.swift */; };
 		74F037C01CA1D43300669F03 /* NetworkingUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F037BF1CA1D43300669F03 /* NetworkingUtil.swift */; };
 		74F037C21CA1D6C200669F03 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F037C11CA1D6C200669F03 /* Common.swift */; };
+		8082C0DCA44DF7BDAE9CA227 /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8082C85C99DE338E4BDCEA15 /* MessageCell.xib */; };
+		8082CAC4759105876C484410 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8082CA26B3B22A789AD4AD5E /* MessageCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -122,6 +124,8 @@
 		74F037BD1CA1D0ED00669F03 /* SocketHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SocketHandler.swift; path = Classes/SocketHandler.swift; sourceTree = "<group>"; };
 		74F037BF1CA1D43300669F03 /* NetworkingUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NetworkingUtil.swift; path = Classes/NetworkingUtil.swift; sourceTree = "<group>"; };
 		74F037C11CA1D6C200669F03 /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Common.swift; path = Classes/Common.swift; sourceTree = "<group>"; };
+		8082C85C99DE338E4BDCEA15 /* MessageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
+		8082CA26B3B22A789AD4AD5E /* MessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		83C4E385060BED96F002C50F /* Pods-AndroidMessenger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AndroidMessenger.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AndroidMessenger/Pods-AndroidMessenger.debug.xcconfig"; sourceTree = "<group>"; };
 		8C477C6898989765E2395537 /* Pods-AndroidMessenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AndroidMessenger.release.xcconfig"; path = "Pods/Target Support Files/Pods-AndroidMessenger/Pods-AndroidMessenger.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -293,6 +297,8 @@
 				748E5E891CAC4A3400EE8713 /* ChatScrollView.swift */,
 				747170121CB1E1EA00CF436C /* LeftMessageTableView.swift */,
 				748E5E8B1CAC4FD800EE8713 /* MessageTextField.swift */,
+				8082CA26B3B22A789AD4AD5E /* MessageCell.swift */,
+				8082C85C99DE338E4BDCEA15 /* MessageCell.xib */,
 			);
 			name = UserInterfaces;
 			sourceTree = "<group>";
@@ -463,6 +469,7 @@
 				745007971CA0DE0C0047673A /* Assets.xcassets in Resources */,
 				74E3FAE11CAB2AAA00C9D3BB /* compose@2x.png in Resources */,
 				7450079A1CA0DE0C0047673A /* Main.storyboard in Resources */,
+				8082C0DCA44DF7BDAE9CA227 /* MessageCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -567,6 +574,7 @@
 				74413BBF1D64953C0080F24D /* TextMapper.swift in Sources */,
 				749495531CB75F5800B27FF2 /* LoadingView.swift in Sources */,
 				745007931CA0DE0C0047673A /* AppDelegate.swift in Sources */,
+				8082CAC4759105876C484410 /* MessageCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

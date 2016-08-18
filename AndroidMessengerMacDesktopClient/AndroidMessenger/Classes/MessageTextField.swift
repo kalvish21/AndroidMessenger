@@ -30,4 +30,16 @@ class MessageTextField: NSTextField {
         }
         return NSMakeSize(self.frame.size.width, height!)
     }
+
+    override func becomeFirstResponder() -> Bool {
+        let status = super.becomeFirstResponder()
+        
+        let selectionRange = self.currentEditor()?.selectedRange
+        if selectionRange != nil {
+            self.currentEditor()?.selectedRange = NSMakeRange(selectionRange!.location, 0)
+            self.currentEditor()?.moveToEndOfLine(nil)
+        }
+        
+        return status
+    }
 }
