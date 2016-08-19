@@ -132,6 +132,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: messageSentConfirmation, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: newMessageReceived, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: leftDataShouldRefresh, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: chatDataShouldRefresh, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: applicationBecameVisible, object: nil)
         
         // Populate left message view box
@@ -165,6 +166,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     
     func handleNotification(notification: NSNotification) {
         switch notification.name {
+        case chatDataShouldRefresh:
+            let userInfo: Dictionary<String, AnyObject>? = notification.object as? Dictionary<String, AnyObject>
+            self.chatHandler.refreshIfThreadIdMatches(userInfo!["thread_id"] as! Int)
+            break
         case websocketConnected:
             getLatestDataFromApp(false)
             break

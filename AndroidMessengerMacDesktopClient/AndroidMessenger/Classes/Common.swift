@@ -20,3 +20,7 @@ let messageSentConfirmation: String = "MessageSentConfirmation"
 let newMessageReceived: String = "NewMessageReceived"
 let leftDataShouldRefresh: String = "leftDataShouldRefresh"
 let applicationBecameVisible: String = "applicationBecameVisible"
+let chatDataShouldRefresh: String = "chatDataShouldRefresh"
+
+
+

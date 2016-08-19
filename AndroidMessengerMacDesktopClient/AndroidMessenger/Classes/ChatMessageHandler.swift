@@ -41,6 +41,12 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         self.chatTableView.registerNib(NSNib(nibNamed: "ChatMessageCell", bundle: NSBundle.mainBundle())!, forIdentifier: "ChatMessageCellView")
     }
     
+    func refreshIfThreadIdMatches(thread_id: Int) {
+        if self.thread_id == thread_id {
+            self.chatTableView.reloadData()
+        }
+    }
+    
     func addSmsFromIdArray(array: Array<Int>) {
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
         let context = delegate.coreDataHandler.managedObjectContext

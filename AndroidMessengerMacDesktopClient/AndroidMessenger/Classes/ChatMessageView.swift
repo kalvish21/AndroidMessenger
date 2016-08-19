@@ -78,6 +78,45 @@ class ChatMessageView : NSView {
         
         if (msg.valueForKey("pending") as? Bool == true) {
             self.dateString = TextMapper.attributedStringForText("pending", date: true)
+            
+            // See if message failed
+            let objectId = msg.objectID
+            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(10 * Double(NSEC_PER_SEC)))
+            dispatch_after(delayTime, dispatch_get_main_queue()) {
+                let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+                let context = delegate.coreDataHandler.managedObjectContext
+                
+                let msg = context.objectWithID(objectId)
+                var changed: Bool = false
+                if msg.valueForKey("pending") as? Bool == true {
+                    msg.setValue(false, forKey: "pending")
+                    msg.setValue(true, forKey: "error")
+                    changed = true
+                }
+                
+                if !changed {
+                    return
+                }
+                
+                do {
+                    // Save the context
+                    try context.save()
+                    delegate.coreDataHandler.managedObjectContext.performBlock({
+                        do {
+                            try delegate.coreDataHandler.managedObjectContext.save()
+                        } catch {
+                            fatalError("Failure to save context: \(error)")
+                        }
+                    })
+                    
+                    let userInfo: Dictionary<String, AnyObject> = ["thread_id": msg.valueForKey("thread_id") as! Int]
+                    NSNotificationCenter.defaultCenter().postNotificationName(chatDataShouldRefresh, object: userInfo)
+
+                } catch let error as NSError {
+                    NSLog("Unresolved error: %@, %@", error, error.userInfo)
+                }
+            }
+
         } else if (msg.valueForKey("error") as? Bool == true) {
             self.dateString = TextMapper.attributedStringForText("failed", date: true)
         }
