@@ -168,8 +168,6 @@
 		7439E4F81CA1013400522C80 /* MainWindow */ = {
 			isa = PBXGroup;
 			children = (
-				74413BBE1D64953C0080F24D /* TextMapper.swift */,
-				74413BBC1D6494210080F24D /* ChatMessageView.swift */,
 				74466B3A1CA30FFA001C8D1B /* ChatMessageHandler.swift */,
 				74EDC09B1CAA4662001EBE9F /* LeftMessageHandler.swift */,
 				745007941CA0DE0C0047673A /* ViewController.swift */,
@@ -292,6 +290,8 @@
 		74DFE2F21CA6F0EE00B8DB73 /* UserInterfaces */ = {
 			isa = PBXGroup;
 			children = (
+				74413BBE1D64953C0080F24D /* TextMapper.swift */,
+				74413BBC1D6494210080F24D /* ChatMessageView.swift */,
 				74413BC01D6499510080F24D /* ChatMessageCell.swift */,
 				74413BC11D6499510080F24D /* ChatMessageCell.xib */,
 				748E5E891CAC4A3400EE8713 /* ChatScrollView.swift */,

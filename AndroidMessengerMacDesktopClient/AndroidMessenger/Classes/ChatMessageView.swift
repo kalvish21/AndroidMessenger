@@ -27,8 +27,8 @@ class ChatMessageView : NSView {
     var orientation: Orientation = .Left
     static let font = NSFont.systemFontOfSize(NSFont.systemFontSize())
     
-    let messagesBlue = "4e69a2"
-    let messagesGray = "2f4779"
+    let messagesBlue = "1e85f3"
+    let messagesGray = "e5e5ea"
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -56,9 +56,10 @@ class ChatMessageView : NSView {
         textLabel.editable = false
         textLabel.drawsBackground = false
         textLabel.bordered = false
-        textLabel.allowsEditingTextAttributes = true
+        textLabel.allowsEditingTextAttributes = false
         textLabel.selectable = true
         textLabel.wantsLayer = true
+        textLabel.refusesFirstResponder = true
         textLabel.textColor = NSColor.whiteColor()
         textLabel.layer!.backgroundColor = NSColor.clearColor().CGColor
         addSubview(textLabel, positioned: .Above, relativeTo: backgroundView)
@@ -108,15 +109,17 @@ class ChatMessageView : NSView {
             case .Left:
                 backgroundFrame.origin.x = frame.origin.x + paddingEdges
                 
-                backgroundView.layer!.backgroundColor = NSColor.NSColorFromHex(messagesBlue).CGColor
-                textLabel.layer!.backgroundColor = NSColor.NSColorFromHex(messagesBlue).CGColor
+                backgroundView.layer!.backgroundColor = NSColor.NSColorFromHex(messagesGray).CGColor
+                textLabel.layer!.backgroundColor = NSColor.NSColorFromHex(messagesGray).CGColor
+                textLabel.textColor = NSColor.blackColor()
                 break
 
             case .Right:
                 backgroundFrame.origin.x = frame.size.width - backgroundFrame.size.width - paddingEdges
                 
-                backgroundView.layer!.backgroundColor = NSColor.NSColorFromHex(messagesGray).CGColor
-                textLabel.layer!.backgroundColor = NSColor.NSColorFromHex(messagesGray).CGColor
+                backgroundView.layer!.backgroundColor = NSColor.NSColorFromHex(messagesBlue).CGColor
+                textLabel.layer!.backgroundColor = NSColor.NSColorFromHex(messagesBlue).CGColor
+                textLabel.textColor = NSColor.whiteColor()
                 break
             }
             
