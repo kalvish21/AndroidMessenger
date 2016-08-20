@@ -29,6 +29,8 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         
         self.leftTableView = leftTableView
         self.chatHandler = chatHandler
+        
+        self.leftTableView.backgroundColor = NSColor.clearColor()
     }
     
     func filterTableData(filter_string: String) {

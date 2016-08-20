@@ -409,7 +409,7 @@ CA
                                         <rect key="frame" x="0.0" y="0.0" width="272.5" height="504"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-                                            <scrollView misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="72" horizontalPageScroll="10" verticalLineScroll="72" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" scrollerKnobStyle="light" translatesAutoresizingMaskIntoConstraints="NO" id="KxF-FI-4Vo">
+                                            <scrollView focusRingType="exterior" misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="72" horizontalPageScroll="10" verticalLineScroll="72" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" scrollerKnobStyle="light" translatesAutoresizingMaskIntoConstraints="NO" id="KxF-FI-4Vo">
                                                 <rect key="frame" x="0.0" y="58" width="269" height="411"/>
                                                 <clipView key="contentView" id="acy-G3-M6c">
                                                     <rect key="frame" x="1" y="0.0" width="267" height="410"/>
@@ -485,7 +485,7 @@ CA
                                         </constraints>
                                     </customView>
                                     <customView misplaced="YES" id="eeC-Dz-1q6">
-                                        <rect key="frame" x="274" y="0.0" width="443" height="504"/>
+                                        <rect key="frame" x="273.5" y="0.0" width="443.5" height="504"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <scrollView misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iRb-ub-nel">

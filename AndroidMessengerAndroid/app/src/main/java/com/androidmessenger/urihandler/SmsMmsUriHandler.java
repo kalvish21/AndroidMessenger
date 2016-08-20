@@ -130,35 +130,35 @@ public class SmsMmsUriHandler implements Serializable, SendingSmsObserver.OnSmsS
 
 
         // Get the MMS messages
-//        try {
-//            c = contentResolver.query(Constants.Mms, null, filter, args, null);
-//            for (int i = 0; i < c.getCount(); i++) {
-//                c.moveToNext();
-//                try {
-//                    String id = c.getString(c.getColumnIndexOrThrow("_id"));
-//
-//                    // Keep track of the largest date
-//                    long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow("date")));
-//                    if (currentDate > largestDateCounted) {
-//                        largestDateCounted = currentDate;
-//                    }
-//
-//                    JSONObject msg = util.getJsonObjectFromCursorObjectForMmsText(c);
-//                    msg.put("address", getAddressesForMmsMessages(id));
-//                    msg.put("parts", getMmsPartsInJsonArray(id));
-//                    array.put(msg);
-//
-//                } catch (JSONException j) {
-//                    j.printStackTrace();
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//
-//        } finally {
-//            UserPreferencesManager.getInstance().setStringInPreferences(context, Constants.CURRENT_COUNTER, String.valueOf(largestDateCounted));
-//            c.close();
-//        }
+        try {
+            c = contentResolver.query(Constants.Mms, null, filter, args, null);
+            for (int i = 0; i < c.getCount(); i++) {
+                c.moveToNext();
+                try {
+                    String id = c.getString(c.getColumnIndexOrThrow("_id"));
+
+                    // Keep track of the largest date
+                    long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow("date")));
+                    if (currentDate > largestDateCounted) {
+                        largestDateCounted = currentDate;
+                    }
+
+                    JSONObject msg = util.getJsonObjectFromCursorObjectForMmsText(c);
+                    msg.put("address", getAddressesForMmsMessages(id));
+                    msg.put("parts", getMmsPartsInJsonArray(id));
+                    array.put(msg);
+
+                } catch (JSONException j) {
+                    j.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        } finally {
+            UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_current_counter), String.valueOf(largestDateCounted));
+            c.close();
+        }
         return array;
     }
 

@@ -105,18 +105,8 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             let number = (results[results.count - 1]).valueForKey("number") as! String
             var fmt_number = number
             
-            let phone_number = self.contactsHandler.getPhoneNumberIfContactExists(context, number: number)
-            if (phone_number != nil) {
-                contact = phone_number!.contact.name!
-                phoneNumbers!.append(phone_number!.formatted_number)
-                for item in phone_number!.contact.numbers! {
-                    let formatted_number = (item as! PhoneNumberData).formatted_number
-                    if formatted_number != phone_number!.formatted_number {
-                        phoneNumbers!.append(formatted_number)
-                    }
-                }
-                
-            } else {
+            let phone_number = self.checkForNumberInCoreData(context, number: number)
+            if (phone_number == nil) {
                 let fmt = NBPhoneNumberUtil()
                 do {
                     var nb_number: NBPhoneNumber? = nil
@@ -127,8 +117,12 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
                     fmt_number = number
                 }
                 
-                contact = fmt_number
-                phoneNumbers!.append(fmt_number)
+                // Check formatted number
+                let phone_number = self.checkForNumberInCoreData(context, number: fmt_number)
+                if (phone_number == nil) {
+                    contact = fmt_number
+                    phoneNumbers!.append(fmt_number)
+                }
             }
             self.tokenField.objectValue = contact!
         } else {
@@ -136,6 +130,21 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         }
         
         return results
+    }
+    
+    func checkForNumberInCoreData(context: NSManagedObjectContext!, number: String!) -> PhoneNumberData? {
+        let phone_number = self.contactsHandler.getPhoneNumberIfContactExists(context, number: number)
+        if (phone_number != nil) {
+            contact = phone_number!.contact.name!
+            phoneNumbers!.append(phone_number!.formatted_number)
+            for item in phone_number!.contact.numbers! {
+                let formatted_number = (item as! PhoneNumberData).formatted_number
+                if formatted_number != phone_number!.formatted_number {
+                    phoneNumbers!.append(formatted_number)
+                }
+            }
+        }
+        return phone_number
     }
     
     func performActionsForIncomingMessages(tableView: NSTableView, threadId: Int) {
@@ -421,7 +430,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             let context = delegate.coreDataHandler.managedObjectContext
             
             let request = NSFetchRequest(entityName: "PhoneNumberData")
-            request.predicate = NSPredicate(format: "contact.name CONTAINS[cd] %@ OR number CONTAINS[cd] %@", substring, substring)
+            request.predicate = NSPredicate(format: "contact.name CONTAINS[cd] %@ OR number CONTAINS[cd] %@ OR formatted_number CONTAINS[cd] %@", substring, substring, substring)
             request.fetchLimit = 10
             
             var results: Array<AnyObject> = Array<AnyObject>()

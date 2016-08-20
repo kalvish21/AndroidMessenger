@@ -13,8 +13,11 @@ class MessageCell: NSTableCellView {
     @IBOutlet weak var nameLabel: NSTextField!
     @IBOutlet weak var descriptionLabel: NSTextField!
 
+    var defaultBackgroundStyle: NSBackgroundStyle = .Light
+    
     override var backgroundStyle: NSBackgroundStyle {
         didSet {
+//            super.backgroundStyle = defaultBackgroundStyle
             if self.backgroundStyle == .Light {
                 self.nameLabel.textColor = NSColor.blackColor()
                 self.descriptionLabel.textColor = NSColor.NSColorFromRGB(0x9A9A9A)

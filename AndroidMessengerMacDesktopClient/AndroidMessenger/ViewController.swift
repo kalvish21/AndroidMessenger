@@ -52,8 +52,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         let textFieldSize = NSMakeSize(200, 24)
         let textField = NSTextField(frame: NSMakeRect(70, NSMidY(titleBarView.bounds) - (textFieldSize.height / 2), textFieldSize.width, textFieldSize.height))
         textField.placeholderString = "Type to filter by name"
-        textField.layer?.cornerRadius = 5
-        textField.layer?.masksToBounds = true
         textField.delegate = self.leftMessageHandler
         
         return textField
@@ -137,7 +135,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         
         // Populate left message view box
         self.leftMessageHandler.getDataForLeftTableView(false)
-        self.tableView  .becomeFirstResponder()
+        self.tableView.becomeFirstResponder()
         
         // Get latest data from app if we're connected
         let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
@@ -157,7 +155,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             let titleBarView = window.titleBarView
             
             titleBarView.addSubview(self.composeButton)
-            titleBarView.addSubview(self.deleteButton)
+//            titleBarView.addSubview(self.deleteButton)
             titleBarView.addSubview(self.textField)
             
             createdBar = true
@@ -183,6 +181,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             self.leftMessageHandler.getDataForLeftTableView(false)
             break
         case applicationBecameVisible:
+            NSLog("Got focus and will reset badge count")
             let row = self.tableView.selectedRow
             if row > -1 {
                 self.leftMessageHandler.markMessagesAsReadForCurrentThread(row, threadId: self.chatHandler.thread_id!)
@@ -334,10 +333,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                     var array: Array<Int> = Array<Int>()
                     for dictionary in returnValue {
                         let type = dictionary["type"] as! String
-                        if (type != "sms") {
-                            // We will ignore MMS for now
-                            continue
-                        }
+//                        if (type != "sms") {
+//                            // We will ignore MMS for now
+//                            continue
+//                        }
                         
                         // Make sure we do not have this id already in our core data
                         let id_value = Int((dictionary["id"] as! NSString).intValue)

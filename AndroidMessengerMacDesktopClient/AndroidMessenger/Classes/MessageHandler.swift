@@ -101,7 +101,7 @@ class MessageHandler {
             for i in 0...results!.count-1 {
                 var result = results![i] as! Dictionary<String, AnyObject>
                 let number = result["number"] as! String
-                let phoneNumber: PhoneNumberData? = self.contactsHandler.getPhoneNumberIfContactExists(context, number: number)
+                var phoneNumber: PhoneNumberData? = self.contactsHandler.getPhoneNumberIfContactExists(context, number: number)
                 
                 // If we got a number, then send it
                 var fmt_number: String? = nil
@@ -122,6 +122,11 @@ class MessageHandler {
                         } catch let error as NSError {
                             NSLog("Unresolved error: %@, %@, %@", error, error.userInfo, number)
                             fmt_number = number
+                        }
+                        
+                        phoneNumber = self.contactsHandler.getPhoneNumberIfContactExists(context, number: fmt_number)
+                        if phoneNumber != nil {
+                            fmt_number = phoneNumber!.contact.name!
                         }
                     }
                 }

@@ -143,6 +143,7 @@ class ChatMessageView : NSView {
             let dateSize = ChatMessageView.textSizeInWidth(self.timeLabel.attributedStringValue, width: textMaxWidth)
 
             backgroundFrame.size.width = ChatMessageView.widthOfBackground(textWidth: textSize.width)
+            backgroundFrame.size.height = textSize.height + ChatMessageView.VerticalTextPadding / 2 + 5
 
             switch (orientation) {
             case .Left:
