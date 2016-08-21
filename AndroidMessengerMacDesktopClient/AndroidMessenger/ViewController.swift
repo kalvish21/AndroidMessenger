@@ -345,7 +345,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                         }
                         
                         var sms = NSEntityDescription.insertNewObjectForEntityForName("Message", inManagedObjectContext: context) as! Message
-                        sms = self.leftMessageHandler.messageHandler.setMessageDetailsFromDictionary(sms, dictionary: dictionary, is_pending: false)
+                        if (type == "sms") {
+                            sms = self.leftMessageHandler.messageHandler.setMessageDetailsFromDictionary(sms, dictionary: dictionary, is_pending: false)
+                        } else {
+                            sms = self.leftMessageHandler.messageHandler.setMessageDetailsFromDictionaryForMms(context, sms: sms, dictionary: dictionary, is_pending: false)
+                        }
                         
                         if (self.chatHandler.thread_id == sms.thread_id) {
                             array.append(Int(sms.id!))

@@ -8,6 +8,8 @@
 
 import Cocoa
 import QuartzCore
+import AsyncImageDownloaderOSX
+import Alamofire
 
 class ChatMessageView : NSView {
     enum Orientation {
@@ -23,12 +25,16 @@ class ChatMessageView : NSView {
 
     //var backgroundView: NSImageView!
     var backgroundView: NSView!
+    var mmsView: NSView = NSView(frame: NSMakeRect(0,0,150,150))
 
     var orientation: Orientation = .Left
     static let font = NSFont.systemFontOfSize(NSFont.systemFontSize())
     
     let messagesBlue = "1e85f3"
     let messagesGray = "e5e5ea"
+    
+    var message: Message!
+    var msgHeight: CGFloat = 0.0
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -68,12 +74,13 @@ class ChatMessageView : NSView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    func configureWithText(msg: NSManagedObject, orientation: Orientation) {
+    
+    func configureWithText(msg: Message, orientation: Orientation) {
+        self.message = msg
         self.orientation = orientation
         self.string = TextMapper.attributedStringForText(msg.valueForKey("msg") as! String, date: false)
         textLabel.attributedStringValue = self.string!
-
+        
         self.dateString = TextMapper.attributedStringForText((msg.valueForKey("time") as! NSDate).convertToStringDate("EEEE, MMM d, yyyy h:mm a"), date: true)
         
         if (msg.valueForKey("pending") as? Bool == true) {
@@ -111,12 +118,96 @@ class ChatMessageView : NSView {
                     
                     let userInfo: Dictionary<String, AnyObject> = ["thread_id": msg.valueForKey("thread_id") as! Int]
                     NSNotificationCenter.defaultCenter().postNotificationName(chatDataShouldRefresh, object: userInfo)
-
+                    
                 } catch let error as NSError {
                     NSLog("Unresolved error: %@, %@", error, error.userInfo)
                 }
             }
+            
+        } else if (msg.valueForKey("error") as? Bool == true) {
+            self.dateString = TextMapper.attributedStringForText("failed", date: true)
+        }
+        timeLabel.attributedStringValue = self.dateString!
+    }
+    
+    func configureWithTextAndData(msg: Message, orientation: Orientation) {
+        self.message = msg
+        self.orientation = orientation
+        self.string = TextMapper.attributedStringForText(msg.valueForKey("msg") as! String, date: false)
+        textLabel.attributedStringValue = self.string!
+        self.dateString = TextMapper.attributedStringForText((msg.valueForKey("time") as! NSDate).convertToStringDate("EEEE, MMM d, yyyy h:mm a"), date: true)
+        
+        if message.sms! == false && message.messageparts!.count > 0 {
+            var contenttype = 0
+            for var part in 0...message.messageparts!.count-1{
+                let dict = message.messageparts![part] as! MessagePart
+                NSLog(dict.content_type!)
+                switch(dict.content_type!) {
+                case "image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp":
+                    contenttype += 1
+                    let imageview = NSImageView(frame: NSMakeRect(0, 0, 150, 150))
+                    mmsView.addSubview(imageview)
+                    imageview.imageScaling = .ScaleProportionallyDown
+                    
+                    let networking = NetworkingUtil()
+                    let url = networking.getFullUrlPath("message/mms/file?uid=" + networking.generateUUID() + "&part_id=" + String(dict.id!))
+                    NSLog(url)
+                    AsyncImageDownloader.init(mediaURL: url, successBlock: { (image) in
+                        imageview.image = image
+                        }, failBlock: { (error) in
+                    }).startDownload()
+                    self.addSubview(mmsView)
 
+                    break
+                    
+                default:
+                    break
+                }
+            }
+            msgHeight += CGFloat(CGFloat(contenttype) * ChatMessageView.MMSHeight)
+        }
+        
+        if (msg.valueForKey("pending") as? Bool == true) {
+            self.dateString = TextMapper.attributedStringForText("pending", date: true)
+            
+            // See if message failed
+            let objectId = msg.objectID
+            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(10 * Double(NSEC_PER_SEC)))
+            dispatch_after(delayTime, dispatch_get_main_queue()) {
+                let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+                let context = delegate.coreDataHandler.managedObjectContext
+                
+                let msg = context.objectWithID(objectId)
+                var changed: Bool = false
+                if msg.valueForKey("pending") as? Bool == true {
+                    msg.setValue(false, forKey: "pending")
+                    msg.setValue(true, forKey: "error")
+                    changed = true
+                }
+                
+                if !changed {
+                    return
+                }
+                
+                do {
+                    // Save the context
+                    try context.save()
+                    delegate.coreDataHandler.managedObjectContext.performBlock({
+                        do {
+                            try delegate.coreDataHandler.managedObjectContext.save()
+                        } catch {
+                            fatalError("Failure to save context: \(error)")
+                        }
+                    })
+                    
+                    let userInfo: Dictionary<String, AnyObject> = ["thread_id": msg.valueForKey("thread_id") as! Int]
+                    NSNotificationCenter.defaultCenter().postNotificationName(chatDataShouldRefresh, object: userInfo)
+                    
+                } catch let error as NSError {
+                    NSLog("Unresolved error: %@, %@", error, error.userInfo)
+                }
+            }
+            
         } else if (msg.valueForKey("error") as? Bool == true) {
             self.dateString = TextMapper.attributedStringForText("failed", date: true)
         }
@@ -131,11 +222,14 @@ class ChatMessageView : NSView {
     static let VerticalTextPadding: CGFloat = 4
     static let HorizontalTextMeasurementPadding: CGFloat = 5
     static let TimeHeight: CGFloat = 40
+    static let MMSHeight: CGFloat = 150
+    
+    var backgroundFrame: NSRect!
 
     override var frame: NSRect {
         didSet {
             let paddingEdges: CGFloat = 5
-            var backgroundFrame = NSMakeRect(frame.origin.x + paddingEdges, 20, frame.size.width, frame.size.height - ChatMessageView.TimeHeight + 2)
+            backgroundFrame = NSMakeRect(frame.origin.x + paddingEdges, 20, frame.size.width, frame.size.height - ChatMessageView.TimeHeight + 2)
             backgroundFrame.size.width *= ChatMessageView.WidthPercentage
 
             let textMaxWidth = ChatMessageView.widthOfText(backgroundWidth: backgroundFrame.size.width)
@@ -144,11 +238,11 @@ class ChatMessageView : NSView {
 
             backgroundFrame.size.width = ChatMessageView.widthOfBackground(textWidth: textSize.width)
             backgroundFrame.size.height = textSize.height + ChatMessageView.VerticalTextPadding / 2 + 5
-
+            
             switch (orientation) {
             case .Left:
                 backgroundFrame.origin.x = frame.origin.x + paddingEdges
-                
+
                 backgroundView.layer!.backgroundColor = NSColor.NSColorFromHex(messagesGray).CGColor
                 textLabel.layer!.backgroundColor = NSColor.NSColorFromHex(messagesGray).CGColor
                 textLabel.textColor = NSColor.blackColor()
@@ -164,6 +258,17 @@ class ChatMessageView : NSView {
             }
             
             backgroundView.frame = backgroundFrame
+            if message.sms! == false && message.messageparts!.count > 0 {
+                var contenttype = 0
+                for var part in 0...message.messageparts!.count-1{
+                    let dict = message.messageparts![part] as! MessagePart
+                    NSLog(dict.content_type!)
+                    if dict.content_type! != "text/plain" {
+                        contenttype += 1
+                    }
+                }
+                backgroundFrame.size.height += msgHeight
+            }
             
             switch (orientation) {
             case .Left:
@@ -180,6 +285,8 @@ class ChatMessageView : NSView {
                     width: dateSize.width,
                     height: 15
                 )
+                mmsView.frame.origin.x = backgroundView.frame.origin.x + 2
+                mmsView.frame.origin.y = backgroundView.frame.origin.y + ChatMessageView.TextTopBorder - (ChatMessageView.VerticalTextPadding / 2) + 30
                 
             case .Right:
                 backgroundView.frame.origin.y = backgroundView.frame.origin.y + 10
@@ -196,6 +303,9 @@ class ChatMessageView : NSView {
                     width: dateSize.width,
                     height: 15
                 )
+                
+                mmsView.frame.origin.x = backgroundView.frame.origin.x + ChatMessageView.TextRoundSideBorder
+                mmsView.frame.origin.y = backgroundView.frame.origin.y + ChatMessageView.TextTopBorder - (ChatMessageView.VerticalTextPadding / 2) + 30
             }
         }
     }
@@ -224,9 +334,24 @@ class ChatMessageView : NSView {
         return size
     }
 
-    class func heightForContainerWidth(text: NSAttributedString, width: CGFloat) -> CGFloat {
+    class func heightForContainerWidth(msg: Message, width: CGFloat) -> CGFloat {
+        let text = NSMutableAttributedString(string: msg.msg!)
         let size = textSizeInWidth(text, width: widthOfText(backgroundWidth: (width * WidthPercentage)))
-        let height = size.height + TimeHeight + TextTopBorder + TextBottomBorder
+        var height = size.height + TimeHeight + TextTopBorder + TextBottomBorder
+        
+        if msg.sms! == false && msg.messageparts!.count > 0 {
+            var contenttype = 0
+            for var part in 0...msg.messageparts!.count-1{
+                let dict = msg.messageparts![part] as! MessagePart
+                if dict.content_type! != "text/plain" {
+                    contenttype += 1
+                }
+            }
+            height += CGFloat(CGFloat(contenttype) * MMSHeight)
+        }
+        
         return height
     }
+    
+    
 }

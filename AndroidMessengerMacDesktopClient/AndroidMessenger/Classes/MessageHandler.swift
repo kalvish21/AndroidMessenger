@@ -31,6 +31,54 @@ class MessageHandler {
         sms.error = dictionary["failed"] as! Bool
         return sms
     }
+    
+    func setMessageDetailsFromDictionaryForMms(moc: NSManagedObjectContext, sms: Message, dictionary: Dictionary<String, AnyObject>, is_pending: Bool) -> Message {
+        NSLog("%@", dictionary)
+        sms.id = Int((dictionary["id"] as! NSString).intValue)
+        sms.thread_id = Int((dictionary["thread_id"] as! NSString).intValue)
+        sms.address = String(dictionary["address"] as! NSString)
+        sms.number = String(dictionary["address"] as! NSString)
+        sms.read = Bool(dictionary["read"] as! Bool)
+        sms.msg = ""
+        sms.received = Bool(dictionary["received"] as! Bool)
+        sms.time = NSDate.dateFromSeconds(Double(dictionary["time"] as! String)!)
+        sms.sms = String(dictionary["type"] as! NSString) == "sms"
+        sms.pending = is_pending
+        
+        let parts: Array<Dictionary<String, AnyObject>> = dictionary["parts"] as! Array<Dictionary<String, AnyObject>>
+        if sms.messageparts == nil {
+            sms.messageparts = NSMutableOrderedSet()
+        }
+        for var part in 0...parts.count-1{
+            let dict = parts[part]
+            
+            switch(dict["type"] as! String) {
+            case "text/plain":
+                var mmspart = NSEntityDescription.insertNewObjectForEntityForName("MessagePart", inManagedObjectContext: moc) as! MessagePart
+                mmspart.content_type = dict["type"] as! String
+                mmspart.id = Int(dict["part_id"] as! String)!
+                mmspart.message_id = Int(dict["mid"] as! String)!
+                sms.msg = dict["msg"] as! String
+                
+                (sms.messageparts as! NSMutableOrderedSet).addObject(mmspart)
+                break
+                
+            case "image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp":
+                var mmspart = NSEntityDescription.insertNewObjectForEntityForName("MessagePart", inManagedObjectContext: moc) as! MessagePart
+                mmspart.content_type = dict["type"] as! String
+                mmspart.id = Int(dict["part_id"] as! String)!
+                mmspart.message_id = Int(dict["mid"] as! String)!
+                
+                (sms.messageparts as! NSMutableOrderedSet).addObject(mmspart)
+                break
+                
+            default:
+                break
+            }
+        }
+        
+        return sms
+    }
 
     func setMessageDetailsFromJsonObject(sms: Message, object: JSON, is_pending: Bool) -> Message {
         sms.id = Int((object["id"].stringValue))

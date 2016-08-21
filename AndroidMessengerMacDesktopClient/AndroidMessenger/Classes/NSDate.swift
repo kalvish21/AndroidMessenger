@@ -23,4 +23,8 @@ extension NSDate {
     static func dateFromMilliseconds(ms: NSNumber) -> NSDate {
         return NSDate(timeIntervalSince1970:Double(ms) / 1000.0)
     }
+    
+    static func dateFromSeconds(ms: NSNumber) -> NSDate {
+        return NSDate(timeIntervalSince1970:Double(ms))
+    }
 }

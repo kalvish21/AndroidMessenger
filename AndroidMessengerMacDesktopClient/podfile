@@ -10,6 +10,7 @@ target 'AndroidMessenger' do
     pod 'INAppStoreWindow'
     pod 'Starscream'
     pod 'SNRFetchedResultsController'
+    pod 'AsyncImageDownloaderOSX', '~> 1.0.0'
 
 end
 

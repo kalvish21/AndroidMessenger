@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (3.3.1)
+  - AsyncImageDownloaderOSX (1.0.0)
   - INAppStoreWindow (1.4)
   - libPhoneNumber-iOS (0.8.11)
   - ReachabilitySwift (2.3.3)
@@ -9,6 +10,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - AsyncImageDownloaderOSX (~> 1.0.0)
   - INAppStoreWindow
   - libPhoneNumber-iOS
   - ReachabilitySwift
@@ -27,6 +29,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: 369bc67b6f5ac33ded3648d7bd21c5bfb91c2ecc
+  AsyncImageDownloaderOSX: c1170d6e93bebb9c47144533a7970b9c3f574f21
   INAppStoreWindow: 4fd569f7435557239e78316de139e886ccbaec4d
   libPhoneNumber-iOS: ded33fab2c51ee847979556aa504c9e70f32d703
   ReachabilitySwift: e0f6b6f280effb47731acfaaa2d5ffe223703793
@@ -34,6 +37,6 @@ SPEC CHECKSUMS:
   Starscream: d662732354b40dd19ed1ece3e3c44c80b536b83c
   SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
 
-PODFILE CHECKSUM: 51e9aeeb9c8815cd0f6ae19855a22a2914ab5307
+PODFILE CHECKSUM: 22c7beeb25fe8fe355b1740dbfc655edc7d1f21d
 
 COCOAPODS: 1.0.1

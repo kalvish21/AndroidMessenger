@@ -85,6 +85,7 @@ strip_invalid_archs() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/Alamofire/Alamofire.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/AsyncImageDownloaderOSX/AsyncImageDownloaderOSX.framework"
   install_framework "$BUILT_PRODUCTS_DIR/INAppStoreWindow/INAppStoreWindow.framework"
   install_framework "$BUILT_PRODUCTS_DIR/ReachabilitySwift/ReachabilitySwift.framework"
   install_framework "$BUILT_PRODUCTS_DIR/SNRFetchedResultsController/SNRFetchedResultsController.framework"
@@ -94,6 +95,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/Alamofire/Alamofire.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/AsyncImageDownloaderOSX/AsyncImageDownloaderOSX.framework"
   install_framework "$BUILT_PRODUCTS_DIR/INAppStoreWindow/INAppStoreWindow.framework"
   install_framework "$BUILT_PRODUCTS_DIR/ReachabilitySwift/ReachabilitySwift.framework"
   install_framework "$BUILT_PRODUCTS_DIR/SNRFetchedResultsController/SNRFetchedResultsController.framework"

@@ -294,9 +294,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
     
     func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
         let msg = results[row] as! NSManagedObject
-        let message = msg.valueForKey("msg") as! String
-        let linkedmsg = NSMutableAttributedString(string: message)
-        return ChatMessageView.heightForContainerWidth(linkedmsg, width: self.chatTableView.frame.width)
+        return ChatMessageView.heightForContainerWidth(msg as! Message, width: self.chatTableView.frame.width)
     }
     
     func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
@@ -322,7 +320,11 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             }
         })
         
-        result.configureWithText(msg, orientation: (msg.valueForKey("received") as? Bool) == false ? .Right : .Left)
+        if msg.valueForKey("sms") as! Bool == true {
+            result.configureWithText(msg as! Message, orientation: (msg.valueForKey("received") as? Bool) == false ? .Right : .Left)
+        } else {
+            result.configureWithTextAndData(msg as! Message, orientation: (msg.valueForKey("received") as? Bool) == false ? .Right : .Left)
+        }
         return result
 
     }
