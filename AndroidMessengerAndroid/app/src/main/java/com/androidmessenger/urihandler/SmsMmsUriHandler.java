@@ -253,6 +253,15 @@ public class SmsMmsUriHandler implements Serializable, SendingSmsObserver.OnSmsS
                             break;
                         }
 
+                        case "image/jpeg":
+                        case "image/jpg":
+                        case "image/png":
+                        case "image/gif":
+                        case "image/bmp": {
+                            // We have all information required
+                            break;
+                        }
+
                         default: {
                             break;
                         }
