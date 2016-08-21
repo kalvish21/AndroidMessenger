@@ -25,7 +25,7 @@ class ChatMessageView : NSView {
 
     //var backgroundView: NSImageView!
     var backgroundView: NSView!
-    var mmsView: NSView = NSView(frame: NSMakeRect(0,0,150,150))
+    var mmsView: NSView = NSView(frame: NSZeroRect)
 
     var orientation: Orientation = .Left
     static let font = NSFont.systemFontOfSize(NSFont.systemFontSize())
@@ -38,12 +38,16 @@ class ChatMessageView : NSView {
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-
+        
         backgroundView = NSView(frame: NSZeroRect)
         backgroundView.wantsLayer = true
         backgroundView.layer!.cornerRadius = 5
         backgroundView.layer!.backgroundColor = NSColor.NSColorFromHex(messagesGray).CGColor
         addSubview(backgroundView)
+        
+        mmsView = NSView(frame: NSZeroRect)
+        mmsView.wantsLayer = true
+        addSubview(mmsView)
         
         timeLabel = NSTextField(frame: NSZeroRect)
         timeLabel.backgroundColor = NSColor.clearColor()
@@ -145,7 +149,8 @@ class ChatMessageView : NSView {
                 switch(dict.content_type!) {
                 case "image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp":
                     contenttype += 1
-                    let imageview = NSImageView(frame: NSMakeRect(0, 0, 150, 150))
+                    mmsView.frame = NSMakeRect(0,0,150,150)
+                    let imageview = NSImageView(frame: mmsView.frame)
                     mmsView.addSubview(imageview)
                     imageview.imageScaling = .ScaleProportionallyDown
                     
@@ -231,13 +236,20 @@ class ChatMessageView : NSView {
             let paddingEdges: CGFloat = 5
             backgroundFrame = NSMakeRect(frame.origin.x + paddingEdges, 20, frame.size.width, frame.size.height - ChatMessageView.TimeHeight + 2)
             backgroundFrame.size.width *= ChatMessageView.WidthPercentage
+            NSLog("%f",frame.size.width)
 
             let textMaxWidth = ChatMessageView.widthOfText(backgroundWidth: backgroundFrame.size.width)
             let textSize = ChatMessageView.textSizeInWidth(self.textLabel.attributedStringValue, width: textMaxWidth)
             let dateSize = ChatMessageView.textSizeInWidth(self.timeLabel.attributedStringValue, width: textMaxWidth)
 
             backgroundFrame.size.width = ChatMessageView.widthOfBackground(textWidth: textSize.width)
-            backgroundFrame.size.height = textSize.height + ChatMessageView.VerticalTextPadding / 2 + 5
+            if mmsView.frame.width > 0 {
+                backgroundFrame.size.width += mmsView.frame.width + 20
+            }
+            backgroundFrame.size.height =  textSize.height + ChatMessageView.VerticalTextPadding / 2 + 5
+            if mmsView.frame.height > 0 {
+                backgroundFrame.size.height += mmsView.frame.height + 20
+            }
             
             switch (orientation) {
             case .Left:
@@ -285,11 +297,10 @@ class ChatMessageView : NSView {
                     width: dateSize.width,
                     height: 15
                 )
-                mmsView.frame.origin.x = backgroundView.frame.origin.x + 2
+                mmsView.frame.origin.x = frame.origin.x + paddingEdges + (backgroundFrame.size.width - mmsView.frame.size.width) / 2
                 mmsView.frame.origin.y = backgroundView.frame.origin.y + ChatMessageView.TextTopBorder - (ChatMessageView.VerticalTextPadding / 2) + 30
                 
             case .Right:
-                backgroundView.frame.origin.y = backgroundView.frame.origin.y + 10
                 textLabel.frame = NSRect(
                     x: backgroundView.frame.origin.x + ChatMessageView.TextRoundSideBorder,
                     y: backgroundView.frame.origin.y + ChatMessageView.TextTopBorder - (ChatMessageView.VerticalTextPadding / 2),
@@ -304,7 +315,7 @@ class ChatMessageView : NSView {
                     height: 15
                 )
                 
-                mmsView.frame.origin.x = backgroundView.frame.origin.x + ChatMessageView.TextRoundSideBorder
+                mmsView.frame.origin.x = frame.size.width - paddingEdges - backgroundFrame.size.width + (backgroundFrame.size.width - mmsView.frame.size.width) / 2
                 mmsView.frame.origin.y = backgroundView.frame.origin.y + ChatMessageView.TextTopBorder - (ChatMessageView.VerticalTextPadding / 2) + 30
             }
         }
@@ -335,9 +346,10 @@ class ChatMessageView : NSView {
     }
 
     class func heightForContainerWidth(msg: Message, width: CGFloat) -> CGFloat {
-        let text = NSMutableAttributedString(string: msg.msg!)
-        let size = textSizeInWidth(text, width: widthOfText(backgroundWidth: (width * WidthPercentage)))
-        var height = size.height + TimeHeight + TextTopBorder + TextBottomBorder
+        let field = NSTextField(frame: NSZeroRect)
+        field.attributedStringValue = TextMapper.attributedStringForText(msg.msg!, date: false)
+        field.sizeToFit()
+        var height = field.frame.height + TimeHeight + TextTopBorder + TextBottomBorder + 20
         
         if msg.sms! == false && msg.messageparts!.count > 0 {
             var contenttype = 0
