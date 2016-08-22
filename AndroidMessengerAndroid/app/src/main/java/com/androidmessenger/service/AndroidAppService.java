@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.androidmessenger.R;
 import com.androidmessenger.connections.WebServer;
 import com.androidmessenger.connections.WebSocket;
+import com.androidmessenger.observer.MmsObserver;
 import com.androidmessenger.observer.SmsObserver;
 import com.androidmessenger.receiver.WifiReciever;
 import com.androidmessenger.util.Constants;
@@ -39,7 +40,8 @@ public class AndroidAppService extends Service {
     private boolean connected;
     private WebSocket webSocket;
     private WebServer webServer;
-    private SmsObserver content;
+    private SmsObserver smsContent;
+    private MmsObserver mmsContent;
     private PowerManager.WakeLock wakeLock;
 
     @Override
@@ -115,8 +117,11 @@ public class AndroidAppService extends Service {
         }
 
         // Add observer
-        content = new SmsObserver(new Handler(), this);
-        getContentResolver().registerContentObserver(Constants.Sms, true, content);
+        smsContent = new SmsObserver(new Handler(), this);
+        getContentResolver().registerContentObserver(Constants.Sms, true, smsContent);
+
+        mmsContent = new MmsObserver(new Handler(), this);
+        getContentResolver().registerContentObserver(Constants.MmsSms, true, mmsContent);
 
         // Get wake lock
         if (wakeLock == null) {
@@ -145,7 +150,8 @@ public class AndroidAppService extends Service {
             }
 
             // Remove observers
-            getContentResolver().unregisterContentObserver(content);
+            getContentResolver().unregisterContentObserver(smsContent);
+            getContentResolver().unregisterContentObserver(mmsContent);
 
             // Remove wakelock
             if (wakeLock != null) {

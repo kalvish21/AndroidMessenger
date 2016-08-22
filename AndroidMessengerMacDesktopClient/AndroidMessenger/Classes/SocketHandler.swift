@@ -119,17 +119,17 @@ class SocketHandler: NSObject, WebSocketDelegate, WebSocketPongDelegate {
                                 
                                 // If the SMS id exists, move on
                                 let objectId = Int((object["id"].stringValue))
-                                if (self.messageHandler.checkIfMessageExists(context, idValue: objectId)) {
+                                let type = object["type"].stringValue
+                                if (type == "mms" && self.messageHandler.checkIfMessageExists(context, idValue: objectId, type: type)) {
                                     continue
                                 }
                                 
-                                let type = object["type"].stringValue
-                                if (type == "mms") {
-                                    break
-                                }
-                                
                                 var sms = NSEntityDescription.insertNewObjectForEntityForName("Message", inManagedObjectContext: context) as! Message
-                                sms = self.messageHandler.setMessageDetailsFromJsonObject(sms, object: object, is_pending: false)
+                                if type == "sms" {
+                                    sms = self.messageHandler.setMessageDetailsFromJsonObject(sms, object: object, is_pending: false)
+                                } else {
+                                    sms = self.messageHandler.setMessageDetailsFromJsonObjectForMms(context, sms: sms, dictionary: object, is_pending: false)
+                                }
                                 
                                 if sms.received == false {
                                     id_values.append(objectId!)

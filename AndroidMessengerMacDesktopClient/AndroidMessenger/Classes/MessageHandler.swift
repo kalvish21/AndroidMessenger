@@ -95,6 +95,53 @@ class MessageHandler {
         return sms
     }
     
+    func setMessageDetailsFromJsonObjectForMms(moc: NSManagedObjectContext, sms: Message, dictionary: JSON, is_pending: Bool) -> Message {
+        sms.id = Int((dictionary["id"].stringValue))
+        sms.thread_id = Int((dictionary["thread_id"].stringValue))
+        sms.address = String(dictionary["address"].stringValue)
+        sms.number = String(dictionary["address"].stringValue)
+        sms.read = Bool(dictionary["read"].boolValue)
+        sms.msg = ""
+        sms.received = Bool(dictionary["received"].boolValue)
+        sms.time = NSDate.dateFromSeconds(Double(dictionary["time"].stringValue)!)
+        sms.sms = String(dictionary["type"].stringValue) == "sms"
+        sms.pending = is_pending
+        
+        let parts: [JSON] = dictionary["parts"].array!
+        if sms.messageparts == nil {
+            sms.messageparts = NSMutableOrderedSet()
+        }
+        for var part in 0...parts.count-1{
+            let dict = parts[part]
+            
+            switch(dict["type"].stringValue) {
+            case "text/plain":
+                var mmspart = NSEntityDescription.insertNewObjectForEntityForName("MessagePart", inManagedObjectContext: moc) as! MessagePart
+                mmspart.content_type = dict["type"].stringValue
+                mmspart.id = Int(dict["part_id"].stringValue)!
+                mmspart.message_id = Int(dict["mid"].stringValue)!
+                sms.msg = dict["msg"].stringValue
+                
+                (sms.messageparts as! NSMutableOrderedSet).addObject(mmspart)
+                break
+                
+            case "image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp":
+                var mmspart = NSEntityDescription.insertNewObjectForEntityForName("MessagePart", inManagedObjectContext: moc) as! MessagePart
+                mmspart.content_type = dict["type"].stringValue
+                mmspart.id = Int(dict["part_id"].stringValue)!
+                mmspart.message_id = Int(dict["mid"].stringValue)!
+                
+                (sms.messageparts as! NSMutableOrderedSet).addObject(mmspart)
+                break
+                
+            default:
+                break
+            }
+        }
+        
+        return sms
+    }
+    
     func getLeftMessagePaneWithLatestMessages(moc: NSManagedObjectContext!) -> Array<AnyObject> {
         var request = NSFetchRequest(entityName: "Message")
         request.resultType = .DictionaryResultType
@@ -141,7 +188,7 @@ class MessageHandler {
             NSLog("Unresolved error: %@, %@", error, error.userInfo)
         }
         
-        if (results != nil) {
+        if (results != nil && results?.count > 0) {
             let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
             let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
             context.parentContext = delegate.coreDataHandler.managedObjectContext
@@ -188,9 +235,13 @@ class MessageHandler {
     }
     
     func checkIfMessageExists(moc: NSManagedObjectContext!, idValue: Int!) -> Bool {
+        return checkIfMessageExists(moc, idValue: idValue, type: "sms")
+    }
+    
+    func checkIfMessageExists(moc: NSManagedObjectContext!, idValue: Int!, type: String!) -> Bool {
         let request = NSFetchRequest(entityName: "Message")
         request.fetchLimit = 1
-        request.predicate = NSPredicate(format: "id = %i", idValue)
+        request.predicate = NSPredicate(format: "id = %i AND sms == %@", idValue, type == "sms")
         
         var objs: [Message]?
         do {

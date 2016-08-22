@@ -339,10 +339,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                     var array: Array<Int> = Array<Int>()
                     for dictionary in returnValue {
                         let type = dictionary["type"] as! String
-//                        if (type != "sms") {
-//                            // We will ignore MMS for now
-//                            continue
-//                        }
                         
                         // Make sure we do not have this id already in our core data
                         let id_value = Int((dictionary["id"] as! NSString).intValue)
