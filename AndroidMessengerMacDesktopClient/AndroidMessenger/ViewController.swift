@@ -90,9 +90,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             // Update the view, if already loaded.
         }
     }
+
+//    override func viewDidLayout() {
+//        super.viewDidLayout()
+//        self.view.window?.contentMinSize = NSSize(width: 1500, height: 1000)
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
 
         // Do any additional setup after loading the view.
         self.title = "Android Messenger"
@@ -185,6 +191,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             let row = self.tableView.selectedRow
             if row > -1 {
                 self.leftMessageHandler.markMessagesAsReadForCurrentThread(row, threadId: self.chatHandler.thread_id!)
+                self.leftMessageHandler.messageHandler.setBadgeCount()
             }
             break
         case messageSentConfirmation:

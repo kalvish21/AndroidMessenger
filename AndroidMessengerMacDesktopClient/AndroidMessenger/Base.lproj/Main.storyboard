@@ -399,11 +399,11 @@ CA
             <objects>
                 <viewController title="MessageMe" storyboardIdentifier="ViewController" id="zNX-T9-ezd" userLabel="ViewController" customClass="ViewController" customModule="AndroidMessenger" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" focusRingType="none" id="YxL-hO-aMk">
-                        <rect key="frame" x="0.0" y="0.0" width="1000" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1108" height="635"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <splitView misplaced="YES" dividerStyle="thin" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rsW-Nh-X2e">
-                                <rect key="frame" x="0.0" y="0.0" width="717" height="504"/>
+                                <rect key="frame" x="0.0" y="131" width="717" height="504"/>
                                 <subviews>
                                     <customView misplaced="YES" id="Jrg-zQ-2Eu">
                                         <rect key="frame" x="0.0" y="0.0" width="272.5" height="504"/>
@@ -640,7 +640,7 @@ CA
                     </connections>
                 </customObject>
             </objects>
-            <point key="canvasLocation" x="157" y="1181"/>
+            <point key="canvasLocation" x="211" y="1246.5"/>
         </scene>
     </scenes>
 </document>

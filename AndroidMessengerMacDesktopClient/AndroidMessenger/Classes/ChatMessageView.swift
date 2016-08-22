@@ -15,17 +15,18 @@ class ChatMessageView : NSView {
         case Left
         case Right
     }
-
+    
     var string: NSAttributedString?
     var textLabel: NSTextField!
     
     var dateString: NSAttributedString?
     var timeLabel: NSTextField!
-
+    
     //var backgroundView: NSImageView!
     var backgroundView: NSView!
     var mmsView: NSView = NSView(frame: NSZeroRect)
-
+    static var field = NSTextField(frame: NSZeroRect)
+    
     var orientation: Orientation = .Left
     static let font = NSFont.systemFontOfSize(NSFont.systemFontSize())
     
@@ -34,7 +35,7 @@ class ChatMessageView : NSView {
     
     var message: Message!
     var msgHeight: CGFloat = 0.0
-
+    
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         
@@ -58,7 +59,7 @@ class ChatMessageView : NSView {
         timeLabel.allowsEditingTextAttributes = true
         timeLabel.selectable = false
         addSubview(timeLabel)
-
+        
         textLabel = NSTextField(frame: NSZeroRect)
         textLabel.bezeled = false
         textLabel.bordered = false
@@ -140,15 +141,14 @@ class ChatMessageView : NSView {
         textLabel.attributedStringValue = self.string!
         self.dateString = TextMapper.attributedStringForText((msg.valueForKey("time") as! NSDate).convertToStringDate("EEEE, MMM d, yyyy h:mm a"), date: true)
         
+        var contenttype = 0
         if message.sms! == false && message.messageparts!.count > 0 {
-            var contenttype = 0
             for var part in 0...message.messageparts!.count-1{
                 let dict = message.messageparts![part] as! MessagePart
                 NSLog(dict.content_type!)
                 switch(dict.content_type!) {
                 case "image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp":
                     contenttype += 1
-                    mmsView.frame = NSMakeRect(0,0,150,CGFloat(message.messageparts!.count * 150))
                     let imageview = MSGImageView(frame: NSMakeRect(0,CGFloat(part * 150),150,150))
                     mmsView.addSubview(imageview)
                     imageview.imageScaling = .ScaleProportionallyDown
@@ -159,13 +159,14 @@ class ChatMessageView : NSView {
                     imageview.url = url
                     imageview.loadImageFromUrl(url)
                     self.addSubview(mmsView)
-
+                    
                     break
                     
                 default:
                     break
                 }
             }
+            mmsView.frame = NSMakeRect(0,0,150,CGFloat(contenttype * 150))
             msgHeight += CGFloat(CGFloat(contenttype) * ChatMessageView.MMSHeight)
         }
         
@@ -215,7 +216,7 @@ class ChatMessageView : NSView {
         }
         timeLabel.attributedStringValue = self.dateString!
     }
-
+    
     static let WidthPercentage: CGFloat = 0.75
     static let TextPointySideBorder: CGFloat = 12
     static let TextRoundSideBorder: CGFloat = 8
@@ -227,18 +228,18 @@ class ChatMessageView : NSView {
     static let MMSHeight: CGFloat = 150
     
     var backgroundFrame: NSRect!
-
+    
     override var frame: NSRect {
         didSet {
             let paddingEdges: CGFloat = 5
             backgroundFrame = NSMakeRect(frame.origin.x + paddingEdges, 20, frame.size.width, frame.size.height - ChatMessageView.TimeHeight + 2)
             backgroundFrame.size.width *= ChatMessageView.WidthPercentage
             NSLog("%f",frame.size.width)
-
+            
             let textMaxWidth = ChatMessageView.widthOfText(backgroundWidth: backgroundFrame.size.width)
             let textSize = ChatMessageView.textSizeInWidth(self.textLabel.attributedStringValue, width: textMaxWidth)
             let dateSize = ChatMessageView.textSizeInWidth(self.timeLabel.attributedStringValue, width: textMaxWidth)
-
+            
             backgroundFrame.size.width = ChatMessageView.widthOfBackground(textWidth: textSize.width)
             if mmsView.frame.width > 0 {
                 backgroundFrame.size.width += mmsView.frame.width + 20
@@ -251,12 +252,12 @@ class ChatMessageView : NSView {
             switch (orientation) {
             case .Left:
                 backgroundFrame.origin.x = frame.origin.x + paddingEdges
-
+                
                 backgroundView.layer!.backgroundColor = NSColor.NSColorFromHex(messagesGray).CGColor
                 textLabel.layer!.backgroundColor = NSColor.NSColorFromHex(messagesGray).CGColor
                 textLabel.textColor = NSColor.blackColor()
                 break
-
+                
             case .Right:
                 backgroundFrame.origin.x = frame.size.width - backgroundFrame.size.width - paddingEdges
                 
@@ -317,19 +318,19 @@ class ChatMessageView : NSView {
             }
         }
     }
-
+    
     class func widthOfText(backgroundWidth backgroundWidth: CGFloat) -> CGFloat {
         return backgroundWidth
             - ChatMessageView.TextRoundSideBorder
             - ChatMessageView.TextPointySideBorder
     }
-
+    
     class func widthOfBackground(textWidth textWidth: CGFloat) -> CGFloat {
         return textWidth
             + ChatMessageView.TextRoundSideBorder
             + ChatMessageView.TextPointySideBorder
     }
-
+    
     class func textSizeInWidth(text: NSAttributedString, width: CGFloat) -> CGSize {
         var size = text.boundingRectWithSize(
             NSMakeSize(width, 0),
@@ -337,16 +338,15 @@ class ChatMessageView : NSView {
                 NSStringDrawingOptions.UsesLineFragmentOrigin,
                 NSStringDrawingOptions.UsesFontLeading
             ]
-        ).size
+            ).size
         size.width += HorizontalTextMeasurementPadding
         return size
     }
-
+    
     class func heightForContainerWidth(msg: Message, width: CGFloat) -> CGFloat {
-        let field = NSTextField(frame: NSZeroRect)
-        field.attributedStringValue = TextMapper.attributedStringForText(msg.msg!, date: false)
-        field.sizeToFit()
-        var height = field.frame.height + TimeHeight + TextTopBorder + TextBottomBorder + 20
+        let text = NSMutableAttributedString(string: msg.msg!)
+        let size = textSizeInWidth(text, width: widthOfText(backgroundWidth: (width * WidthPercentage)))
+        var height = size.height + TimeHeight + TextTopBorder + TextBottomBorder + 30
         
         if msg.sms! == false && msg.messageparts!.count > 0 {
             var contenttype = 0
@@ -356,7 +356,7 @@ class ChatMessageView : NSView {
                     contenttype += 1
                 }
             }
-            height += CGFloat(CGFloat(contenttype) * MMSHeight)
+            height += CGFloat(CGFloat(contenttype) * MMSHeight + 40 * CGFloat(contenttype))
         }
         
         return height
