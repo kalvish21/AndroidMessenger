@@ -16,6 +16,9 @@
 		74413BC31D6499510080F24D /* ChatMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74413BC11D6499510080F24D /* ChatMessageCell.xib */; };
 		74466B3B1CA30FFA001C8D1B /* ChatMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74466B3A1CA30FFA001C8D1B /* ChatMessageHandler.swift */; };
 		74466B3E1CA32597001C8D1B /* NSDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74466B3D1CA32597001C8D1B /* NSDate.swift */; };
+		744F601A1D6A68940012967D /* NSImageView-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744F60191D6A68940012967D /* NSImageView-Extension.swift */; };
+		744F601C1D6A6EC50012967D /* NSImage-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744F601B1D6A6EC50012967D /* NSImage-Extension.swift */; };
+		744F601E1D6A77690012967D /* MSGImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744F601D1D6A77690012967D /* MSGImageView.swift */; };
 		745007931CA0DE0C0047673A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745007921CA0DE0C0047673A /* AppDelegate.swift */; };
 		745007951CA0DE0C0047673A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745007941CA0DE0C0047673A /* ViewController.swift */; };
 		745007971CA0DE0C0047673A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 745007961CA0DE0C0047673A /* Assets.xcassets */; };
@@ -81,6 +84,9 @@
 		74413BC11D6499510080F24D /* ChatMessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChatMessageCell.xib; path = Classes/ChatMessageCell.xib; sourceTree = "<group>"; };
 		74466B3A1CA30FFA001C8D1B /* ChatMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatMessageHandler.swift; path = Classes/ChatMessageHandler.swift; sourceTree = "<group>"; };
 		74466B3D1CA32597001C8D1B /* NSDate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NSDate.swift; path = Classes/NSDate.swift; sourceTree = "<group>"; };
+		744F60191D6A68940012967D /* NSImageView-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSImageView-Extension.swift"; path = "Classes/NSImageView-Extension.swift"; sourceTree = "<group>"; };
+		744F601B1D6A6EC50012967D /* NSImage-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSImage-Extension.swift"; path = "Classes/NSImage-Extension.swift"; sourceTree = "<group>"; };
+		744F601D1D6A77690012967D /* MSGImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MSGImageView.swift; path = Classes/MSGImageView.swift; sourceTree = "<group>"; };
 		7450078F1CA0DE0C0047673A /* AndroidMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		745007921CA0DE0C0047673A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		745007941CA0DE0C0047673A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -181,6 +187,8 @@
 				74CD31651CA431AD0051909B /* Int-Extension.swift */,
 				74DFE2F31CA6F62500B8DB73 /* NSColor-Extension.swift */,
 				74466B3D1CA32597001C8D1B /* NSDate.swift */,
+				744F601B1D6A6EC50012967D /* NSImage-Extension.swift */,
+				744F60191D6A68940012967D /* NSImageView-Extension.swift */,
 				74BDE61E1CB0C26700491705 /* String-Extension.swift */,
 			);
 			name = Extension;
@@ -299,6 +307,7 @@
 				748E5E8B1CAC4FD800EE8713 /* MessageTextField.swift */,
 				8082CA26B3B22A789AD4AD5E /* MessageCell.swift */,
 				8082C85C99DE338E4BDCEA15 /* MessageCell.xib */,
+				744F601D1D6A77690012967D /* MSGImageView.swift */,
 			);
 			name = UserInterfaces;
 			sourceTree = "<group>";
@@ -560,6 +569,8 @@
 				74BDE61F1CB0C26700491705 /* String-Extension.swift in Sources */,
 				74CD31661CA431AD0051909B /* Int-Extension.swift in Sources */,
 				74413BC21D6499510080F24D /* ChatMessageCell.swift in Sources */,
+				744F601E1D6A77690012967D /* MSGImageView.swift in Sources */,
+				744F601A1D6A68940012967D /* NSImageView-Extension.swift in Sources */,
 				74466B3B1CA30FFA001C8D1B /* ChatMessageHandler.swift in Sources */,
 				74F037C01CA1D43300669F03 /* NetworkingUtil.swift in Sources */,
 				74DFE2F41CA6F62500B8DB73 /* NSColor-Extension.swift in Sources */,
@@ -570,6 +581,7 @@
 				74BEFFEF1CA655C900F7A15E /* MessagePart.swift in Sources */,
 				74C63E2D1CA871AE006C1DEE /* Message+CoreDataProperties.swift in Sources */,
 				74466B3E1CA32597001C8D1B /* NSDate.swift in Sources */,
+				744F601C1D6A6EC50012967D /* NSImage-Extension.swift in Sources */,
 				740D8CC61CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift in Sources */,
 				74413BBF1D64953C0080F24D /* TextMapper.swift in Sources */,
 				749495531CB75F5800B27FF2 /* LoadingView.swift in Sources */,

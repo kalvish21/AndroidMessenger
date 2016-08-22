@@ -8,7 +8,6 @@
 
 import Cocoa
 import QuartzCore
-import AsyncImageDownloaderOSX
 import Alamofire
 
 class ChatMessageView : NSView {
@@ -150,17 +149,15 @@ class ChatMessageView : NSView {
                 case "image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp":
                     contenttype += 1
                     mmsView.frame = NSMakeRect(0,0,150,150)
-                    let imageview = NSImageView(frame: mmsView.frame)
+                    let imageview = MSGImageView(frame: mmsView.frame)
                     mmsView.addSubview(imageview)
                     imageview.imageScaling = .ScaleProportionallyDown
                     
                     let networking = NetworkingUtil()
                     let url = networking.getFullUrlPath("message/mms/file?uid=" + networking.generateUUID() + "&part_id=" + String(dict.id!))
                     NSLog(url)
-                    AsyncImageDownloader.init(mediaURL: url, successBlock: { (image) in
-                        imageview.image = image
-                        }, failBlock: { (error) in
-                    }).startDownload()
+                    imageview.url = url
+                    imageview.loadImageFromUrl(url)
                     self.addSubview(mmsView)
 
                     break
