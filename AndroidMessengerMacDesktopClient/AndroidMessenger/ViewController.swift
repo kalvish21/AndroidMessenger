@@ -185,7 +185,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             let row = self.tableView.selectedRow
             if row > -1 {
                 self.leftMessageHandler.markMessagesAsReadForCurrentThread(row, threadId: self.chatHandler.thread_id!)
-                self.leftMessageHandler.messageHandler.setBadgeCount()
             }
             break
         case messageSentConfirmation:

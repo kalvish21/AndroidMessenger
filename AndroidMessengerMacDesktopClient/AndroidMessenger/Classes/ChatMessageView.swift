@@ -148,8 +148,8 @@ class ChatMessageView : NSView {
                 switch(dict.content_type!) {
                 case "image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp":
                     contenttype += 1
-                    mmsView.frame = NSMakeRect(0,0,150,150)
-                    let imageview = MSGImageView(frame: mmsView.frame)
+                    mmsView.frame = NSMakeRect(0,0,150,CGFloat(message.messageparts!.count * 150))
+                    let imageview = MSGImageView(frame: NSMakeRect(0,CGFloat(part * 150),150,150))
                     mmsView.addSubview(imageview)
                     imageview.imageScaling = .ScaleProportionallyDown
                     

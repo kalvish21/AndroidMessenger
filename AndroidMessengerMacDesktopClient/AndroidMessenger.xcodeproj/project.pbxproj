@@ -194,6 +194,15 @@
 			name = Extension;
 			sourceTree = "<group>";
 		};
+		744F601F1D6A8A570012967D /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				74413BBC1D6494210080F24D /* ChatMessageView.swift */,
+				74413BBE1D64953C0080F24D /* TextMapper.swift */,
+			);
+			name = Cell;
+			sourceTree = "<group>";
+		};
 		745007861CA0DE0C0047673A = {
 			isa = PBXGroup;
 			children = (
@@ -298,15 +307,14 @@
 		74DFE2F21CA6F0EE00B8DB73 /* UserInterfaces */ = {
 			isa = PBXGroup;
 			children = (
-				74413BBE1D64953C0080F24D /* TextMapper.swift */,
-				74413BBC1D6494210080F24D /* ChatMessageView.swift */,
+				744F601F1D6A8A570012967D /* Cell */,
 				74413BC01D6499510080F24D /* ChatMessageCell.swift */,
 				74413BC11D6499510080F24D /* ChatMessageCell.xib */,
 				748E5E891CAC4A3400EE8713 /* ChatScrollView.swift */,
 				747170121CB1E1EA00CF436C /* LeftMessageTableView.swift */,
-				748E5E8B1CAC4FD800EE8713 /* MessageTextField.swift */,
 				8082CA26B3B22A789AD4AD5E /* MessageCell.swift */,
 				8082C85C99DE338E4BDCEA15 /* MessageCell.xib */,
+				748E5E8B1CAC4FD800EE8713 /* MessageTextField.swift */,
 				744F601D1D6A77690012967D /* MSGImageView.swift */,
 			);
 			name = UserInterfaces;
