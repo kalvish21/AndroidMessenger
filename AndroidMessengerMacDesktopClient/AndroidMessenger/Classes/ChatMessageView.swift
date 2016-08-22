@@ -346,7 +346,7 @@ class ChatMessageView : NSView {
     class func heightForContainerWidth(msg: Message, width: CGFloat) -> CGFloat {
         let text = NSMutableAttributedString(string: msg.msg!)
         let size = textSizeInWidth(text, width: widthOfText(backgroundWidth: (width * WidthPercentage)))
-        var height = size.height + TimeHeight + TextTopBorder + TextBottomBorder + 30
+        var height = size.height + TimeHeight + TextTopBorder + TextBottomBorder// + 30
         
         if msg.sms! == false && msg.messageparts!.count > 0 {
             var contenttype = 0
