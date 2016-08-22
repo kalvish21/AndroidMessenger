@@ -9,7 +9,7 @@ import android.os.Handler;
 import android.provider.Telephony;
 import android.telephony.PhoneNumberUtils;
 
-import com.androidmessenger.util.Constants;
+import com.androidmessenger.util.Uris;
 
 /**
  * Created by Kalyan Vishnubhatla on 4/15/16.
@@ -37,7 +37,7 @@ public class SendingSmsObserver extends ContentObserver {
 
     public void start() {
         if (resolver != null) {
-            resolver.registerContentObserver(Constants.Sms, true, this);
+            resolver.registerContentObserver(Uris.Sms, true, this);
         } else {
             throw new IllegalStateException(
                     "Current SmsObserver instance is invalid");
@@ -60,7 +60,7 @@ public class SendingSmsObserver extends ContentObserver {
                     final String _id = cursor.getString(cursor.getColumnIndex(Telephony.Sms._ID));
 
                     if (PhoneNumberUtils.compare(address, this.address) && body.equals(this.body)) {
-                        Uri sentSmsUri = Uri.parse(Constants.Sms + "/" + _id);
+                        Uri sentSmsUri = Uri.parse(Uris.Sms + "/" + _id);
                         listener.onSmsSent(sentSmsUri, uuid);
                         resolver.unregisterContentObserver(this);
                     }

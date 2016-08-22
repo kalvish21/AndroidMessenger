@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.androidmessenger.R;
 import com.androidmessenger.service.AndroidAppService;
-import com.androidmessenger.util.Constants;
+import com.androidmessenger.util.Uris;
 import com.androidmessenger.util.UserPreferencesManager;
 import com.androidmessenger.util.Util;
 
@@ -37,7 +37,7 @@ public class SmsObserver extends ContentObserver {
         Long largestDateCounted = Long.parseLong(UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_current_counter), "0"));
         String filter = "creator != ? and date > ?";
         String[] args = new String[]{context.getPackageName(), Long.toString(largestDateCounted)};
-        Cursor c = context.getContentResolver().query(Constants.Sms, null, filter, args, null);
+        Cursor c = context.getContentResolver().query(Uris.Sms, null, filter, args, null);
 
         try {
             Util util = new Util();

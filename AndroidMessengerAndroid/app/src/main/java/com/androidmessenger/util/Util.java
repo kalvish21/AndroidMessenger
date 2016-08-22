@@ -83,7 +83,7 @@ public class Util implements Serializable {
 
     // MMS messages can have multiple parties involved. This will retrieve all of them except for the current user
     public String getAddressesForMmsMessages(final Context context, String msgId) {
-        String uriStr = MessageFormat.format(Constants.Mms + "/{0}/addr", msgId);
+        String uriStr = MessageFormat.format(Uris.Mms + "/{0}/addr", msgId);
         Uri uriAddress = Uri.parse(uriStr);
         Cursor cAdd = context.getContentResolver().query(uriAddress, null, "msg_id=" + msgId, null, null);
         ArrayList<String> addressList = new ArrayList<>();
@@ -139,7 +139,7 @@ public class Util implements Serializable {
     // MMS messages have multiple "parts" (images, video, text, etc). This will grab each part and return an array
     public JSONArray getMmsPartsInJsonArray(final Context context, String msgId) {
         ContentResolver contentResolver = context.getContentResolver();
-        Cursor c = contentResolver.query(Constants.MmsPart, null, "mid=" + msgId, null, null);
+        Cursor c = contentResolver.query(Uris.MmsPart, null, "mid=" + msgId, null, null);
         JSONArray array = new JSONArray();
 
         try {
@@ -198,7 +198,7 @@ public class Util implements Serializable {
 
     // MMS messages have text parts that can be parsed.
     public String getMmsText(final Context context, String id) {
-        Uri partURI = Uri.parse(Constants.MmsPart + "/" + id);
+        Uri partURI = Uri.parse(Uris.MmsPart + "/" + id);
         InputStream is = null;
         StringBuilder sb = new StringBuilder();
         try {
@@ -226,7 +226,7 @@ public class Util implements Serializable {
 
     // Used to get a Bitmap image from MMS messages, if needed
     public Bitmap getMmsImage(final Context context, String part_id) {
-        Uri partURI = Uri.parse(Constants.MmsPart + "/" + part_id);
+        Uri partURI = Uri.parse(Uris.MmsPart + "/" + part_id);
         InputStream is = null;
         Bitmap bitmap = null;
         try {

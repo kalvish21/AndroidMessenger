@@ -24,7 +24,7 @@ import com.androidmessenger.connections.WebSocket;
 import com.androidmessenger.observer.MmsObserver;
 import com.androidmessenger.observer.SmsObserver;
 import com.androidmessenger.receiver.WifiReciever;
-import com.androidmessenger.util.Constants;
+import com.androidmessenger.util.Uris;
 import com.androidmessenger.util.UserPreferencesManager;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -118,10 +118,10 @@ public class AndroidAppService extends Service {
 
         // Add observer
         smsContent = new SmsObserver(new Handler(), this);
-        getContentResolver().registerContentObserver(Constants.Sms, true, smsContent);
+        getContentResolver().registerContentObserver(Uris.Sms, true, smsContent);
 
         mmsContent = new MmsObserver(new Handler(), this);
-        getContentResolver().registerContentObserver(Constants.MmsSms, true, mmsContent);
+        getContentResolver().registerContentObserver(Uris.MmsSms, true, mmsContent);
 
         // Get wake lock
         if (wakeLock == null) {

@@ -12,7 +12,7 @@ import android.util.Log;
 import com.androidmessenger.service.AndroidAppService;
 import com.androidmessenger.urihandler.ContactsUriHandler;
 import com.androidmessenger.urihandler.SmsMmsUriHandler;
-import com.androidmessenger.util.Constants;
+import com.androidmessenger.util.Uris;
 import com.androidmessenger.util.Util;
 
 import org.json.JSONArray;
@@ -155,7 +155,7 @@ public class WebServer extends NanoHTTPD {
                 InputStream fis = null;
                 String part_id = session.getParms().get("part_id");
                 String mimetype = "";
-                Uri partURI = Uri.parse(Constants.MmsPart + "/" + part_id);
+                Uri partURI = Uri.parse(Uris.MmsPart + "/" + part_id);
                 ContentResolver contentResolver = context.getContentResolver();
 
                 try {
@@ -194,7 +194,7 @@ public class WebServer extends NanoHTTPD {
 //            case "/unreadmessages": {
 //
 //                ContentResolver cr = context.getContentResolver();
-//                android.database.Cursor cursor = cr.query(Constants.Sms, null, "read=0", null, null);
+//                android.database.Cursor cursor = cr.query(Uris.Sms, null, "read=0", null, null);
 //                if (cursor == null) {
 //                    return null;
 //                }
@@ -225,7 +225,7 @@ public class WebServer extends NanoHTTPD {
 //                String response = "";
 //                String msgId = session.getParms().get("id");
 //
-//                android.database.Cursor c = context.getContentResolver().query(Constants.Sms, null, "_id="+msgId, null, null);
+//                android.database.Cursor c = context.getContentResolver().query(Uris.Sms, null, "_id="+msgId, null, null);
 //
 //                if (c.moveToFirst()) {
 //                    StringBuffer responseBuffer = new StringBuffer();
@@ -253,7 +253,7 @@ public class WebServer extends NanoHTTPD {
 //                    filter = "_id=" + msgId;
 //                }
 //
-//                android.database.Cursor c = context.getContentResolver().query(Constants.Mms, null, filter, null, null);
+//                android.database.Cursor c = context.getContentResolver().query(Uris.Mms, null, filter, null, null);
 //
 //                if (c.moveToFirst()) {
 //                    do {

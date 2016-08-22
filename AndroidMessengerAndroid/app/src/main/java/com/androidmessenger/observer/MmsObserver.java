@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.androidmessenger.R;
 import com.androidmessenger.service.AndroidAppService;
-import com.androidmessenger.util.Constants;
+import com.androidmessenger.util.Uris;
 import com.androidmessenger.util.UserPreferencesManager;
 import com.androidmessenger.util.Util;
 
@@ -43,7 +43,7 @@ public class MmsObserver extends ContentObserver {
 
         Cursor c = null;
         try {
-            c = context.getContentResolver().query(Constants.Mms, null, filter, args, null);
+            c = context.getContentResolver().query(Uris.Mms, null, filter, args, null);
             Util util = new Util();
             long receivedDate = 0;
             JSONArray array = new JSONArray();
@@ -69,7 +69,7 @@ public class MmsObserver extends ContentObserver {
                     // Keep track of the largest date
                     long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow(Telephony.Mms.DATE)));
                     if (currentDate > largestDateCounted) {
-                        largestDateCounted = currentDate;
+                        receivedDate = currentDate;
                     }
 
                     JSONObject msg = util.getJsonObjectFromCursorObjectForMmsText(c);

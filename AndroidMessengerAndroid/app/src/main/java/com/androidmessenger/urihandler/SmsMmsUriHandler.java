@@ -18,7 +18,7 @@ import android.util.Log;
 import com.androidmessenger.R;
 import com.androidmessenger.observer.SendingSmsObserver;
 import com.androidmessenger.service.AndroidAppService;
-import com.androidmessenger.util.Constants;
+import com.androidmessenger.util.Uris;
 import com.androidmessenger.util.UserPreferencesManager;
 import com.androidmessenger.util.Util;
 
@@ -50,14 +50,14 @@ public class SmsMmsUriHandler implements Serializable, SendingSmsObserver.OnSmsS
 
     public void markSmsMessageAsRead(String threadId, String[] ids) {
         String filter = String.format("thread_id=%s AND _id IN (%s)", threadId, StringUtils.join(ids, ", "));
-        Cursor cursor = context.getContentResolver().query(Constants.Sms, null, filter, null, null);
+        Cursor cursor = context.getContentResolver().query(Uris.Sms, null, filter, null, null);
         try {
             while (cursor.moveToNext()) {
                 if ((cursor.getInt(cursor.getColumnIndex("read")) == 0)) {
                     String SmsMessageId = cursor.getString(cursor.getColumnIndex("_id"));
                     ContentValues values = new ContentValues();
                     values.put("read", true);
-                    context.getContentResolver().update(Constants.Sms, values, "_id=" + SmsMessageId, null);
+                    context.getContentResolver().update(Uris.Sms, values, "_id=" + SmsMessageId, null);
                 }
             }
         } catch (Exception e) {
@@ -81,7 +81,7 @@ public class SmsMmsUriHandler implements Serializable, SendingSmsObserver.OnSmsS
         JSONArray array = new JSONArray();
 
         // Get the SMS messages
-        Cursor c = contentResolver.query(Constants.Sms, null, filter, args, null);
+        Cursor c = contentResolver.query(Uris.Sms, null, filter, args, null);
         try {
             for (int i = 0; i < c.getCount(); i++) {
                 c.moveToNext();
@@ -121,7 +121,7 @@ public class SmsMmsUriHandler implements Serializable, SendingSmsObserver.OnSmsS
 
         // Get the MMS messages
         try {
-            c = contentResolver.query(Constants.Mms, null, filter, args, null);
+            c = contentResolver.query(Uris.Mms, null, filter, args, null);
             for (int i = 0; i < c.getCount(); i++) {
                 c.moveToNext();
                 try {
