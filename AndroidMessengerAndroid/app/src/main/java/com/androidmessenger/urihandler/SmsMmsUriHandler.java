@@ -128,7 +128,7 @@ public class SmsMmsUriHandler implements Serializable, SendingSmsObserver.OnSmsS
                     String id = c.getString(c.getColumnIndexOrThrow("_id"));
 
                     // Keep track of the largest date
-                    long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow("date")));
+                    long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))) * 1000;
                     if (currentDate > largestDateCounted) {
                         largestDateCounted = currentDate;
                     }

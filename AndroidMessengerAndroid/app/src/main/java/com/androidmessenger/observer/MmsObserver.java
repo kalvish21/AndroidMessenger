@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Handler;
+import android.provider.Telephony;
 import android.util.Log;
 
 import com.androidmessenger.R;
@@ -14,6 +15,9 @@ import com.androidmessenger.util.Util;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Kalyan Vishnubhatla on 8/21/16.
@@ -33,9 +37,9 @@ public class MmsObserver extends ContentObserver {
     public void onChange(boolean selfChange) {
         super.onChange(selfChange);
 
-        Long largestDateCounted = Long.parseLong(UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_current_counter), "0"));
+        Long largestDateCounted = Long.parseLong(UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_current_counter), "0")) / 1000;
         String filter = "creator != ? and date > ?";
-        String[] args = new String[]{context.getPackageName(), Long.toString(largestDateCounted/1000)};
+        String[] args = new String[]{context.getPackageName(), Long.toString(largestDateCounted)};
 
         Cursor c = null;
         try {
@@ -43,15 +47,27 @@ public class MmsObserver extends ContentObserver {
             Util util = new Util();
             long receivedDate = 0;
             JSONArray array = new JSONArray();
+            Map<String, String> map = new HashMap<>();
             boolean messages_received = false;
 
             if (c.moveToFirst()) {
                 for (int i = 0; i < c.getCount(); i++) {
 
-                    String id = c.getString(c.getColumnIndexOrThrow("_id"));
+                    // TODO: Ignore draft and outbox messages for now
+                    String msgBoxValue = c.getString(c.getColumnIndexOrThrow(Telephony.Mms.MESSAGE_BOX));
+                    if (!(msgBoxValue.contains(String.valueOf(Telephony.Mms.MESSAGE_BOX_INBOX)) ||
+                            msgBoxValue.contains(String.valueOf(Telephony.Mms.MESSAGE_BOX_SENT)))) {
+                        continue;
+                    }
+
+                    String id = c.getString(c.getColumnIndexOrThrow(Telephony.Mms._ID));
+                    if (map.get(id) != null) {
+                        continue;
+                    }
+                    map.put(id, id);
 
                     // Keep track of the largest date
-                    long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow("date")));
+                    long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow(Telephony.Mms.DATE)));
                     if (currentDate > largestDateCounted) {
                         largestDateCounted = currentDate;
                     }
@@ -61,13 +77,15 @@ public class MmsObserver extends ContentObserver {
                     msg.put("parts", util.getMmsPartsInJsonArray(context, id));
                     array.put(msg);
 
+                    messages_received = messages_received || msg.getBoolean("received");
+
                     c.moveToNext();
                 }
             }
 
-            if (receivedDate > largestDateCounted) {
+            if (receivedDate > largestDateCounted*1000) {
                 largestDateCounted = receivedDate;
-                UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_current_counter), String.valueOf(largestDateCounted));
+                UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_current_counter), String.valueOf(largestDateCounted * 1000));
             }
 
             if (array != null && array.length() > 0) {

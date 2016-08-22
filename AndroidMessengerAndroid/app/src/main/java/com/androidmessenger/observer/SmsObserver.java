@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Handler;
+import android.provider.Telephony;
 import android.util.Log;
 
 import com.androidmessenger.R;
@@ -48,12 +49,14 @@ public class SmsObserver extends ContentObserver {
                 for (int i = 0; i < c.getCount(); i++) {
 
                     // TODO: Ignore draft and outbox messages for now
-                    if (c.getString(c.getColumnIndexOrThrow("type")).contains("3") || c.getString(c.getColumnIndexOrThrow("type")).contains("4")) {
+                    String msgBoxType = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.TYPE));
+                    if (msgBoxType.contains(String.valueOf(Telephony.Sms.MESSAGE_TYPE_OUTBOX)) ||
+                            msgBoxType.contains(String.valueOf(Telephony.Sms.MESSAGE_TYPE_DRAFT))) {
                         continue;
                     }
 
                     // Update the largest counter
-                    long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow("date")));
+                    long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.DATE)));
                     if (currentDate > largestDateCounted) {
                         receivedDate = currentDate;
                     }

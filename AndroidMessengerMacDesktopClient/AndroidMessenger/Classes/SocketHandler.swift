@@ -118,11 +118,15 @@ class SocketHandler: NSObject, WebSocketDelegate, WebSocketPongDelegate {
                                 NSLog("%@", object.stringValue)
                                 
                                 // If the SMS id exists, move on
-                                let objectId = Int((object["id"].stringValue))
+                                let objectId = Int((object["id"].stringValue))!
                                 let type = object["type"].stringValue
-                                if (type == "mms" && self.messageHandler.checkIfMessageExists(context, idValue: objectId, type: type)) {
+                                if (self.messageHandler.checkIfMessageExists(context, idValue: objectId, type: type) || id_values.contains(objectId)) {
                                     continue
                                 }
+                                
+                                print("GOT TO THE NEW MESSAGE!!!! ========")
+                                print("Got message: %@", objectId)
+                                print("Got message type: %@", type)
                                 
                                 var sms = NSEntityDescription.insertNewObjectForEntityForName("Message", inManagedObjectContext: context) as! Message
                                 if type == "sms" {
@@ -132,7 +136,7 @@ class SocketHandler: NSObject, WebSocketDelegate, WebSocketPongDelegate {
                                 }
                                 
                                 if sms.received == false {
-                                    id_values.append(objectId!)
+                                    id_values.append(objectId)
                                 }
                             }
                             
@@ -283,19 +287,21 @@ class SocketHandler: NSObject, WebSocketDelegate, WebSocketPongDelegate {
                     NSLog("%@", object.stringValue)
                     
                     // If the SMS id exists, move on
-                    let objectId = Int((object["id"].stringValue))
-                    if (self.messageHandler.checkIfMessageExists(context, idValue: objectId)) {
+                    let objectId = Int((object["id"].stringValue))!
+                    let type = object["type"].stringValue
+                    if (self.messageHandler.checkIfMessageExists(context, idValue: objectId, type: type) || id_values.contains(objectId)) {
                         continue
                     }
-                    id_values.append(objectId!)
                     
-                    let type = object["type"].stringValue
-                    if (type == "mms") {
-                        break
-                    }
+                    print("ADDING OBJECT ID ", objectId)
+                    id_values.append(objectId)
                     
                     var sms = NSEntityDescription.insertNewObjectForEntityForName("Message", inManagedObjectContext: context) as! Message
-                    sms = self.messageHandler.setMessageDetailsFromJsonObject(sms, object: object, is_pending: false)
+                    if type == "sms" {
+                        sms = self.messageHandler.setMessageDetailsFromJsonObject(sms, object: object, is_pending: false)
+                    } else {
+                        sms = self.messageHandler.setMessageDetailsFromJsonObjectForMms(context, sms: sms, dictionary: object, is_pending: false)
+                    }
                     
                     user_address = sms.address!
                     user_message = sms.msg!
