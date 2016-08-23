@@ -141,15 +141,14 @@ class ChatMessageView : NSView {
         textLabel.attributedStringValue = self.string!
         self.dateString = TextMapper.attributedStringForText((msg.valueForKey("time") as! NSDate).convertToStringDate("EEEE, MMM d, yyyy h:mm a"), date: true)
         
-        var contenttype = 0
+        var image_contenttype = 0
         if message.sms! == false && message.messageparts!.count > 0 {
-            for var part in 0...message.messageparts!.count-1{
+            for part in 0...message.messageparts!.count-1{
                 let dict = message.messageparts![part] as! MessagePart
                 NSLog(dict.content_type!)
                 switch(dict.content_type!) {
                 case "image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp":
-                    contenttype += 1
-                    let imageview = MSGImageView(frame: NSMakeRect(0,CGFloat(part * 150),150,150))
+                    let imageview = MSGImageView(frame: NSMakeRect(0,CGFloat(image_contenttype * 150),150,150))
                     mmsView.addSubview(imageview)
                     imageview.imageScaling = .ScaleProportionallyDown
                     
@@ -159,6 +158,7 @@ class ChatMessageView : NSView {
                     imageview.url = url
                     imageview.loadImageFromUrl(url)
                     self.addSubview(mmsView)
+                    image_contenttype += 1
                     
                     break
                     
@@ -166,8 +166,8 @@ class ChatMessageView : NSView {
                     break
                 }
             }
-            mmsView.frame = NSMakeRect(0,0,150,CGFloat(contenttype * 150))
-            msgHeight += CGFloat(CGFloat(contenttype) * ChatMessageView.MMSHeight)
+            mmsView.frame = NSMakeRect(0,0,150,CGFloat(image_contenttype * 150))
+            msgHeight += CGFloat(CGFloat(image_contenttype) * ChatMessageView.MMSHeight)
         }
         
         if (msg.valueForKey("pending") as? Bool == true) {

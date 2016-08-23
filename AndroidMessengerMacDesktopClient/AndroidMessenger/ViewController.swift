@@ -98,7 +98,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        self.chatHandler.tokenField.hidden = true
+        self.chatHandler.chatTableView.superview!.superview!.hidden = true
+        self.chatHandler.messageTextField.hidden = true
 
         // Do any additional setup after loading the view.
         self.title = "Android Messenger"

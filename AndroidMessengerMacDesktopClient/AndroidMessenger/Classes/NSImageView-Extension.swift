@@ -14,6 +14,8 @@ extension NSImageView {
     func loadImageFromUrl(url: String) {
         let image: NSImage? = NSImage.loadImageForUrl(url)
         if image != nil {
+            self.wantsLayer = true
+            self.layer!.borderColor = NSColor.blueColor().CGColor
             self.image = image
             return
         }
@@ -23,6 +25,7 @@ extension NSImageView {
             image.saveImageInCache(url)
             self.image = image
             }, failBlock: { (error) in
+                NSLog("%@", error)
         }).startDownload()
     }
 }

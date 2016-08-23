@@ -165,6 +165,11 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
     }
 
     func tableViewSelectionDidChange(notification: NSNotification) {
+        
+        self.chatHandler.tokenField.hidden = false
+        self.chatHandler.chatTableView.superview!.superview!.hidden = false
+        self.chatHandler.messageTextField.hidden = false
+        
         self.chatHandler.messageTextField.enabled = true
         if self.leftTableView.selectedRow <= compose_results.count-1 && self.leftTableView.selectedRow >= 0 {
             let row = self.leftTableView.selectedRow
