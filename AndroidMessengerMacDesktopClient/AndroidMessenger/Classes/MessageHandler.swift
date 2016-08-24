@@ -240,7 +240,6 @@ class MessageHandler {
     
     func checkIfMessageExists(moc: NSManagedObjectContext!, idValue: Int!, type: String!) -> Bool {
         let request = NSFetchRequest(entityName: "Message")
-        request.fetchLimit = 1
         request.predicate = NSPredicate(format: "id = %i AND sms == %@", idValue, type == "sms")
         
         var objs: [Message]?
@@ -285,29 +284,7 @@ class MessageHandler {
     }
     
     func setBadgeCount() {
-        let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-        if delegate.isActive {
-            // No need to set badge when we are active
-            return
-        }
-        
-        let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-        context.parentContext = delegate.coreDataHandler.managedObjectContext
-        
-        let request = NSFetchRequest(entityName: "Message")
-        request.predicate = NSPredicate(format: "read = %@", false)
-        
-        var objs = []
-        do {
-            try objs = context.executeFetchRequest(request)
-            
-            var count: String? = nil
-            if objs.count > 0 {
-                count = String(objs.count)
-            }
-            NSApplication.sharedApplication().dockTile.badgeLabel = count
-        } catch let error as NSError {
-            NSLog("Unresolved error: %@, %@", error, error.userInfo)
-        }
+        let count = NSUserDefaults.standardUserDefaults().objectForKey(badgeCountSoFar) as? String
+        NSApplication.sharedApplication().dockTile.badgeLabel = count
     }
 }

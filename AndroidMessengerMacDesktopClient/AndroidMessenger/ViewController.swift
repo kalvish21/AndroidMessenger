@@ -8,7 +8,6 @@
 
 import Cocoa
 import SwiftyJSON
-import INAppStoreWindow
 
 class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate, NSUserNotificationCenterDelegate, ConnectProtocol {
     private lazy var connectWindow: ConnectWindow = {
@@ -30,7 +29,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     }()
     
     private lazy var deleteButton: NSButton = {
-        let window = (self.view.window as! INAppStoreWindow)
+        let window = (self.view.window as! WAYWindow)
         let titleBarView = window.titleBarView
         
         let deleteButtonSize = NSMakeSize(40, 21)
@@ -46,7 +45,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     }()
     
     private lazy var textField: NSTextField = {
-        let window = (self.view.window as! INAppStoreWindow)
+        let window = (self.view.window as! WAYWindow)
         let titleBarView = window.titleBarView
         
         let textFieldSize = NSMakeSize(200, 24)
@@ -58,7 +57,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
     }()
     
     private lazy var composeButton: NSButton = {
-        let window = (self.view.window as! INAppStoreWindow)
+        let window = (self.view.window as! WAYWindow)
         let titleBarView = window.titleBarView
         
         let composeButtonSize = NSMakeSize(40, 25)
@@ -159,7 +158,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         super.viewDidAppear()
         
         if (createdBar == false) {
-            let window = (self.view.window as! INAppStoreWindow)
+            let window = (self.view.window as! WAYWindow)
             window.titleBarHeight = 40
             let titleBarView = window.titleBarView
             
@@ -194,8 +193,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             let row = self.tableView.selectedRow
             if row > -1 {
                 self.leftMessageHandler.markMessagesAsReadForCurrentThread(row, threadId: self.chatHandler.thread_id!)
-                self.leftMessageHandler.messageHandler.setBadgeCount()
             }
+            self.leftMessageHandler.messageHandler.setBadgeCount()
             break
         case messageSentConfirmation:
             let userInfo: Dictionary<String, AnyObject>? = notification.object as? Dictionary<String, AnyObject>

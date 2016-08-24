@@ -346,7 +346,18 @@ class SocketHandler: NSObject, WebSocketDelegate, WebSocketPongDelegate {
                     notification.hasReplyButton = true
                     
                     NSUserNotificationCenter.defaultUserNotificationCenter().scheduleNotification(notification)
-                    self.messageHandler.setBadgeCount()
+                    
+                    var badge_count = messages.count
+                    let count = NSUserDefaults.standardUserDefaults().objectForKey(badgeCountSoFar) as? String
+                    if count != nil {
+                        badge_count += Int(count!)!
+                    }
+                    
+                    // Set the badge notification if we are not in the fore ground
+                    if delegate.isActive == false {
+                        NSUserDefaults.standardUserDefaults().setObject(String(badge_count), forKey: badgeCountSoFar)
+                        self.messageHandler.setBadgeCount()
+                    }
                 }
             })
         }

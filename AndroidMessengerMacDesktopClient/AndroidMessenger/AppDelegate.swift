@@ -43,13 +43,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
         if (NSUserDefaults.standardUserDefaults().valueForKey(websocketConnected) != nil && self.socketHandler.isConnected() == false) {
             self.socketHandler.connect()
         }
+        
+        NSUserDefaults.standardUserDefaults().setObject(nil, forKey: badgeCountSoFar)
+        NSNotificationCenter.defaultCenter().postNotificationName(applicationBecameVisible, object: nil)
+
         self.isActive = true
     }
     
     func applicationDidBecomeActive(notification: NSNotification) {
         // User opened the app again
-        NSNotificationCenter.defaultCenter().postNotificationName(applicationBecameVisible, object: nil)
         self.isActive = true
+        
+        NSUserDefaults.standardUserDefaults().setObject(nil, forKey: badgeCountSoFar)
+        NSNotificationCenter.defaultCenter().postNotificationName(applicationBecameVisible, object: nil)
     }
     
     func applicationWillTerminate(aNotification: NSNotification) {

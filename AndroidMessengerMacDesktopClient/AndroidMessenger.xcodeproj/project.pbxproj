@@ -28,6 +28,8 @@
 		745007C01CA0F5CD0047673A /* ConnectWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745007BE1CA0F5CD0047673A /* ConnectWindow.swift */; };
 		745007C11CA0F5CD0047673A /* ConnectWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 745007BF1CA0F5CD0047673A /* ConnectWindow.xib */; };
 		745C77FB1CBB7400000034EB /* delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 745C77FA1CBB7400000034EB /* delete@2x.png */; };
+		7466AD371D6CD71A00FF3CF4 /* WAYAppStoreWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7466AD361D6CD71A00FF3CF4 /* WAYAppStoreWindow.m */; };
+		7466AD3B1D6CD7E100FF3CF4 /* WAYWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7466AD3A1D6CD7E100FF3CF4 /* WAYWindow.m */; };
 		747170111CB1C3B900CF436C /* ContactsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747170101CB1C3B900CF436C /* ContactsHandler.swift */; };
 		747170131CB1E1EA00CF436C /* LeftMessageTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747170121CB1E1EA00CF436C /* LeftMessageTableView.swift */; };
 		748E5E8A1CAC4A3400EE8713 /* ChatScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748E5E891CAC4A3400EE8713 /* ChatScrollView.swift */; };
@@ -102,6 +104,10 @@
 		745007BE1CA0F5CD0047673A /* ConnectWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConnectWindow.swift; path = Classes/ConnectWindow.swift; sourceTree = "<group>"; };
 		745007BF1CA0F5CD0047673A /* ConnectWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ConnectWindow.xib; path = Classes/ConnectWindow.xib; sourceTree = "<group>"; };
 		745C77FA1CBB7400000034EB /* delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "delete@2x.png"; path = "images/delete@2x.png"; sourceTree = "<group>"; };
+		7466AD351D6CD71A00FF3CF4 /* WAYAppStoreWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WAYAppStoreWindow.h; path = Classes/WAYAppStoreWindow/WAYAppStoreWindow.h; sourceTree = "<group>"; };
+		7466AD361D6CD71A00FF3CF4 /* WAYAppStoreWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WAYAppStoreWindow.m; path = Classes/WAYAppStoreWindow/WAYAppStoreWindow.m; sourceTree = "<group>"; };
+		7466AD391D6CD7E100FF3CF4 /* WAYWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WAYWindow.h; path = Classes/WAYWindow/WAYWindow.h; sourceTree = "<group>"; };
+		7466AD3A1D6CD7E100FF3CF4 /* WAYWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WAYWindow.m; path = Classes/WAYWindow/WAYWindow.m; sourceTree = "<group>"; };
 		747170101CB1C3B900CF436C /* ContactsHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsHandler.swift; path = Classes/ContactsHandler.swift; sourceTree = "<group>"; };
 		747170121CB1E1EA00CF436C /* LeftMessageTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LeftMessageTableView.swift; path = Classes/LeftMessageTableView.swift; sourceTree = "<group>"; };
 		748E5E891CAC4A3400EE8713 /* ChatScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatScrollView.swift; path = Classes/ChatScrollView.swift; sourceTree = "<group>"; };
@@ -167,6 +173,8 @@
 			children = (
 				749495511CB75F3B00B27FF2 /* LoadingView */,
 				74EDC0971CAA2F74001EBE9F /* SimplePing */,
+				7466AD341D6CD6FE00FF3CF4 /* WAYAppStoreWindow */,
+				7466AD381D6CD7D000FF3CF4 /* WAYWindow */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -268,6 +276,24 @@
 				745007BF1CA0F5CD0047673A /* ConnectWindow.xib */,
 			);
 			name = ConnectionDialog;
+			sourceTree = "<group>";
+		};
+		7466AD341D6CD6FE00FF3CF4 /* WAYAppStoreWindow */ = {
+			isa = PBXGroup;
+			children = (
+				7466AD351D6CD71A00FF3CF4 /* WAYAppStoreWindow.h */,
+				7466AD361D6CD71A00FF3CF4 /* WAYAppStoreWindow.m */,
+			);
+			name = WAYAppStoreWindow;
+			sourceTree = "<group>";
+		};
+		7466AD381D6CD7D000FF3CF4 /* WAYWindow */ = {
+			isa = PBXGroup;
+			children = (
+				7466AD391D6CD7E100FF3CF4 /* WAYWindow.h */,
+				7466AD3A1D6CD7E100FF3CF4 /* WAYWindow.m */,
+			);
+			name = WAYWindow;
 			sourceTree = "<group>";
 		};
 		749495511CB75F3B00B27FF2 /* LoadingView */ = {
@@ -562,6 +588,7 @@
 				745007951CA0DE0C0047673A /* ViewController.swift in Sources */,
 				74F037BC1CA1C8F800669F03 /* CoreDataHandler.swift in Sources */,
 				74DFFE341CB0449E00441DA6 /* Contact.swift in Sources */,
+				7466AD3B1D6CD7E100FF3CF4 /* WAYWindow.m in Sources */,
 				74C63E301CA87622006C1DEE /* MessageHandler.swift in Sources */,
 				74EDC09A1CAA2F85001EBE9F /* SimplePing.m in Sources */,
 				740D8CC71CB0846800470483 /* PhoneNumberData.swift in Sources */,
@@ -590,6 +617,7 @@
 				74C63E2D1CA871AE006C1DEE /* Message+CoreDataProperties.swift in Sources */,
 				74466B3E1CA32597001C8D1B /* NSDate.swift in Sources */,
 				744F601C1D6A6EC50012967D /* NSImage-Extension.swift in Sources */,
+				7466AD371D6CD71A00FF3CF4 /* WAYAppStoreWindow.m in Sources */,
 				740D8CC61CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift in Sources */,
 				74413BBF1D64953C0080F24D /* TextMapper.swift in Sources */,
 				749495531CB75F5800B27FF2 /* LoadingView.swift in Sources */,

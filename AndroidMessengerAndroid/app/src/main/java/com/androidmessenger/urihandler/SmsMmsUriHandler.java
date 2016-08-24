@@ -146,7 +146,7 @@ public class SmsMmsUriHandler implements Serializable, SendingSmsObserver.OnSmsS
             e.printStackTrace();
 
         } finally {
-            UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_current_counter), String.valueOf(largestDateCounted));
+            UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_current_mms_counter), String.valueOf(largestDateCounted/1000));
             c.close();
         }
         return array;

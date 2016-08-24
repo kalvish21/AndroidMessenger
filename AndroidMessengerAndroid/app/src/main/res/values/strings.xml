@@ -24,6 +24,7 @@
     <string name="preferences_device_uuid">DEVICE_UUID</string>
     <string name="preferences_device_name">DEVICE_NAME</string>
     <string name="preferences_current_counter">CURRENT_COUNTER</string>
+    <string name="preferences_current_mms_counter">CURRENT_MMSS_COUNTER</string>
     <string name="preferences_current_phonenumber">CURRENT_PHONENUMBER</string>
     <string name="preferences_should_autostart">SHOULD_AUTOSTART</string>
     <string name="preferences_properties_messenger">USER_PROPERTIES_ANDROID_MESSENGER</string>

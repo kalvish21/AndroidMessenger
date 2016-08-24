@@ -61,6 +61,7 @@ public class Util implements Serializable {
             msg.put("time", c.getString(c.getColumnIndexOrThrow(Telephony.Mms.DATE)));
             msg.put("m_id", c.getString(c.getColumnIndexOrThrow(Telephony.Mms.MESSAGE_ID)));
             msg.put("received", c.getString(c.getColumnIndexOrThrow(Telephony.Mms.MESSAGE_BOX)).contains("1"));
+            msg.put("date_sent", c.getString(c.getColumnIndexOrThrow(Telephony.Mms.DATE_SENT)));
             msg.put(Telephony.Mms.MESSAGE_BOX, c.getString(c.getColumnIndexOrThrow(Telephony.Mms.MESSAGE_BOX)));
             msg.put("thread_id", c.getString(c.getColumnIndexOrThrow(Telephony.Mms.THREAD_ID)));
             msg.put("type", "mms");

@@ -37,7 +37,7 @@ public class MmsObserver extends ContentObserver {
     public void onChange(boolean selfChange) {
         super.onChange(selfChange);
 
-        Long largestDateCounted = Long.parseLong(UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_current_counter), "0")) / 1000;
+        Long largestDateCounted = Long.parseLong(UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_current_mms_counter), "0"));
         String filter = "creator != ? and date > ?";
         String[] args = new String[]{context.getPackageName(), Long.toString(largestDateCounted)};
 
@@ -53,10 +53,18 @@ public class MmsObserver extends ContentObserver {
             if (c.moveToFirst()) {
                 for (int i = 0; i < c.getCount(); i++) {
 
+                    Log.i(TAG, "Checking the row ...");
                     // TODO: Ignore draft and outbox messages for now
                     String msgBoxValue = c.getString(c.getColumnIndexOrThrow(Telephony.Mms.MESSAGE_BOX));
                     if (!(msgBoxValue.contains(String.valueOf(Telephony.Mms.MESSAGE_BOX_INBOX)) ||
                             msgBoxValue.contains(String.valueOf(Telephony.Mms.MESSAGE_BOX_SENT)))) {
+                        continue;
+                    }
+
+
+                    String dateSent = c.getString(c.getColumnIndexOrThrow(Telephony.Mms.DATE_SENT));
+                    if (msgBoxValue.equals(String.valueOf(Telephony.Mms.MESSAGE_BOX_INBOX)) && dateSent.equals("0")) {
+                        // Message is draft and still sending. We can ignore.
                         continue;
                     }
 
@@ -65,6 +73,7 @@ public class MmsObserver extends ContentObserver {
                         continue;
                     }
                     map.put(id, id);
+                    Log.i(TAG, id);
 
                     // Keep track of the largest date
                     long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow(Telephony.Mms.DATE)));
@@ -77,15 +86,21 @@ public class MmsObserver extends ContentObserver {
                     msg.put("parts", util.getMmsPartsInJsonArray(context, id));
                     array.put(msg);
 
+                    for (int j = 0; j < c.getColumnCount(); j++) {
+                        msg.put(c.getColumnName(i), c.getString(c.getColumnIndexOrThrow(c.getColumnName(i))));
+                    }
+
+                    Log.i(TAG, msg.toString());
+
                     messages_received = messages_received || msg.getBoolean("received");
 
                     c.moveToNext();
                 }
             }
 
-            if (receivedDate > largestDateCounted*1000) {
+            if (receivedDate > largestDateCounted) {
                 largestDateCounted = receivedDate;
-                UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_current_counter), String.valueOf(largestDateCounted * 1000));
+                UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_current_mms_counter), String.valueOf(largestDateCounted));
             }
 
             if (array != null && array.length() > 0) {

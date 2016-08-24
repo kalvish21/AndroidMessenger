@@ -224,7 +224,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             tableView.insertRowsAtIndexes(row, withAnimation: .SlideUp)
             tableView.endUpdates()
             
-        } else {
+        } else if (initial_size < new_size) {
             let rows_to_reload = NSMutableIndexSet()
             for value in start_index...initial_size {
                 NSLog("%i", value - 1)
