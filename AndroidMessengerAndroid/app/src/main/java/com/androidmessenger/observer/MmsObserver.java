@@ -64,7 +64,7 @@ public class MmsObserver extends ContentObserver {
 
                     String dateSent = c.getString(c.getColumnIndexOrThrow(Telephony.Mms.DATE_SENT));
                     if (msgBoxValue.equals(String.valueOf(Telephony.Mms.MESSAGE_BOX_INBOX)) && dateSent.equals("0")) {
-                        // Message is draft and still sending. We can ignore.
+                        // Message is being downloaded and we can ignore it until it is complete.
                         continue;
                     }
 
