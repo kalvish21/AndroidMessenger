@@ -54,7 +54,7 @@ public class MmsObserver extends ContentObserver {
                 for (int i = 0; i < c.getCount(); i++) {
 
                     Log.i(TAG, "Checking the row ...");
-                    // TODO: Ignore draft and outbox messages for now
+                    // TODO: Ignore all messages outside of sent and received for now
                     String msgBoxValue = c.getString(c.getColumnIndexOrThrow(Telephony.Mms.MESSAGE_BOX));
                     if (!(msgBoxValue.contains(String.valueOf(Telephony.Mms.MESSAGE_BOX_INBOX)) ||
                             msgBoxValue.contains(String.valueOf(Telephony.Mms.MESSAGE_BOX_SENT)))) {
