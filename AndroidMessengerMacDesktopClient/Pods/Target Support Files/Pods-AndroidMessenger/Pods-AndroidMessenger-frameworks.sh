@@ -90,6 +90,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/ReachabilitySwift/ReachabilitySwift.framework"
   install_framework "$BUILT_PRODUCTS_DIR/SNRFetchedResultsController/SNRFetchedResultsController.framework"
   install_framework "$BUILT_PRODUCTS_DIR/Starscream/Starscream.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/Swifter/Swifter.framework"
   install_framework "$BUILT_PRODUCTS_DIR/SwiftyJSON/SwiftyJSON.framework"
   install_framework "$BUILT_PRODUCTS_DIR/libPhoneNumber-iOS/libPhoneNumber_iOS.framework"
 fi
@@ -100,6 +101,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/ReachabilitySwift/ReachabilitySwift.framework"
   install_framework "$BUILT_PRODUCTS_DIR/SNRFetchedResultsController/SNRFetchedResultsController.framework"
   install_framework "$BUILT_PRODUCTS_DIR/Starscream/Starscream.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/Swifter/Swifter.framework"
   install_framework "$BUILT_PRODUCTS_DIR/SwiftyJSON/SwiftyJSON.framework"
   install_framework "$BUILT_PRODUCTS_DIR/libPhoneNumber-iOS/libPhoneNumber_iOS.framework"
 fi
