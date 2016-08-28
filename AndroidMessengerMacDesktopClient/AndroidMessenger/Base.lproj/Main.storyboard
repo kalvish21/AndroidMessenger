@@ -488,9 +488,9 @@ CA
                                         <rect key="frame" x="273.5" y="0.0" width="443.5" height="504"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-                                            <scrollView misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iRb-ub-nel">
+                                            <scrollView ambiguous="YES" misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iRb-ub-nel">
                                                 <rect key="frame" x="0.0" y="67" width="438" height="371"/>
-                                                <clipView key="contentView" id="L4e-Sw-DGO">
+                                                <clipView key="contentView" ambiguous="YES" id="L4e-Sw-DGO">
                                                     <rect key="frame" x="1" y="0.0" width="436" height="370"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
@@ -573,8 +573,8 @@ CA
                                                     <constraint firstAttribute="bottom" secondItem="N3e-9M-ggR" secondAttribute="bottom" constant="5" id="ifC-LZ-66M"/>
                                                 </constraints>
                                             </customView>
-                                            <customView misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kW6-Sd-i2X">
-                                                <rect key="frame" x="0.0" y="473" width="444" height="31"/>
+                                            <customView ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kW6-Sd-i2X">
+                                                <rect key="frame" x="-1" y="473" width="444" height="31"/>
                                                 <subviews>
                                                     <tokenField focusRingType="none" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="faa-bK-Twv">
                                                         <rect key="frame" x="122" y="5" width="96" height="21"/>
@@ -588,7 +588,6 @@ CA
                                                 <constraints>
                                                     <constraint firstItem="faa-bK-Twv" firstAttribute="top" secondItem="kW6-Sd-i2X" secondAttribute="top" constant="5" id="BTu-Zl-4M4"/>
                                                     <constraint firstAttribute="bottom" secondItem="faa-bK-Twv" secondAttribute="bottom" constant="5" id="OBe-NJ-SLz"/>
-                                                    <constraint firstAttribute="height" constant="30" id="WiQ-qA-nlc"/>
                                                     <constraint firstItem="faa-bK-Twv" firstAttribute="leading" secondItem="kW6-Sd-i2X" secondAttribute="leading" constant="5" id="jsp-Ow-vsL"/>
                                                     <constraint firstAttribute="trailing" secondItem="faa-bK-Twv" secondAttribute="trailing" constant="5" id="kmy-VE-MIt"/>
                                                 </constraints>
@@ -598,13 +597,12 @@ CA
                                             <constraint firstAttribute="trailing" secondItem="JuV-Pq-qYF" secondAttribute="trailing" id="03U-tc-K4s"/>
                                             <constraint firstAttribute="trailing" secondItem="iRb-ub-nel" secondAttribute="trailing" id="AoD-v9-TNc"/>
                                             <constraint firstItem="iRb-ub-nel" firstAttribute="leading" secondItem="eeC-Dz-1q6" secondAttribute="leading" id="B93-JD-wym"/>
+                                            <constraint firstItem="kW6-Sd-i2X" firstAttribute="leading" secondItem="eeC-Dz-1q6" secondAttribute="leading" id="Ffm-Cv-p0H"/>
                                             <constraint firstItem="JuV-Pq-qYF" firstAttribute="top" secondItem="iRb-ub-nel" secondAttribute="bottom" id="Mdq-T9-Xz4"/>
-                                            <constraint firstItem="iRb-ub-nel" firstAttribute="top" secondItem="kW6-Sd-i2X" secondAttribute="bottom" id="Try-A7-fbL"/>
+                                            <constraint firstItem="iRb-ub-nel" firstAttribute="top" secondItem="kW6-Sd-i2X" secondAttribute="bottom" id="VLt-4z-DfO"/>
                                             <constraint firstAttribute="bottom" secondItem="JuV-Pq-qYF" secondAttribute="bottom" id="cri-Oh-DCJ"/>
-                                            <constraint firstAttribute="trailing" secondItem="kW6-Sd-i2X" secondAttribute="trailing" id="gmb-rv-wPQ"/>
-                                            <constraint firstItem="kW6-Sd-i2X" firstAttribute="leading" secondItem="eeC-Dz-1q6" secondAttribute="leading" id="p8Z-VN-jTX"/>
                                             <constraint firstItem="JuV-Pq-qYF" firstAttribute="leading" secondItem="eeC-Dz-1q6" secondAttribute="leading" id="pXP-Nc-XIR"/>
-                                            <constraint firstItem="kW6-Sd-i2X" firstAttribute="top" secondItem="eeC-Dz-1q6" secondAttribute="top" id="y1O-rX-3Su"/>
+                                            <constraint firstAttribute="trailing" secondItem="kW6-Sd-i2X" secondAttribute="trailing" id="vdo-VR-hJc"/>
                                         </constraints>
                                     </customView>
                                 </subviews>
