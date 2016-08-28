@@ -29,6 +29,10 @@ class AMHttpServer : NSObject {
         
         self.server = HttpServer()
         
+        self.server["/"] = { request in
+            return .OK(.Text(""))
+        }
+        
         self.server["/message/send"] = { request in
             if request.method != "POST" {
                 return .OK(.Text(""))
@@ -56,12 +60,30 @@ class AMHttpServer : NSObject {
             
             return .OK(.Text(""))
         }
+        
+        self.server["/qr/connection"] = { request in
+            if request.method != "POST" {
+                return .OK(.Text(""))
+            }
+            
+            let json: JSON = JSON(data: NSData(bytes: &request.body, length: request.body.count))
+            print(String(json))
+            
+            let ip = json["ip"].stringValue
+            let port = json["port"].stringValue
+            let prefs = NSUserDefaults.standardUserDefaults()
+            prefs.setObject(String(format: "https://%@:%@", ip, port), forKey: fullUrlPath)
+            prefs.setObject(ip, forKey: ipAddress)
+            prefs.synchronize()
+            NSNotificationCenter.defaultCenter().postNotificationName(handshake, object: nil)
+            return .OK(.Text(""))
+        }
     }
     
     func startServer() {
         do {
             try self.server.start(self.portNumber, forceIPv4: false, priority: 0)
-            NSNotificationCenter.defaultCenter().postNotificationName(websocketConnected, object: nil)
+            NSNotificationCenter.defaultCenter().postNotificationName(handshake, object: nil)
         } catch let error as NSError {
             NSLog("error %@", error.localizedDescription)
         }

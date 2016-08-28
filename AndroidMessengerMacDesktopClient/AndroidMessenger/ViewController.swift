@@ -132,9 +132,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         chatTableView.intercellSpacing = NSMakeSize(0, 0)
         
         // NSNotifications set for this class
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: connectedNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: websocketConnected, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: websocketDisconnected, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: handshake, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: openConnectSheet, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: messageSentConfirmation, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: newMessageReceived, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: leftDataShouldRefresh, object: nil)
@@ -171,13 +170,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             let userInfo: Dictionary<String, AnyObject>? = notification.object as? Dictionary<String, AnyObject>
             self.chatHandler.refreshIfThreadIdMatches(userInfo!["thread_id"] as! Int)
             break
-        case websocketConnected:
+        case handshake:
             getLatestDataFromApp(false)
             break
-        case connectedNotification:
-            getLatestDataFromApp(false)
-            break
-        case websocketDisconnected:
+        case openConnectSheet:
             sheetShouldOpen()
             break
         case leftDataShouldRefresh:
@@ -595,15 +591,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             self.view.window!.beginSheet(self.connectWindow.window!, completionHandler: nil)
             self.connectWindow.start()
             sheetIsOpened = true
-            
-            NSNotificationCenter.defaultCenter().removeObserver(self, name: websocketConnected, object: nil)
         }
     }
     
     func sheetShouldClose() {
         sheetIsOpened = false
         self.view.window!.endSheet(self.connectWindow.window!)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: websocketConnected, object: nil)
     }
     
     func getMaxDateFromCoreData() -> String {

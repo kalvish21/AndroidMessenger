@@ -21,9 +21,6 @@ class ConnectWindow: NSWindowController {
     @IBOutlet weak var progressLabel: NSTextField!
     @IBOutlet weak var cancel: NSButton!
     
-    var timer: NSTimer?
-    var countDown = -1
-    
     class func instantiateForModalParent(parent: NSViewController) -> ConnectWindow {
         let discoverable = ConnectWindow(windowNibName: "ConnectWindow")
         return discoverable
@@ -34,24 +31,29 @@ class ConnectWindow: NSWindowController {
     }
     
     func start() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: websocketHandshake, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: handshake, object: nil)
         if (NSUserDefaults.standardUserDefaults().valueForKey(ipAddress) != nil) {
             
-            NSLog("%@", getIFAddresses())
+            // Get the IP Addresses
+            var addresses = Array<String>()
+            for address in getIFAddresses() {
+                addresses.append(address)
+            }
+            
+            // Get the QR Image generator
             let generator = QRCodeGenerator()
             generator.correctionLevel = .H
-            let image:QRImage = generator.createImage(String(format: "%@", getIFAddresses()), size: CGSizeMake(204,204))
+            let image:QRImage = generator.createImage(String(format: "%@", String(JSON(addresses))), size: CGSizeMake(204,204))
             customView.image = image
         }
     }
     
     func handleNotification(notification: NSNotification) {
         switch notification.name {
-        case websocketHandshake:
+        case handshake:
             // We're done
             progressLabel.stringValue = "Connected"
             NetworkingUtil._manager = nil
-            NSNotificationCenter.defaultCenter().postNotificationName(connectedNotification, object: nil)
             closeWindow()
             break
             
@@ -65,37 +67,11 @@ class ConnectWindow: NSWindowController {
     }
     
     func closeWindow() {
-        if (timer != nil) {
-            timer!.invalidate()
-        }
-        
         if (self.parent != nil) {
-            NSNotificationCenter.defaultCenter().removeObserver(self, name: websocketConnected, object: nil)
-            NSNotificationCenter.defaultCenter().removeObserver(self, name: websocketDisconnected, object: nil)
             self.parent?.sheetShouldClose()
         }
     }
-    
-    @IBAction func connectButtonClicked(sender: AnyObject) {
-        progressLabel.stringValue = "Waiting ..."
         
-        // Validate IP Address before attempting to connect
-//        if ipAddressField.stringValue.isValidIPAddress() {
-//            NSUserDefaults.standardUserDefaults().setValue(ipAddressField.stringValue, forKey: ipAddress)
-//            NSUserDefaults.standardUserDefaults().synchronize()
-//            
-//            NSNotificationCenter.defaultCenter().postNotificationName(websocketConnected, object: nil)
-//            let prefs = NSUserDefaults.standardUserDefaults()
-//            prefs.setObject(String(format: "https://%@:%@", ipAddressField.stringValue, "5000"), forKey: fullUrlPath)
-//            prefs.setObject(ipAddressField.stringValue, forKey: ipAddress)
-//            prefs.synchronize()
-//
-//            closeWindow()
-//        } else {
-//            progressLabel.stringValue = "Invalid IP Address."
-//        }
-    }
-    
     @IBAction func stopButtonClicked(sender: AnyObject) {
         closeWindow()
     }

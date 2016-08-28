@@ -38,11 +38,19 @@
             android:layout_marginTop="81dp"
             android:text="@string/button_text_stop_server"/>
 
+        <Button
+            android:id="@+id/start_qr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/stop_button"
+            android:layout_marginTop="10dp"
+            android:text="@string/start_qr_text"/>
+
         <LinearLayout
             android:id="@+id/pairing_line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_below="@id/start_button"
+            android:layout_below="@id/start_qr"
             android:layout_marginTop="5dp"
             android:background="#D3D3D3"
             android:orientation="vertical">

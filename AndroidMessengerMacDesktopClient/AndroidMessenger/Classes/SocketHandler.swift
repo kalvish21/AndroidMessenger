@@ -75,9 +75,6 @@ class SocketHandler: NSObject, WebSocketDelegate, WebSocketPongDelegate {
             }
         }
         dispatch_resume(connection_checker!)
-        
-        NSNotificationCenter.defaultCenter().postNotificationName(websocketConnected, object: nil)
-        NSUserDefaults.standardUserDefaults().setValue(websocketConnected, forKey: websocketConnected)
     }
     
     func stopTimer() {
@@ -91,7 +88,6 @@ class SocketHandler: NSObject, WebSocketDelegate, WebSocketPongDelegate {
         NSLog("Disconnected")
         
         stopTimer()
-        NSNotificationCenter.defaultCenter().postNotificationName(websocketDisconnected, object: nil)
     }
     
     func websocketDidReceiveMessage(socket: WebSocket, text: String) {

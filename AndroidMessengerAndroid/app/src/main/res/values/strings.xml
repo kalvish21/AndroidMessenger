@@ -2,6 +2,7 @@
     <string name="app_name">Android Messenger</string>
     <string name="button_text_start_server">Start Server</string>
     <string name="button_text_stop_server">Stop Server</string>
+    <string name="start_qr_text">Scan QR Connection</string>
 
     <string name="pairing_text">This is the device you are currently paired with. Only this device can interact with your phone to send and receive SMS messages.</string>
     <string name="pairing_text_none">There are no devices currently paired with you phone.</string>

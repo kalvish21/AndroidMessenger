@@ -64,15 +64,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
     func setupSimplePingAndRunWithHost(hostName: String) {
         simplePing = SimplePing(hostName: hostName)
         simplePing!.sendPingWithData(nil)
+        simplePing!.delegate = self
         simplePing!.start()
     }
     
     func simplePing(pinger: SimplePing!, didFailToSendPacket packet: NSData!, error: NSError!) {
         NSLog("didFailToSendPacket")
+        pinger.stop()
+        NSNotificationCenter.defaultCenter().postNotificationName(handshake, object: nil)
     }
     
     func simplePing(pinger: SimplePing!, didFailWithError error: NSError!) {
         NSLog("didFailWithError")
+        pinger.stop()
+        NSNotificationCenter.defaultCenter().postNotificationName(openConnectSheet, object: nil)
     }
 }
 
