@@ -70,8 +70,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
     
     func simplePing(pinger: SimplePing!, didFailToSendPacket packet: NSData!, error: NSError!) {
         NSLog("didFailToSendPacket")
-        pinger.stop()
-        NSNotificationCenter.defaultCenter().postNotificationName(handshake, object: nil)
     }
     
     func simplePing(pinger: SimplePing!, didFailWithError error: NSError!) {

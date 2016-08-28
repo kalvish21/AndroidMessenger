@@ -175,7 +175,7 @@ class ChatMessageView : NSView {
             
             // See if message failed
             let objectId = msg.objectID
-            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(10 * Double(NSEC_PER_SEC)))
+            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(30 * Double(NSEC_PER_SEC)))
             dispatch_after(delayTime, dispatch_get_main_queue()) {
                 let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
                 let context = delegate.coreDataHandler.managedObjectContext

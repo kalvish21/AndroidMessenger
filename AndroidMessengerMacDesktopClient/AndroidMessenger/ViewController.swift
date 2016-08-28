@@ -305,8 +305,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                 
             } else {
                 let returnValue: Array<Dictionary<String, AnyObject>> = data as! Array<Dictionary<String, AnyObject>>
-//                NSLog("RESPONSE %@", returnValue)
-                
                 let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
                 let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
                 context.parentContext = delegate.coreDataHandler.managedObjectContext
@@ -463,12 +461,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             }
             return
         }
+        
         NSLog(notification.response!.string)
         NSLog(notification.title!)
         NSLog("%@", notification.userInfo!)
+        
+        NSUserDefaults.standardUserDefaults().setObject("0", forKey: badgeCountSoFar)
+        self.leftMessageHandler.messageHandler.setBadgeCount()
+        
         prepareSendMessage(notification.userInfo!["phone_number"] as! String, message: notification.response!.string, thread_id: notification.userInfo!["thread_id"] as! Int)
     }
-        
+    
     func control(control: NSControl, textView: NSTextView, doCommandBySelector commandSelector: Selector) -> Bool {
         if (commandSelector == #selector(insertNewline)) {
             if (self.messageTextField.stringValue == "" || self.messageTextField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) == "") {
