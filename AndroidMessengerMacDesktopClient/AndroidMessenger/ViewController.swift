@@ -9,7 +9,7 @@
 import Cocoa
 import SwiftyJSON
 
-class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate, NSUserNotificationCenterDelegate, ConnectProtocol {
+class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelegate, NSUserNotificationCenterDelegate, ConnectProtocol {
     private lazy var connectWindow: ConnectWindow = {
         let connectWindow: ConnectWindow = ConnectWindow.instantiateForModalParent(self)
         connectWindow.parent = self
@@ -44,14 +44,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         return deleteButton
     }()
     
-    private lazy var textField: NSTextField = {
+    private lazy var textField: NSSearchField = {
         let window = (self.view.window as! WAYWindow)
         let titleBarView = window.titleBarView
         
         let textFieldSize = NSMakeSize(200, 24)
-        let textField = NSTextField(frame: NSMakeRect(70, NSMidY(titleBarView.bounds) - (textFieldSize.height / 2), textFieldSize.width, textFieldSize.height))
+        let textField = NSSearchField(frame: NSMakeRect(70, NSMidY(titleBarView.bounds) - (textFieldSize.height / 2), textFieldSize.width, textFieldSize.height))
         textField.placeholderString = "Type to filter by name"
         textField.delegate = self.leftMessageHandler
+        textField.backgroundColor = NSColor.whiteColor()
         
         return textField
     }()

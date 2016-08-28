@@ -337,7 +337,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         self.messageTextField.stringValue = searchString
         self.messageTextField.becomeFirstResponder()
         
-        return -1
+        return self.chatTableView.selectedRow
     }
     
     func tableViewColumnDidResize(notification: NSNotification) {

@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate {
+class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, NSSearchFieldDelegate {
     var compose_results: Array<AnyObject> = Array<AnyObject>()
     var results: Array<AnyObject> = Array<AnyObject>()
     var original_results: Array<AnyObject> = Array<AnyObject>()
@@ -150,18 +150,18 @@ class LeftMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
     }
     
     func tableView(tableView: NSTableView, shouldEditTableColumn tableColumn: NSTableColumn?, row: Int) -> Bool {
-        return true
+        return false
     }
     
     func tableView(tableView: NSTableView, shouldShowCellExpansionForTableColumn tableColumn: NSTableColumn?, row: Int) -> Bool {
-        return true
+        return false
     }
 
     func tableView(tableView: NSTableView, nextTypeSelectMatchFromRow startRow: Int, toRow endRow: Int, forString searchString: String) -> Int {
         self.chatHandler.messageTextField.stringValue = searchString
         self.chatHandler.messageTextField.becomeFirstResponder()
 
-        return -1
+        return self.leftTableView.selectedRow
     }
 
     func tableViewSelectionDidChange(notification: NSNotification) {
