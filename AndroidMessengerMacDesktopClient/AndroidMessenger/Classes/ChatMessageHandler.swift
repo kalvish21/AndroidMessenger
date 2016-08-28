@@ -337,7 +337,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
         self.messageTextField.stringValue = searchString
         self.messageTextField.becomeFirstResponder()
         
-        return -1
+        return self.chatTableView.selectedRow
     }
     
     func tableViewColumnDidResize(notification: NSNotification) {
@@ -408,7 +408,7 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             let net = NetworkingUtil()
             let data = ["uid": net.generateUUID(), "p": phoneNumber, "action": "/phone_call"]
             let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-            delegate.socketHandler.writeString(JSON(rawValue: data)!.rawString()!)
+//            delegate.socketHandler.writeString(JSON(rawValue: data)!.rawString()!)
             
         } else {
             NSLog("Not sure what was passed in. Requires NSMenuItem")

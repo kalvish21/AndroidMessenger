@@ -12,15 +12,12 @@ let fullUrlPath: String = "fullUrlPath"
 let lastIdRetreived: String = "lastIdRetreived"
 
 // Notifications
-let connectedNotification: String = "ConnectionEstablished"
-let websocketConnected: String = "AndroidConnected"
 let websocketHandshake: String = "websocketHandshake"
-let websocketDisconnected: String = "AndroidDisconnected"
 let messageSentConfirmation: String = "MessageSentConfirmation"
 let newMessageReceived: String = "NewMessageReceived"
 let leftDataShouldRefresh: String = "leftDataShouldRefresh"
 let applicationBecameVisible: String = "applicationBecameVisible"
 let chatDataShouldRefresh: String = "chatDataShouldRefresh"
 let badgeCountSoFar: String = "badgeCountSoFar"
-
-
+let handshake: String = "handshake"
+let openConnectSheet: String = "openConnectSheet"

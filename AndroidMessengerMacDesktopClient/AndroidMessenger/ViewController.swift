@@ -9,7 +9,7 @@
 import Cocoa
 import SwiftyJSON
 
-class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate, NSUserNotificationCenterDelegate, ConnectProtocol {
+class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelegate, NSUserNotificationCenterDelegate, ConnectProtocol {
     private lazy var connectWindow: ConnectWindow = {
         let connectWindow: ConnectWindow = ConnectWindow.instantiateForModalParent(self)
         connectWindow.parent = self
@@ -44,14 +44,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         return deleteButton
     }()
     
-    private lazy var textField: NSTextField = {
+    private lazy var textField: NSSearchField = {
         let window = (self.view.window as! WAYWindow)
         let titleBarView = window.titleBarView
         
         let textFieldSize = NSMakeSize(200, 24)
-        let textField = NSTextField(frame: NSMakeRect(70, NSMidY(titleBarView.bounds) - (textFieldSize.height / 2), textFieldSize.width, textFieldSize.height))
+        let textField = NSSearchField(frame: NSMakeRect(70, NSMidY(titleBarView.bounds) - (textFieldSize.height / 2), textFieldSize.width, textFieldSize.height))
         textField.placeholderString = "Type to filter by name"
         textField.delegate = self.leftMessageHandler
+        textField.backgroundColor = NSColor.whiteColor()
         
         return textField
     }()
@@ -132,9 +133,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         chatTableView.intercellSpacing = NSMakeSize(0, 0)
         
         // NSNotifications set for this class
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: connectedNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: websocketConnected, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: websocketDisconnected, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: handshake, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: openConnectSheet, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: messageSentConfirmation, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: newMessageReceived, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: leftDataShouldRefresh, object: nil)
@@ -146,11 +146,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         self.tableView.becomeFirstResponder()
         
         // Get latest data from app if we're connected
-        let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-        if (NSUserDefaults.standardUserDefaults().valueForKey(websocketConnected) != nil && delegate.socketHandler.isConnected()) {
-            getLatestDataFromApp(false)
-        }
-        
+        getLatestDataFromApp(false)
         self.leftMessageHandler.messageHandler.setBadgeCount()
     }
     
@@ -163,7 +159,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             let titleBarView = window.titleBarView
             
             titleBarView.addSubview(self.composeButton)
-//            titleBarView.addSubview(self.deleteButton)
             titleBarView.addSubview(self.textField)
             
             createdBar = true
@@ -176,14 +171,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             let userInfo: Dictionary<String, AnyObject>? = notification.object as? Dictionary<String, AnyObject>
             self.chatHandler.refreshIfThreadIdMatches(userInfo!["thread_id"] as! Int)
             break
-        case websocketConnected:
-            getLatestDataFromApp(false)
-            break
-        case connectedNotification:
-            getLatestDataFromApp(false)
-            break
-        case websocketDisconnected:
+        case openConnectSheet:
             sheetShouldOpen()
+            break
+        case handshake:
+            getLatestDataFromApp(false)
             break
         case leftDataShouldRefresh:
             self.leftMessageHandler.getDataForLeftTableView(false)
@@ -314,8 +306,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
                 
             } else {
                 let returnValue: Array<Dictionary<String, AnyObject>> = data as! Array<Dictionary<String, AnyObject>>
-//                NSLog("RESPONSE %@", returnValue)
-                
                 let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
                 let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
                 context.parentContext = delegate.coreDataHandler.managedObjectContext
@@ -472,12 +462,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             }
             return
         }
+        
         NSLog(notification.response!.string)
         NSLog(notification.title!)
         NSLog("%@", notification.userInfo!)
+        
+        NSUserDefaults.standardUserDefaults().setObject("0", forKey: badgeCountSoFar)
+        self.leftMessageHandler.messageHandler.setBadgeCount()
+        
         prepareSendMessage(notification.userInfo!["phone_number"] as! String, message: notification.response!.string, thread_id: notification.userInfo!["thread_id"] as! Int)
     }
-        
+    
     func control(control: NSControl, textView: NSTextView, doCommandBySelector commandSelector: Selector) -> Bool {
         if (commandSelector == #selector(insertNewline)) {
             if (self.messageTextField.stringValue == "" || self.messageTextField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) == "") {
@@ -600,15 +595,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             self.view.window!.beginSheet(self.connectWindow.window!, completionHandler: nil)
             self.connectWindow.start()
             sheetIsOpened = true
-            
-            NSNotificationCenter.defaultCenter().removeObserver(self, name: websocketConnected, object: nil)
         }
     }
     
     func sheetShouldClose() {
         sheetIsOpened = false
         self.view.window!.endSheet(self.connectWindow.window!)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: websocketConnected, object: nil)
     }
     
     func getMaxDateFromCoreData() -> String {

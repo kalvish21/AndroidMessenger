@@ -8,6 +8,7 @@
 
 import Cocoa
 import SwiftyJSON
+import QRCoder
 
 protocol ConnectProtocol {
     func sheetShouldClose()
@@ -16,13 +17,9 @@ protocol ConnectProtocol {
 class ConnectWindow: NSWindowController {
     var parent: ConnectProtocol? = nil
     
-    @IBOutlet weak var ipAddressField: NSTextField!
+    @IBOutlet weak var customView: NSImageView!
     @IBOutlet weak var progressLabel: NSTextField!
-    @IBOutlet weak var connect: NSButton!
     @IBOutlet weak var cancel: NSButton!
-    
-    var timer: NSTimer?
-    var countDown = -1
     
     class func instantiateForModalParent(parent: NSViewController) -> ConnectWindow {
         let discoverable = ConnectWindow(windowNibName: "ConnectWindow")
@@ -34,70 +31,30 @@ class ConnectWindow: NSWindowController {
     }
     
     func start() {
-        let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-        let connectedAlready = NSUserDefaults.standardUserDefaults().stringForKey(websocketConnected)
-        
-        if (delegate.socketHandler.isConnected() == true) {
-            progressLabel.stringValue = "Connected"
-            
-            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-            delegate.socketHandler.socket?.writePing(NSData())
-            
-        } else if (connectedAlready != nil) {
-            // We were already connected, start a count down and try again
-            startTimer()
-        } else {
-            progressLabel.stringValue = "Type the IP Address above"
-        }
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: websocketConnected, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: websocketHandshake, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: websocketDisconnected, object: nil)
-        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: handshake, object: nil)
         if (NSUserDefaults.standardUserDefaults().valueForKey(ipAddress) != nil) {
-            ipAddressField.stringValue = NSUserDefaults.standardUserDefaults().valueForKey(ipAddress) as! String
-        }
-    }
-    
-    func timerCountdown(timer: NSTimer) {
-        countDown = countDown - 1
-        if (countDown <= 0) {
-            timer.invalidate()
-            connectButtonClicked(connect)
-        } else {
-            progressLabel.stringValue = String(format: "Trying again in %i seconds", countDown)
+            
+            // Get the IP Addresses
+            var addresses = Array<String>()
+            for address in getIFAddresses() {
+                addresses.append(address)
+            }
+            
+            // Get the QR Image generator
+            let generator = QRCodeGenerator()
+            generator.correctionLevel = .H
+            let image:QRImage = generator.createImage(String(format: "%@", String(JSON(addresses))), size: CGSizeMake(204,204))
+            customView.image = image
         }
     }
     
     func handleNotification(notification: NSNotification) {
         switch notification.name {
-        case websocketConnected:
-//            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-//            let dict = ["uid": NetworkingUtil().generateUUID(), "action": "/new_device", "device": NSHost.currentHost().name!]
-//            delegate.socketHandler.writeString(JSON(dict).rawString()!)
-            
-            let prefs = NSUserDefaults.standardUserDefaults()
-            prefs.setObject(String(format: "https://%@:%@", ipAddressField.stringValue, "5000"), forKey: fullUrlPath)
-            prefs.setObject(ipAddressField.stringValue, forKey: ipAddress)
-            prefs.synchronize()
-            break
-            
-        case websocketHandshake:
+        case handshake:
             // We're done
             progressLabel.stringValue = "Connected"
             NetworkingUtil._manager = nil
-            NSNotificationCenter.defaultCenter().postNotificationName(connectedNotification, object: nil)
             closeWindow()
-            break
-            
-        case websocketDisconnected:
-            if (countDown == 0) {
-                // We did a count down from 3 and it didn't work. User intervention required.
-                progressLabel.stringValue = "Error. Could not connect to phone."
-            } else {
-                // Start a timr for the countdown from 3.
-                startTimer()
-            }
             break
             
         default:
@@ -105,48 +62,53 @@ class ConnectWindow: NSWindowController {
         }
     }
     
-    func startTimer() {
-        countDown = 3
-        progressLabel.stringValue = String(format: "Trying again in %i seconds", countDown)
-        timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(timerCountdown), userInfo: nil, repeats: true)
-    }
-    
     func connectionError() {
         NSLog("Error connecting")
     }
     
     func closeWindow() {
-        if (timer != nil) {
-            timer!.invalidate()
-        }
-        
         if (self.parent != nil) {
-            NSNotificationCenter.defaultCenter().removeObserver(self, name: websocketConnected, object: nil)
-            NSNotificationCenter.defaultCenter().removeObserver(self, name: websocketDisconnected, object: nil)
             self.parent?.sheetShouldClose()
         }
     }
-    
-    @IBAction func connectButtonClicked(sender: AnyObject) {
-        progressLabel.stringValue = "Connecting ..."
         
-        // Validate IP Address before attempting to connect
-        if ipAddressField.stringValue.isValidIPAddress() {
-            NSUserDefaults.standardUserDefaults().setValue(ipAddressField.stringValue, forKey: ipAddress)
-            NSUserDefaults.standardUserDefaults().synchronize()
-            
-            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-            if (delegate.socketHandler.isConnected() == false) {
-                delegate.socketHandler.connect()
-            } else {
-                NSNotificationCenter.defaultCenter().postNotificationName(websocketConnected, object: nil)
-            }
-        } else {
-            progressLabel.stringValue = "Invalid."
-        }
-    }
-    
     @IBAction func stopButtonClicked(sender: AnyObject) {
         closeWindow()
+    }
+    
+    func getIFAddresses() -> [String] {
+        var addresses = [String]()
+        
+        // Get list of all interfaces on the local machine:
+        var ifaddr : UnsafeMutablePointer<ifaddrs> = nil
+        if getifaddrs(&ifaddr) == 0 {
+            
+            // For each interface ...
+            var ptr = ifaddr
+            while ptr != nil {
+                defer { ptr = ptr.memory.ifa_next }
+                
+                let flags = Int32(ptr.memory.ifa_flags)
+                var addr = ptr.memory.ifa_addr.memory
+                
+                // Check for running IPv4, IPv6 interfaces. Skip the loopback interface.
+                if (flags & (IFF_UP|IFF_RUNNING|IFF_LOOPBACK)) == (IFF_UP|IFF_RUNNING) {
+                    if addr.sa_family == UInt8(AF_INET) || addr.sa_family == UInt8(AF_INET6) {
+                        
+                        // Convert interface address to a human readable string:
+                        var hostname = [CChar](count: Int(NI_MAXHOST), repeatedValue: 0)
+                        if (getnameinfo(&addr, socklen_t(addr.sa_len), &hostname, socklen_t(hostname.count),
+                            nil, socklen_t(0), NI_NUMERICHOST) == 0) {
+                            if let address = String.fromCString(hostname) {
+                                addresses.append(address)
+                            }
+                        }
+                    }
+                }
+            }
+            freeifaddrs(ifaddr)
+        }
+        
+        return addresses
     }
 }

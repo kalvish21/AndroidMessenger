@@ -216,12 +216,13 @@ public class SmsMmsUriHandler implements Serializable, SendingSmsObserver.OnSmsS
 
             if (msg != null) {
                 try {
-                    msg.put("action", "/message/send");
                     msg.put("uuid", uuid);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                service.getAndroidWebSocket().sendJsonData(msg);
+
+                String action = "/message/send";
+                service.getDesktopWebserverService().sendMessageToServer(action, msg);
             }
         } catch (Exception e) {
             e.printStackTrace();

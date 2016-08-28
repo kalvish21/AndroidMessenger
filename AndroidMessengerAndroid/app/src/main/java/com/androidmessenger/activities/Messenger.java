@@ -12,6 +12,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Formatter;
@@ -20,11 +21,16 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.androidmessenger.R;
+import com.androidmessenger.connections.WebServer;
 import com.androidmessenger.service.AndroidAppService;
 import com.androidmessenger.util.AlertUtil;
+import com.androidmessenger.util.RequestUtil;
 import com.androidmessenger.util.UserPreferencesManager;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -32,6 +38,7 @@ import java.net.UnknownHostException;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by Kalyan Vishnubhatla on 3/21/16.
@@ -42,6 +49,10 @@ public class Messenger extends AppCompatActivity {
     private static final int READ_PHONE_STATE_PERMISSION = 1111;
     private static final int SEND_SMS_PERMISSION = 2222;
     private static final int READ_CONTACTS_PERMISSION = 3333;
+    private static final int CAMERA_PERMISSION = 4444;
+
+
+    private static final int QR_SCANNER = 4545;
 
     private BroadcastReceiver wifiReceiver;
     private BroadcastReceiver deviceUnpairReceiver;
@@ -62,7 +73,15 @@ public class Messenger extends AppCompatActivity {
         }
 
         updateButtonsAndTextIfRequired();
-        setIpAddress();
+        TextView textView = ButterKnife.findById(this, R.id.ipaddress);
+        textView.setText(getIpAddress());
+
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
     }
 
     @Override
@@ -92,7 +111,8 @@ public class Messenger extends AppCompatActivity {
                         TextView textView = ButterKnife.findById(Messenger.this, R.id.ipaddress);
                         textView.setText("DISCONNECTED");
                     } else {
-                        setIpAddress();
+                        TextView textView = ButterKnife.findById(Messenger.this, R.id.ipaddress);
+                        textView.setText(getIpAddress());
                     }
                 }
             };
@@ -125,8 +145,7 @@ public class Messenger extends AppCompatActivity {
         }
     }
 
-    private void setIpAddress() {
-        TextView textView = ButterKnife.findById(this, R.id.ipaddress);
+    private String getIpAddress() {
         try {
             WifiManager manager = (WifiManager) getSystemService(WIFI_SERVICE);
             WifiInfo wifiinfo = manager.getConnectionInfo();
@@ -134,7 +153,8 @@ public class Messenger extends AppCompatActivity {
             ArrayUtils.reverse(myIPAddress);
             InetAddress myInetIP = InetAddress.getByAddress(myIPAddress);
             String ipAddress = myInetIP.getHostAddress();
-            textView.setText(ipAddress);
+
+            return ipAddress;
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -144,7 +164,7 @@ public class Messenger extends AppCompatActivity {
             WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
             int ip = wifiInfo.getIpAddress();
             String ipAddress = Formatter.formatIpAddress(ip);
-            textView.setText(ipAddress);
+            return ipAddress;
         }
     }
 
@@ -236,16 +256,16 @@ public class Messenger extends AppCompatActivity {
     }
 
     private void askAllPermissionsAndStartServers() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.CALL_PHONE}, READ_PHONE_STATE_PERMISSION);
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_MMS, Manifest.permission.RECEIVE_SMS}, SEND_SMS_PERMISSION);
         } else {
             startServers();
         }
     }
 
-    @OnClick({R.id.start_button, R.id.stop_button, R.id.ask_contacts_permissions, R.id.ask_phone_call_permission, R.id.pairing_unpair})
+    @OnClick({R.id.start_button, R.id.stop_button, R.id.ask_contacts_permissions, R.id.ask_phone_call_permission, R.id.pairing_unpair, R.id.start_qr})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.start_button: {
@@ -263,7 +283,7 @@ public class Messenger extends AppCompatActivity {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                     DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            if (ContextCompat.checkSelfPermission(Messenger.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(Messenger.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                                 requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, READ_PHONE_STATE_PERMISSION);
                             }
                             ((AlertDialog) dialog).getButton(which).setVisibility(View.INVISIBLE);
@@ -279,7 +299,7 @@ public class Messenger extends AppCompatActivity {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                     DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            if (ContextCompat.checkSelfPermission(Messenger.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(Messenger.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                                 requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.CALL_PHONE}, READ_PHONE_STATE_PERMISSION);
                             }
                             ((AlertDialog) dialog).getButton(which).setVisibility(View.INVISIBLE);
@@ -301,15 +321,62 @@ public class Messenger extends AppCompatActivity {
                 break;
             }
 
+            case R.id.start_qr: {
+                startQRActivity();
+                break;
+            }
+
             default: {
                 break;
             }
         }
     }
 
+    private void startQRActivity() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
+        } else {
+            Intent intent = new Intent(this, QRScannerActivity.class);
+            startActivityForResult(intent, QR_SCANNER);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case QR_SCANNER: {
+                if (data != null && data.hasExtra("result")) {
+                    boolean result = data.getBooleanExtra("result", false);
+                    if (result) {
+                        try {
+                            JSONObject obj = new JSONObject();
+                            obj.put("ip", getIpAddress());
+                            obj.put("port", WebServer.PORT_NUMBER);
+                            RequestUtil.postJson(this, "/qr/connection", obj, new JsonHttpResponseHandler() {
+                                @Override
+                                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                    super.onSuccess(statusCode, headers, response);
+                                }
+
+                                @Override
+                                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                                }
+                            });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                break;
+            }
+
+            default:{
+                break;
+            }
+        }
     }
 
     @Override
@@ -345,6 +412,15 @@ public class Messenger extends AppCompatActivity {
                     AlertUtil.showOkAlert(this, "Error", "Permission was denied. Cannot access Contacts. Please grant this permission under Permissions for Android Messenger.");
                 }
                 updateButtonsAndTextIfRequired();
+                break;
+            }
+
+            case CAMERA_PERMISSION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startQRActivity();
+                } else {
+                    AlertUtil.showOkAlert(this, "Error", "Permission was denied. Cannot access Camera. Please grant this permission under Permissions for Android Messenger.");
+                }
                 break;
             }
 

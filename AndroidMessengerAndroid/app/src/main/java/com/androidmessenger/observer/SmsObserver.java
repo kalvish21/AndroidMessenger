@@ -82,16 +82,14 @@ public class SmsObserver extends ContentObserver {
                 obj.put("messages", array);
                 Log.i(TAG, Integer.toString(array.length()));
                 Log.i(TAG, array.toString());
-                try {
-                    if (messages_received) {
-                        obj.put("action", "/message/received");
-                    } else {
-                        obj.put("action", "/message/send");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                String action = null;
+                if (messages_received) {
+                    action = "/message/received";
+                } else {
+                    action = "/message/send";
                 }
-                service.getAndroidWebSocket().sendJsonData(obj);
+                service.getDesktopWebserverService().sendMessageToServer(action, obj);
             }
         } catch (Exception e) {
             e.printStackTrace();

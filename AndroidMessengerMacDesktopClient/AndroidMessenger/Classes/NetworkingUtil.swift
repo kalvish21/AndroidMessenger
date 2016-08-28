@@ -93,7 +93,7 @@ class NetworkingUtil: NSObject {
             try reach = Reachability(hostname: url)
             if (reach!.currentReachabilityStatus != .NotReachable) {
                 // Test with SimplePing
-                let path = NSUserDefaults.standardUserDefaults().valueForKey(ipAddress) as! String
+                let path = NSUserDefaults.standardUserDefaults().valueForKey(fullUrlPath) as! String
                 let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
                 delegate.setupSimplePingAndRunWithHost(path)
             }

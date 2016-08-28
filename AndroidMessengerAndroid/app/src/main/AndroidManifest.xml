@@ -12,6 +12,7 @@
     <!-- Phone Permissions -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- Contacts Permissions -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -38,6 +39,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".activities.QRScannerActivity" android:label="@string/app_name" >
         </activity>
 
         <!-- We will not be using this since we have issues when we are not the default SMS/MMS application  -->

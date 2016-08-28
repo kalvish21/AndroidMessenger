@@ -18,8 +18,8 @@ extension NSURLRequest {
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, SimplePingDelegate {
     
-    let socketHandler: SocketHandler = {
-        return SocketHandler()
+    let httpServer: AMHttpServer = {
+        return AMHttpServer()
     } ()
     
     let coreDataHandler: CoreDataHandler = {
@@ -30,19 +30,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
     var reach: Reachability?
     var simplePing: SimplePing?
     
-    func sendMessageThroughWebsocket(dataToSend: String) {
-        if (socketHandler.isConnected() == false) {
-            socketHandler.connect()
-        }
-        
-        socketHandler.writeString(dataToSend)
-    }
-
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application
-        if (NSUserDefaults.standardUserDefaults().valueForKey(websocketConnected) != nil && self.socketHandler.isConnected() == false) {
-            self.socketHandler.connect()
-        }
+        self.httpServer.startServer()
         
         NSUserDefaults.standardUserDefaults().setObject(nil, forKey: badgeCountSoFar)
         NSNotificationCenter.defaultCenter().postNotificationName(applicationBecameVisible, object: nil)
@@ -60,9 +50,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
     
     func applicationWillTerminate(aNotification: NSNotification) {
         // Insert code here to tear down your application
-        if (self.socketHandler.isConnected()) {
-            self.socketHandler.disconnect()
-        }
+        self.httpServer.stopServer()
+        
         self.coreDataHandler.saveContext()
         self.isActive = false
     }
@@ -75,6 +64,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
     func setupSimplePingAndRunWithHost(hostName: String) {
         simplePing = SimplePing(hostName: hostName)
         simplePing!.sendPingWithData(nil)
+        simplePing!.delegate = self
         simplePing!.start()
     }
     
@@ -84,6 +74,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
     
     func simplePing(pinger: SimplePing!, didFailWithError error: NSError!) {
         NSLog("didFailWithError")
+        pinger.stop()
+        NSNotificationCenter.defaultCenter().postNotificationName(openConnectSheet, object: nil)
     }
 }
 

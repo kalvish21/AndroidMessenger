@@ -12,6 +12,7 @@ target 'AndroidMessenger' do
     pod 'SNRFetchedResultsController'
     pod 'AsyncImageDownloaderOSX', '~> 1.0.0'
     pod 'Swifter', '~> 1.2.6'
+    pod "QRCoder"
 
 end
 
