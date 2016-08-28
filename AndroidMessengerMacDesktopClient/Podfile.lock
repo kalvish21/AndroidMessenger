@@ -3,6 +3,7 @@ PODS:
   - AsyncImageDownloaderOSX (1.0.0)
   - INAppStoreWindow (1.4)
   - libPhoneNumber-iOS (0.8.11)
+  - QRCoder (0.2.0)
   - ReachabilitySwift (2.3.3)
   - SNRFetchedResultsController (0.0.1)
   - Starscream (1.1.3)
@@ -14,6 +15,7 @@ DEPENDENCIES:
   - AsyncImageDownloaderOSX (~> 1.0.0)
   - INAppStoreWindow
   - libPhoneNumber-iOS
+  - QRCoder
   - ReachabilitySwift
   - SNRFetchedResultsController
   - Starscream
@@ -34,12 +36,13 @@ SPEC CHECKSUMS:
   AsyncImageDownloaderOSX: c1170d6e93bebb9c47144533a7970b9c3f574f21
   INAppStoreWindow: 4fd569f7435557239e78316de139e886ccbaec4d
   libPhoneNumber-iOS: ded33fab2c51ee847979556aa504c9e70f32d703
+  QRCoder: d9431c26635e42aef746063f9c7951539a0e3c49
   ReachabilitySwift: e0f6b6f280effb47731acfaaa2d5ffe223703793
   SNRFetchedResultsController: fdc66fffef8b4d6bef9440a1c2e2e166a82541a7
   Starscream: d662732354b40dd19ed1ece3e3c44c80b536b83c
   Swifter: c6f13d053398f1e2f209c7a394dfd5e863ae0157
   SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
 
-PODFILE CHECKSUM: 1b047a6e083d9753516fb0f474c1a490d5f5c9e2
+PODFILE CHECKSUM: '09e9b6a7e789e266a2d8288bbc18b31895aff64d'
 
 COCOAPODS: 1.0.1

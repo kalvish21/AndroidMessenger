@@ -9,3 +9,4 @@
 #include <arpa/inet.h>
 #import "SimplePing.h"
 
+#include <ifaddrs.h>
