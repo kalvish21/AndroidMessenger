@@ -34,54 +34,14 @@ class ConnectWindow: NSWindowController {
     }
     
     func start() {
-        let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-        let connectedAlready = NSUserDefaults.standardUserDefaults().stringForKey(websocketConnected)
-        
-        if (delegate.socketHandler.isConnected() == true) {
-            progressLabel.stringValue = "Connected"
-            
-            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-            delegate.socketHandler.socket?.writePing(NSData())
-            
-        } else if (connectedAlready != nil) {
-            // We were already connected, start a count down and try again
-            startTimer()
-        } else {
-            progressLabel.stringValue = "Type the IP Address above"
-        }
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: websocketConnected, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: websocketHandshake, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: websocketDisconnected, object: nil)
-        
         if (NSUserDefaults.standardUserDefaults().valueForKey(ipAddress) != nil) {
             ipAddressField.stringValue = NSUserDefaults.standardUserDefaults().valueForKey(ipAddress) as! String
         }
     }
     
-    func timerCountdown(timer: NSTimer) {
-        countDown = countDown - 1
-        if (countDown <= 0) {
-            timer.invalidate()
-            connectButtonClicked(connect)
-        } else {
-            progressLabel.stringValue = String(format: "Trying again in %i seconds", countDown)
-        }
-    }
-    
     func handleNotification(notification: NSNotification) {
         switch notification.name {
-        case websocketConnected:
-//            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-//            let dict = ["uid": NetworkingUtil().generateUUID(), "action": "/new_device", "device": NSHost.currentHost().name!]
-//            delegate.socketHandler.writeString(JSON(dict).rawString()!)
-            
-            let prefs = NSUserDefaults.standardUserDefaults()
-            prefs.setObject(String(format: "https://%@:%@", ipAddressField.stringValue, "5000"), forKey: fullUrlPath)
-            prefs.setObject(ipAddressField.stringValue, forKey: ipAddress)
-            prefs.synchronize()
-            break
-            
         case websocketHandshake:
             // We're done
             progressLabel.stringValue = "Connected"
@@ -90,25 +50,9 @@ class ConnectWindow: NSWindowController {
             closeWindow()
             break
             
-        case websocketDisconnected:
-            if (countDown == 0) {
-                // We did a count down from 3 and it didn't work. User intervention required.
-                progressLabel.stringValue = "Error. Could not connect to phone."
-            } else {
-                // Start a timr for the countdown from 3.
-                startTimer()
-            }
-            break
-            
         default:
             break
         }
-    }
-    
-    func startTimer() {
-        countDown = 3
-        progressLabel.stringValue = String(format: "Trying again in %i seconds", countDown)
-        timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(timerCountdown), userInfo: nil, repeats: true)
     }
     
     func connectionError() {
@@ -135,14 +79,15 @@ class ConnectWindow: NSWindowController {
             NSUserDefaults.standardUserDefaults().setValue(ipAddressField.stringValue, forKey: ipAddress)
             NSUserDefaults.standardUserDefaults().synchronize()
             
-            let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-            if (delegate.socketHandler.isConnected() == false) {
-                delegate.socketHandler.connect()
-            } else {
-                NSNotificationCenter.defaultCenter().postNotificationName(websocketConnected, object: nil)
-            }
+            NSNotificationCenter.defaultCenter().postNotificationName(websocketConnected, object: nil)
+            let prefs = NSUserDefaults.standardUserDefaults()
+            prefs.setObject(String(format: "https://%@:%@", ipAddressField.stringValue, "5000"), forKey: fullUrlPath)
+            prefs.setObject(ipAddressField.stringValue, forKey: ipAddress)
+            prefs.synchronize()
+
+            closeWindow()
         } else {
-            progressLabel.stringValue = "Invalid."
+            progressLabel.stringValue = "Invalid IP Address."
         }
     }
     

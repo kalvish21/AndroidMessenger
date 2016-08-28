@@ -146,11 +146,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
         self.tableView.becomeFirstResponder()
         
         // Get latest data from app if we're connected
-        let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-        if (NSUserDefaults.standardUserDefaults().valueForKey(websocketConnected) != nil && delegate.socketHandler.isConnected()) {
-            getLatestDataFromApp(false)
-        }
-        
+        getLatestDataFromApp(false)
         self.leftMessageHandler.messageHandler.setBadgeCount()
     }
     
@@ -163,7 +159,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             let titleBarView = window.titleBarView
             
             titleBarView.addSubview(self.composeButton)
-//            titleBarView.addSubview(self.deleteButton)
             titleBarView.addSubview(self.textField)
             
             createdBar = true

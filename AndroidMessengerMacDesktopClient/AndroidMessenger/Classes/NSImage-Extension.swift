@@ -44,7 +44,11 @@ extension NSImage {
     
     static func pathForUrl(url: String) -> NSURL {
         var digest = [UInt8](count: Int(CC_MD5_DIGEST_LENGTH), repeatedValue: 0)
-        if let data = url.dataUsingEncoding(NSUTF8StringEncoding) {
+        let components = NSURLComponents(URL: NSURL(string: url)!, resolvingAgainstBaseURL: true)!
+        
+        let md5String = String(format: "%@/%@", components.path!, components.queryItems!)
+        NSLog("%@", md5String)
+        if let data = md5String.dataUsingEncoding(NSUTF8StringEncoding) {
             CC_MD5(data.bytes, CC_LONG(data.length), &digest)
         }
         

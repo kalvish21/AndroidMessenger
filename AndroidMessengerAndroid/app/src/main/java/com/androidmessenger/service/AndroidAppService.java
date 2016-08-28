@@ -19,8 +19,8 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.androidmessenger.R;
+import com.androidmessenger.connections.DesktopWebserverService;
 import com.androidmessenger.connections.WebServer;
-import com.androidmessenger.connections.WebSocket;
 import com.androidmessenger.observer.MmsObserver;
 import com.androidmessenger.observer.SmsObserver;
 import com.androidmessenger.receiver.WifiReciever;
@@ -38,8 +38,8 @@ public class AndroidAppService extends Service {
     public static ServiceHandler mServiceHandler;
 
     private boolean connected;
-    private WebSocket webSocket;
     private WebServer webServer;
+    private DesktopWebserverService desktopWebserverService;
     private SmsObserver smsContent;
     private MmsObserver mmsContent;
     private PowerManager.WakeLock wakeLock;
@@ -68,7 +68,7 @@ public class AndroidAppService extends Service {
                 String currentUUID = UserPreferencesManager.getInstance().getValueFromPreferences(context, getString(R.string.preferences_device_uuid));
                 if (currentDevice == null && currentUUID == null) {
                     // Close all connections if there are any
-                    webSocket.closeAllConnections();
+//                    webSocket.closeAllConnections();
                 }
             }
         }, new IntentFilter(getString(R.string.intent_filter_device_unpair)));
@@ -86,26 +86,11 @@ public class AndroidAppService extends Service {
         stopServers();
     }
 
-    public WebSocket getAndroidWebSocket() {
-        return webSocket;
-    }
-
     public void startServers() {
         if (!connected) {
             Toast.makeText(this, "Starting Android Messenger ...", Toast.LENGTH_LONG).show();
         }
         connected = true;
-        try {
-            if (webSocket == null) {
-                webSocket = new WebSocket(this);
-            }
-            webSocket.start();
-        } catch (IllegalStateException e) {
-            // Already started
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         try {
             if (webServer == null) {
@@ -137,12 +122,6 @@ public class AndroidAppService extends Service {
         }
         connected = false;
         try {
-            // Shut down websocket
-            if (webSocket != null) {
-                webSocket.closeAllConnectionsAndStop();
-                webSocket = null;
-            }
-
             // Shutdown webserver
             if (webServer != null) {
                 webServer.stop();
@@ -184,6 +163,13 @@ public class AndroidAppService extends Service {
         public AndroidAppService getService() {
             return AndroidAppService.this;
         }
+    }
+
+    public DesktopWebserverService getDesktopWebserverService() {
+        if (desktopWebserverService == null) {
+            desktopWebserverService = new DesktopWebserverService(getBaseContext());
+        }
+        return desktopWebserverService;
     }
 
     // Handler that receives messages from the thread
