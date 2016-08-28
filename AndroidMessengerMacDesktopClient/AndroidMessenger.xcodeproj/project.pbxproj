@@ -35,7 +35,6 @@
 		747170131CB1E1EA00CF436C /* LeftMessageTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747170121CB1E1EA00CF436C /* LeftMessageTableView.swift */; };
 		748E5E8A1CAC4A3400EE8713 /* ChatScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748E5E891CAC4A3400EE8713 /* ChatScrollView.swift */; };
 		748E5E8C1CAC4FD800EE8713 /* MessageTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748E5E8B1CAC4FD800EE8713 /* MessageTextField.swift */; };
-		749495531CB75F5800B27FF2 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749495521CB75F5800B27FF2 /* LoadingView.swift */; };
 		74A82B831CB2D651006BEF34 /* ca.cer in Resources */ = {isa = PBXBuildFile; fileRef = 74A82B821CB2D651006BEF34 /* ca.cer */; };
 		74A82B871CB32C21006BEF34 /* sms@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 74A82B861CB32C21006BEF34 /* sms@2x.png */; };
 		74AF90DB1D729BAB00B99BD5 /* NSURL-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AF90DA1D729BAB00B99BD5 /* NSURL-Extension.swift */; };
@@ -115,7 +114,6 @@
 		747170121CB1E1EA00CF436C /* LeftMessageTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LeftMessageTableView.swift; path = Classes/LeftMessageTableView.swift; sourceTree = "<group>"; };
 		748E5E891CAC4A3400EE8713 /* ChatScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatScrollView.swift; path = Classes/ChatScrollView.swift; sourceTree = "<group>"; };
 		748E5E8B1CAC4FD800EE8713 /* MessageTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageTextField.swift; path = Classes/MessageTextField.swift; sourceTree = "<group>"; };
-		749495521CB75F5800B27FF2 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoadingView.swift; path = Classes/LoadingView.swift; sourceTree = "<group>"; };
 		749F80941CAA18D800FFE841 /* AndroidMessenger-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AndroidMessenger-Bridging-Header.h"; sourceTree = "<group>"; };
 		74A82B821CB2D651006BEF34 /* ca.cer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ca.cer; sourceTree = "<group>"; };
 		74A82B861CB32C21006BEF34 /* sms@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "sms@2x.png"; path = "images/sms@2x.png"; sourceTree = "<group>"; };
@@ -175,7 +173,6 @@
 		740D8C9E1CB0836800470483 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				749495511CB75F3B00B27FF2 /* LoadingView */,
 				74EDC0971CAA2F74001EBE9F /* SimplePing */,
 				7466AD341D6CD6FE00FF3CF4 /* WAYAppStoreWindow */,
 				7466AD381D6CD7D000FF3CF4 /* WAYWindow */,
@@ -299,14 +296,6 @@
 				7466AD3A1D6CD7E100FF3CF4 /* WAYWindow.m */,
 			);
 			name = WAYWindow;
-			sourceTree = "<group>";
-		};
-		749495511CB75F3B00B27FF2 /* LoadingView */ = {
-			isa = PBXGroup;
-			children = (
-				749495521CB75F5800B27FF2 /* LoadingView.swift */,
-			);
-			name = LoadingView;
 			sourceTree = "<group>";
 		};
 		74A1A7FA1CA20718004F0B47 /* CoreData */ = {
@@ -627,7 +616,6 @@
 				7466AD371D6CD71A00FF3CF4 /* WAYAppStoreWindow.m in Sources */,
 				740D8CC61CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift in Sources */,
 				74413BBF1D64953C0080F24D /* TextMapper.swift in Sources */,
-				749495531CB75F5800B27FF2 /* LoadingView.swift in Sources */,
 				745007931CA0DE0C0047673A /* AppDelegate.swift in Sources */,
 				74AF90DB1D729BAB00B99BD5 /* NSURL-Extension.swift in Sources */,
 				8082CAC4759105876C484410 /* MessageCell.swift in Sources */,

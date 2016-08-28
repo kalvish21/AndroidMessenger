@@ -170,11 +170,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSTextFieldDelegate
             let userInfo: Dictionary<String, AnyObject>? = notification.object as? Dictionary<String, AnyObject>
             self.chatHandler.refreshIfThreadIdMatches(userInfo!["thread_id"] as! Int)
             break
-        case handshake:
-            getLatestDataFromApp(false)
-            break
         case openConnectSheet:
             sheetShouldOpen()
+            break
+        case handshake:
+            getLatestDataFromApp(false)
             break
         case leftDataShouldRefresh:
             self.leftMessageHandler.getDataForLeftTableView(false)

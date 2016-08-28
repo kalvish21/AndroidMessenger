@@ -49,12 +49,12 @@ class MessageHandler {
         if sms.messageparts == nil {
             sms.messageparts = NSMutableOrderedSet()
         }
-        for var part in 0...parts.count-1{
+        for part in 0...parts.count-1{
             let dict = parts[part]
             
             switch(dict["type"] as! String) {
             case "text/plain":
-                var mmspart = NSEntityDescription.insertNewObjectForEntityForName("MessagePart", inManagedObjectContext: moc) as! MessagePart
+                let mmspart = NSEntityDescription.insertNewObjectForEntityForName("MessagePart", inManagedObjectContext: moc) as! MessagePart
                 mmspart.content_type = dict["type"] as! String
                 mmspart.id = Int(dict["part_id"] as! String)!
                 mmspart.message_id = Int(dict["mid"] as! String)!
@@ -64,7 +64,7 @@ class MessageHandler {
                 break
                 
             case "image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp":
-                var mmspart = NSEntityDescription.insertNewObjectForEntityForName("MessagePart", inManagedObjectContext: moc) as! MessagePart
+                let mmspart = NSEntityDescription.insertNewObjectForEntityForName("MessagePart", inManagedObjectContext: moc) as! MessagePart
                 mmspart.content_type = dict["type"] as! String
                 mmspart.id = Int(dict["part_id"] as! String)!
                 mmspart.message_id = Int(dict["mid"] as! String)!
@@ -111,12 +111,12 @@ class MessageHandler {
         if sms.messageparts == nil {
             sms.messageparts = NSMutableOrderedSet()
         }
-        for var part in 0...parts.count-1{
+        for part in 0...parts.count-1{
             let dict = parts[part]
             
             switch(dict["type"].stringValue) {
             case "text/plain":
-                var mmspart = NSEntityDescription.insertNewObjectForEntityForName("MessagePart", inManagedObjectContext: moc) as! MessagePart
+                let mmspart = NSEntityDescription.insertNewObjectForEntityForName("MessagePart", inManagedObjectContext: moc) as! MessagePart
                 mmspart.content_type = dict["type"].stringValue
                 mmspart.id = Int(dict["part_id"].stringValue)!
                 mmspart.message_id = Int(dict["mid"].stringValue)!
@@ -126,7 +126,7 @@ class MessageHandler {
                 break
                 
             case "image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp":
-                var mmspart = NSEntityDescription.insertNewObjectForEntityForName("MessagePart", inManagedObjectContext: moc) as! MessagePart
+                let mmspart = NSEntityDescription.insertNewObjectForEntityForName("MessagePart", inManagedObjectContext: moc) as! MessagePart
                 mmspart.content_type = dict["type"].stringValue
                 mmspart.id = Int(dict["part_id"].stringValue)!
                 mmspart.message_id = Int(dict["mid"].stringValue)!
