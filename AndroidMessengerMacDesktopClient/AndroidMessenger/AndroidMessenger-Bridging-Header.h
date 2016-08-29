@@ -6,6 +6,7 @@
 #import <CommonCrypto/CommonCrypto.h>
 
 #include "WAYWindow.h"
+#include "WAYAppstoreWindow.h"
 #include <arpa/inet.h>
 #import "SimplePing.h"
 

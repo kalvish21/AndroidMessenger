@@ -155,12 +155,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         if (createdBar == false) {
             let window = (self.view.window as! WAYWindow)
-            window.titleBarHeight = 40
+            window.titleBarHeight = 38
             let titleBarView = window.titleBarView
-            
             titleBarView.addSubview(self.composeButton)
             titleBarView.addSubview(self.textField)
-            
             createdBar = true
         }
     }

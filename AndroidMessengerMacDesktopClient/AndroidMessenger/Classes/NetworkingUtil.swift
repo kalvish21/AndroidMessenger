@@ -92,10 +92,10 @@ class NetworkingUtil: NSObject {
         do {
             try reach = Reachability(hostname: url)
             if (reach!.currentReachabilityStatus != .NotReachable) {
-                // Test with SimplePing
-                let path = NSUserDefaults.standardUserDefaults().valueForKey(fullUrlPath) as! String
-                let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
-                delegate.setupSimplePingAndRunWithHost(path)
+//                // Test with SimplePing
+//                let path = NSUserDefaults.standardUserDefaults().valueForKey(fullUrlPath) as! String
+//                let delegate = NSApplication.sharedApplication().delegate as! AppDelegate
+//                delegate.setupSimplePingAndRunWithHost(path)
             }
         } catch let error as NSError {
             NSLog("Unresolved error: %@, %@", error, error.userInfo)

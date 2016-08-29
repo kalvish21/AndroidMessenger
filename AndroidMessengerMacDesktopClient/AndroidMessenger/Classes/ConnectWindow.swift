@@ -44,6 +44,7 @@ class ConnectWindow: NSWindowController {
             let generator = QRCodeGenerator()
             generator.correctionLevel = .H
             let image:QRImage = generator.createImage(String(format: "%@", String(JSON(addresses))), size: CGSizeMake(204,204))
+            print(image)
             customView.image = image
         }
     }
@@ -110,5 +111,9 @@ class ConnectWindow: NSWindowController {
         }
         
         return addresses
+    }
+    
+    override func cancelOperation(sender: AnyObject?) {
+        closeWindow()
     }
 }
