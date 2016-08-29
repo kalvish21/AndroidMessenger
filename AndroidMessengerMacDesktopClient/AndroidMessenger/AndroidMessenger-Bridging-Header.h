@@ -7,7 +7,8 @@
 
 #include "WAYWindow.h"
 #include "WAYAppstoreWindow.h"
+#include "NSAttributedString_Extension.h"
+
 #include <arpa/inet.h>
 #import "SimplePing.h"
-
 #include <ifaddrs.h>

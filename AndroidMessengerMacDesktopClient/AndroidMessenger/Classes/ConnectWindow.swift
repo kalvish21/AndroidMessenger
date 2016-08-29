@@ -28,6 +28,7 @@ class ConnectWindow: NSWindowController {
     
     override func windowDidLoad() {
         super.windowDidLoad()
+        progressLabel.stringValue = "Waiting for connection ..."
     }
     
     func start() {

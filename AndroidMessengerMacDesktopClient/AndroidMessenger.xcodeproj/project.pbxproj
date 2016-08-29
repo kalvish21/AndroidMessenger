@@ -81,6 +81,7 @@
 		31E4B51FBEE8254701B6BD17 /* Pods_AndroidMessenger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AndroidMessenger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		740D8CC41CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PhoneNumberData+CoreDataProperties.swift"; path = "Classes/PhoneNumberData+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		740D8CC51CB0846800470483 /* PhoneNumberData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhoneNumberData.swift; path = Classes/PhoneNumberData.swift; sourceTree = "<group>"; };
+		7432A6341D73FEF7003C4D8F /* NSAttributedString_Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSAttributedString_Extension.h; path = Classes/NSAttributedString_Extension.h; sourceTree = "<group>"; };
 		74413BBC1D6494210080F24D /* ChatMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatMessageView.swift; path = Classes/ChatMessageView.swift; sourceTree = "<group>"; };
 		74413BBE1D64953C0080F24D /* TextMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TextMapper.swift; path = Classes/TextMapper.swift; sourceTree = "<group>"; };
 		74413BC01D6499510080F24D /* ChatMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatMessageCell.swift; path = Classes/ChatMessageCell.swift; sourceTree = "<group>"; };
@@ -200,6 +201,7 @@
 				744F60191D6A68940012967D /* NSImageView-Extension.swift */,
 				74BDE61E1CB0C26700491705 /* String-Extension.swift */,
 				74AF90DA1D729BAB00B99BD5 /* NSURL-Extension.swift */,
+				7432A6341D73FEF7003C4D8F /* NSAttributedString_Extension.h */,
 			);
 			name = Extension;
 			sourceTree = "<group>";
