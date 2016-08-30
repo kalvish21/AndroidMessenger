@@ -1,8 +1,10 @@
 package com.androidmessenger.connections;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -200,6 +202,65 @@ public class WebServer extends NanoHTTPD {
                     }
                     return newFixedLengthResponse(jobj.toString());
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return newFixedLengthResponse("");
+            }
+
+            case "/phone_call": {
+                Integer contentLength = Integer.parseInt(session.getHeaders().get("content-length"));
+                byte[] buf = new byte[contentLength];
+                try {
+                    session.getInputStream().read(buf, 0, contentLength);
+                    String data = new String(buf);
+                    JSONObject json = new JSONObject(data);
+
+                    Response r = verifyUuid(json.getString("uid"));
+                    if (r != null) {
+                        return r;
+                    }
+
+                    JSONObject jobj = new JSONObject();
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        // Permission not granted
+                        jobj.put("permission", "not_granted");
+
+                    } else {
+                        // Permission granted or not required
+                        String phonenumber = json.getString("p");
+                        final String number = "tel:" + phonenumber.trim();
+
+                        new Handler(context.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Intent intent = new Intent(Intent.ACTION_CALL);
+                                    intent.setPackage("com.android.phone");
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.setData(Uri.parse(number));
+                                    context.startActivity(intent);
+
+                                } catch (ActivityNotFoundException e) {
+
+                                    Intent intent = new Intent(Intent.ACTION_CALL);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.setData(Uri.parse(number));
+                                    context.startActivity(intent);
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                        jobj.put("permission", "granted");
+                    }
+
+                    return newFixedLengthResponse(jobj.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
 

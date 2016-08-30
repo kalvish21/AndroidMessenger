@@ -405,8 +405,21 @@ class ChatMessageHandler: NSObject, NSTableViewDataSource, NSTableViewDelegate, 
             let phoneNumber = self.phoneNumbers![(object as! NSMenuItem).tag]
             NSLog(phoneNumber)
             
+            func responseHandler (request: NSURLRequest, response: NSHTTPURLResponse?, data: AnyObject?) -> Void {
+                if (data != nil) {
+                    let permission: String = data!["permission"] as! String
+                    if permission == "not_granted" {
+                        let alert = NSAlert()
+                        alert.messageText = "We do not have permissions to make phone calls. Please open the app and click \"Grant Phone Call Permissions\""
+                        alert.addButtonWithTitle("Okay")
+                        alert.runModal()
+                    }
+                }
+            }
+            
             let net = NetworkingUtil()
-            let data = ["uid": net.generateUUID(), "p": phoneNumber, "action": "/phone_call"]
+            let data = ["uid": net.generateUUID(), "p": phoneNumber]
+            net.request(.POST, url: "phone_call", parameters: data, completionHandler: responseHandler)
             
         } else {
             NSLog("Not sure what was passed in. Requires NSMenuItem")
