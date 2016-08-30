@@ -21,6 +21,10 @@ class ConnectWindow: NSWindowController {
     @IBOutlet weak var progressLabel: NSTextField!
     @IBOutlet weak var cancel: NSButton!
     
+    private lazy var contactsHandler: ContactsHandler = {
+        return ContactsHandler()
+    }()
+    
     class func instantiateForModalParent(parent: NSViewController) -> ConnectWindow {
         let discoverable = ConnectWindow(windowNibName: "ConnectWindow")
         return discoverable
@@ -56,6 +60,9 @@ class ConnectWindow: NSWindowController {
             // We're done
             progressLabel.stringValue = "Connected"
             NetworkingUtil._manager = nil
+            
+            self.contactsHandler.requestContactsFromPhone()
+
             closeWindow()
             break
             

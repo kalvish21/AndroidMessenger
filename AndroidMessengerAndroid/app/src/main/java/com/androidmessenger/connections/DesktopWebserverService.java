@@ -18,12 +18,10 @@ import cz.msebera.android.httpclient.Header;
 public class DesktopWebserverService implements Serializable {
     private static final long serialVersionUID = -6745486654622948300L;
     private Context context;
-    private final String PORT_NUMBER = "9192";
+    public static final String PORT_NUMBER = "9192";
 
     public DesktopWebserverService(Context context) {
         this.context = context;
-
-        UserPreferencesManager.getInstance().setStringInPreferences(context, RequestUtil.BASE_URL, "http://10.0.0.62:9192/");
     }
 
     public void sendMessageToServer(String action, JSONObject object) {

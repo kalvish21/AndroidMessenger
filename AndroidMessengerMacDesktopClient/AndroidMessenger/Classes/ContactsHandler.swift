@@ -63,7 +63,7 @@ class ContactsHandler: NSObject {
         }
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
             let net = NetworkingUtil()
-            net.request(.GET, url: "contacts", parameters: ["uid": net.generateUUID()], completionHandler: responseHandler)
+            net.request(.GET, url: "new_device", parameters: ["uid": net.generateUUID(), "dn": NSHost.currentHost().name!], completionHandler: responseHandler)
         })
     }
     

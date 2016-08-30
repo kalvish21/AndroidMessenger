@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.androidmessenger.connections.DesktopWebserverService;
 import com.androidmessenger.util.RequestUtil;
 import com.androidmessenger.util.UserPreferencesManager;
 
@@ -90,10 +91,10 @@ public class QRScannerActivity extends AppCompatActivity implements Serializable
             try {
                 JSONArray array = arrays[0];
                 for (int i = 0; i < array.length(); ++i) {
-                    url = String.format("http://%s:9192/", array.getString(i));
+                    url = String.format("http://%s:%s/", array.getString(i), DesktopWebserverService.PORT_NUMBER);
 
                     try {
-                        if (isHostReachable(array.getString(i), 9192, 3000)) {
+                        if (isHostReachable(array.getString(i), Integer.parseInt(DesktopWebserverService.PORT_NUMBER), 3000)) {
                             return true;
                         } else {
                             ++failurCount;

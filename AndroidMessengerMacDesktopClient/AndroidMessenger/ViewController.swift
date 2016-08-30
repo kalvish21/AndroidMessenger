@@ -49,7 +49,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let titleBarView = window.titleBarView
         
         let textFieldSize = NSMakeSize(200, 24)
-        let textField = NSSearchField(frame: NSMakeRect(10, NSMidY(titleBarView.bounds) - (textFieldSize.height / 2) - 8, textFieldSize.width, textFieldSize.height))
+        let textField = NSSearchField(frame: NSMakeRect(70, NSMidY(titleBarView.bounds) - (textFieldSize.height / 2), textFieldSize.width, textFieldSize.height))
         textField.placeholderString = "Type to filter by name"
         textField.delegate = self.leftMessageHandler
         textField.backgroundColor = NSColor.whiteColor()
@@ -62,7 +62,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let titleBarView = window.titleBarView
         
         let composeButtonSize = NSMakeSize(40, 25)
-        let composeButtonFrame = NSMakeRect(10 + self.textField.frame.size.width + 10, NSMidY(titleBarView.bounds) - (self.textField.frame.size.height / 2) - 8, composeButtonSize.width, composeButtonSize.height)
+        let composeButtonFrame = NSMakeRect(70 + self.textField.frame.size.width + 10, NSMidY(titleBarView.bounds) - (self.textField.frame.size.height / 2), composeButtonSize.width, composeButtonSize.height)
         let composeButton = NSButton(frame: composeButtonFrame)
         composeButton.bezelStyle = .TexturedRoundedBezelStyle
         composeButton.action = #selector(newMessageAction)
@@ -150,7 +150,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         if (createdBar == false) {
             let window = (self.view.window as! WAYWindow)
-            window.titleBarHeight = 55
+            window.titleBarHeight = 38
             window.centerTrafficLightButtons = false
             let titleBarView = window.titleBarView
             titleBarView.addSubview(self.composeButton)

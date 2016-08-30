@@ -6,13 +6,17 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.androidmessenger.R;
 import com.androidmessenger.service.AndroidAppService;
 import com.androidmessenger.urihandler.ContactsUriHandler;
 import com.androidmessenger.urihandler.SmsMmsUriHandler;
 import com.androidmessenger.util.Uris;
+import com.androidmessenger.util.UserPreferencesManager;
 import com.androidmessenger.util.Util;
 
 import org.json.JSONArray;
@@ -78,7 +82,7 @@ public class WebServer extends NanoHTTPD {
         }
 
         // Double check that it exists
-        if (keyStoreFile.exists()){
+        if (keyStoreFile.exists()) {
             ks.load(new FileInputStream(keyStoreFile), DEFAULT_PASSWORD.toCharArray());
             kmf.init(ks, DEFAULT_PASSWORD.toCharArray());
             SSLServerSocketFactory sslsf = makeSSLSocketFactory(ks, kmf.getKeyManagers());
@@ -168,14 +172,26 @@ public class WebServer extends NanoHTTPD {
                 return newChunkedResponse(Response.Status.OK, mimetype, fis);
             }
 
-            case "/contacts": {
-                Response r = verifyUuid(session.getParms().get("uid"));
-                if (r != null) {
-                    return r;
-                }
-
+            case "/new_device": {
                 try {
                     JSONObject jobj = new JSONObject();
+
+                    String uuid = session.getParms().get("uid");
+                    String deviceName = session.getParms().get("dn");
+                    String currentUUID = UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_device_uuid));
+                    if (currentUUID != null && !util.verifyUUID(context, uuid)) {
+                        new Handler(context.getMainLooper()).post(new Runnable() {
+                            public void run() {
+                                Toast.makeText(context, "New device tried to connect! Device ID does not match.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        return verifyUuid(null);
+
+                    } else {
+                        UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_device_uuid), uuid);
+                        UserPreferencesManager.getInstance().setStringInPreferences(context, context.getString(R.string.preferences_device_name), deviceName);
+                    }
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                         jobj.put("permission", "denied");
                     } else {
@@ -225,7 +241,7 @@ public class WebServer extends NanoHTTPD {
                 String response = "";
                 String msgId = session.getParms().get("id");
 
-                android.database.Cursor c = context.getContentResolver().query(Uris.Mms, null, "_id="+msgId, null, null);
+                android.database.Cursor c = context.getContentResolver().query(Uris.Mms, null, "_id=" + msgId, null, null);
 
                 if (c.moveToFirst()) {
                     StringBuffer responseBuffer = new StringBuffer();
@@ -289,7 +305,7 @@ public class WebServer extends NanoHTTPD {
     }
 
     private Response verifyUuid(String uuid) {
-        if (!util.verifyUUID(context, uuid)) {
+        if (uuid == null || !util.verifyUUID(context, uuid)) {
             try {
                 JSONObject obj = new JSONObject();
                 obj.put("UUID", "MISMATCH");

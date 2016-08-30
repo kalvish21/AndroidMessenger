@@ -36,7 +36,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSURLConnectionDelegate, Sim
         
         NSUserDefaults.standardUserDefaults().setObject(nil, forKey: badgeCountSoFar)
         NSNotificationCenter.defaultCenter().postNotificationName(applicationBecameVisible, object: nil)
-
+        
         self.isActive = true
     }
     
