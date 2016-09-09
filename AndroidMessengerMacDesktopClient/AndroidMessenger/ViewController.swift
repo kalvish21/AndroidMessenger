@@ -461,7 +461,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         NSLog(notification.title!)
         NSLog("%@", notification.userInfo!)
         
-        NSUserDefaults.standardUserDefaults().setObject("0", forKey: badgeCountSoFar)
+        NSUserDefaults.standardUserDefaults().removeObjectForKey(badgeCountSoFar)
         self.leftMessageHandler.messageHandler.setBadgeCount()
         
         prepareSendMessage(notification.userInfo!["phone_number"] as! String, message: notification.response!.string, thread_id: notification.userInfo!["thread_id"] as! Int)

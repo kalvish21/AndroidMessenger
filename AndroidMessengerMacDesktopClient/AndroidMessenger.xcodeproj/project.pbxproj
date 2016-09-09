@@ -10,6 +10,7 @@
 		2FACC0DCC3F820302D7C787A /* Pods_AndroidMessenger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31E4B51FBEE8254701B6BD17 /* Pods_AndroidMessenger.framework */; };
 		740D8CC61CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740D8CC41CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift */; };
 		740D8CC71CB0846800470483 /* PhoneNumberData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740D8CC51CB0846800470483 /* PhoneNumberData.swift */; };
+		741B8E341D7B7C2E00AEB985 /* ChatTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741B8E331D7B7C2E00AEB985 /* ChatTextField.swift */; };
 		74413BBD1D6494210080F24D /* ChatMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74413BBC1D6494210080F24D /* ChatMessageView.swift */; };
 		74413BBF1D64953C0080F24D /* TextMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74413BBE1D64953C0080F24D /* TextMapper.swift */; };
 		74413BC21D6499510080F24D /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74413BC01D6499510080F24D /* ChatMessageCell.swift */; };
@@ -81,6 +82,7 @@
 		31E4B51FBEE8254701B6BD17 /* Pods_AndroidMessenger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AndroidMessenger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		740D8CC41CB0846800470483 /* PhoneNumberData+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PhoneNumberData+CoreDataProperties.swift"; path = "Classes/PhoneNumberData+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		740D8CC51CB0846800470483 /* PhoneNumberData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhoneNumberData.swift; path = Classes/PhoneNumberData.swift; sourceTree = "<group>"; };
+		741B8E331D7B7C2E00AEB985 /* ChatTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatTextField.swift; path = Classes/ChatTextField.swift; sourceTree = "<group>"; };
 		7432A6341D73FEF7003C4D8F /* NSAttributedString_Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSAttributedString_Extension.h; path = Classes/NSAttributedString_Extension.h; sourceTree = "<group>"; };
 		74413BBC1D6494210080F24D /* ChatMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatMessageView.swift; path = Classes/ChatMessageView.swift; sourceTree = "<group>"; };
 		74413BBE1D64953C0080F24D /* TextMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TextMapper.swift; path = Classes/TextMapper.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 			children = (
 				74413BBC1D6494210080F24D /* ChatMessageView.swift */,
 				74413BBE1D64953C0080F24D /* TextMapper.swift */,
+				741B8E331D7B7C2E00AEB985 /* ChatTextField.swift */,
 			);
 			name = Cell;
 			sourceTree = "<group>";
@@ -621,6 +624,7 @@
 				745007931CA0DE0C0047673A /* AppDelegate.swift in Sources */,
 				74AF90DB1D729BAB00B99BD5 /* NSURL-Extension.swift in Sources */,
 				8082CAC4759105876C484410 /* MessageCell.swift in Sources */,
+				741B8E341D7B7C2E00AEB985 /* ChatTextField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -39,8 +39,7 @@ public class SendingSmsObserver extends ContentObserver {
         if (resolver != null) {
             resolver.registerContentObserver(Uris.Sms, true, this);
         } else {
-            throw new IllegalStateException(
-                    "Current SmsObserver instance is invalid");
+            throw new IllegalStateException("Current SmsObserver instance is invalid");
         }
     }
 

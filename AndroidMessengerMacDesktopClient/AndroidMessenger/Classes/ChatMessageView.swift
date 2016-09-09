@@ -60,7 +60,7 @@ class ChatMessageView : NSView {
         timeLabel.selectable = false
         addSubview(timeLabel)
         
-        textLabel = NSTextField(frame: NSZeroRect)
+        textLabel = ChatTextField(frame: NSZeroRect)
         textLabel.bezeled = false
         textLabel.bordered = false
         textLabel.editable = false

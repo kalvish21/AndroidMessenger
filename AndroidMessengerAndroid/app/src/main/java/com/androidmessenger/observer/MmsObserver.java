@@ -41,34 +41,34 @@ public class MmsObserver extends ContentObserver {
         String filter = "creator != ? and date > ?";
         String[] args = new String[]{context.getPackageName(), Long.toString(largestDateCounted)};
 
-        Cursor c = null;
+        Cursor cursor = null;
         try {
-            c = context.getContentResolver().query(Uris.Mms, null, filter, args, null);
+            cursor = context.getContentResolver().query(Uris.Mms, null, filter, args, null);
             Util util = new Util();
             long receivedDate = 0;
             JSONArray array = new JSONArray();
             Map<String, String> map = new HashMap<>();
             boolean messages_received = false;
 
-            if (c.moveToFirst()) {
-                for (int i = 0; i < c.getCount(); i++) {
+            if (cursor.moveToFirst()) {
+                for (int i = 0; i < cursor.getCount(); i++) {
 
                     Log.i(TAG, "Checking the row ...");
                     // TODO: Ignore all messages outside of sent and received for now
-                    String msgBoxValue = c.getString(c.getColumnIndexOrThrow(Telephony.Mms.MESSAGE_BOX));
+                    String msgBoxValue = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.Mms.MESSAGE_BOX));
                     if (!(msgBoxValue.contains(String.valueOf(Telephony.Mms.MESSAGE_BOX_INBOX)) ||
                             msgBoxValue.contains(String.valueOf(Telephony.Mms.MESSAGE_BOX_SENT)))) {
                         continue;
                     }
 
 
-                    String dateSent = c.getString(c.getColumnIndexOrThrow(Telephony.Mms.DATE_SENT));
+                    String dateSent = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.Mms.DATE_SENT));
                     if (msgBoxValue.equals(String.valueOf(Telephony.Mms.MESSAGE_BOX_INBOX)) && dateSent.equals("0")) {
                         // Message is being downloaded and we can ignore it until it is complete.
                         continue;
                     }
 
-                    String id = c.getString(c.getColumnIndexOrThrow(Telephony.Mms._ID));
+                    String id = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.Mms._ID));
                     if (map.get(id) != null) {
                         continue;
                     }
@@ -76,25 +76,25 @@ public class MmsObserver extends ContentObserver {
                     Log.i(TAG, id);
 
                     // Keep track of the largest date
-                    long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow(Telephony.Mms.DATE)));
+                    long currentDate = Long.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(Telephony.Mms.DATE)));
                     if (currentDate > largestDateCounted) {
                         receivedDate = currentDate;
                     }
 
-                    JSONObject msg = util.getJsonObjectFromCursorObjectForMmsText(c);
+                    JSONObject msg = util.getJsonObjectFromCursorObjectForMmsText(cursor);
                     msg.put("address", util.getAddressesForMmsMessages(context, id));
                     msg.put("parts", util.getMmsPartsInJsonArray(context, id));
                     array.put(msg);
 
-                    for (int j = 0; j < c.getColumnCount(); j++) {
-                        msg.put(c.getColumnName(i), c.getString(c.getColumnIndexOrThrow(c.getColumnName(i))));
+                    for (int j = 0; j < cursor.getColumnCount(); j++) {
+                        msg.put(cursor.getColumnName(i), cursor.getString(cursor.getColumnIndexOrThrow(cursor.getColumnName(i))));
                     }
 
                     Log.i(TAG, msg.toString());
 
                     messages_received = messages_received || msg.getBoolean("received");
 
-                    c.moveToNext();
+                    cursor.moveToNext();
                 }
             }
 
@@ -120,8 +120,8 @@ public class MmsObserver extends ContentObserver {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (c != null) {
-                c.close();
+            if (cursor != null) {
+                cursor.close();
             }
         }
     }

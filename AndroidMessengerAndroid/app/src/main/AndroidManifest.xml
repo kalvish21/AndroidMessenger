@@ -1,5 +1,4 @@
-<manifest package="com.androidmessenger"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest package="com.androidmessenger" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -63,18 +62,16 @@
             </intent-filter>
 
         </receiver>
-        -->
 
         <receiver android:name=".receiver.WifiReciever" android:process=":sms_process" >
-        <!--<receiver android:name=".receiver.WifiReciever" >-->
             <intent-filter>
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
                 <action android:name="android.net.wifi.STATE_CHANGE"/>
             </intent-filter>
         </receiver>
+        -->
 
         <service android:name=".service.AndroidAppService" android:process=":sms_process" android:icon="@mipmap/ic_launcher" />
-        <!--<service android:name=".service.AndroidAppService" android:icon="@mipmap/ic_launcher" />-->
 
     </application>
 

@@ -35,9 +35,8 @@ public class SmsObserver extends ContentObserver {
         super.onChange(selfChange);
 
         Long largestDateCounted = Long.parseLong(UserPreferencesManager.getInstance().getValueFromPreferences(context, context.getString(R.string.preferences_current_counter), "0"));
-        String filter = "creator != ? and date > ?";
         String[] args = new String[]{context.getPackageName(), Long.toString(largestDateCounted)};
-        Cursor c = context.getContentResolver().query(Uris.Sms, null, filter, args, null);
+        Cursor cursor = context.getContentResolver().query(Uris.Sms, null, "creator != ? and date > ?", args, null);
 
         try {
             Util util = new Util();
@@ -45,30 +44,30 @@ public class SmsObserver extends ContentObserver {
             JSONArray array = new JSONArray();
             boolean messages_received = false;
 
-            if (c.moveToFirst()) {
-                for (int i = 0; i < c.getCount(); i++) {
+            if (cursor.moveToFirst()) {
+                for (int i = 0; i < cursor.getCount(); i++) {
 
                     // TODO: Ignore draft and outbox messages for now
-                    String msgBoxType = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.TYPE));
+                    String msgBoxType = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.Sms.TYPE));
                     if (msgBoxType.contains(String.valueOf(Telephony.Sms.MESSAGE_TYPE_OUTBOX)) ||
                             msgBoxType.contains(String.valueOf(Telephony.Sms.MESSAGE_TYPE_DRAFT))) {
                         continue;
                     }
 
                     // Update the largest counter
-                    long currentDate = Long.valueOf(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.DATE)));
+                    long currentDate = Long.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(Telephony.Sms.DATE)));
                     if (currentDate > largestDateCounted) {
                         receivedDate = currentDate;
                     }
 
                     // Create the JSON object from the cursor
-                    JSONObject obj = util.getJsonObjectFromCursorObjectForSmsText(c);
+                    JSONObject obj = util.getJsonObjectFromCursorObjectForSmsText(cursor);
                     array.put(obj);
 
                     // See if we have any received messages, URL needs to be updated for it
                     messages_received = messages_received || obj.getBoolean("received");
 
-                    c.moveToNext();
+                    cursor.moveToNext();
                 }
             }
 
@@ -94,7 +93,7 @@ public class SmsObserver extends ContentObserver {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            c.close();
+            cursor.close();
         }
     }
 }
