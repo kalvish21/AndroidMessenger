@@ -62,7 +62,8 @@ class ConnectWindow: NSWindowController {
             NetworkingUtil._manager = nil
             
             self.contactsHandler.requestContactsFromPhone()
-
+            NSNotificationCenter.defaultCenter().postNotificationName(getNewData, object: nil)
+            
             closeWindow()
             break
             

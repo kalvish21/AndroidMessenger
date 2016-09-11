@@ -128,7 +128,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         chatTableView.intercellSpacing = NSMakeSize(0, 0)
         
         // NSNotifications set for this class
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: handshake, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: getNewData, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: openConnectSheet, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: messageSentConfirmation, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNotification), name: newMessageReceived, object: nil)
@@ -168,7 +168,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         case openConnectSheet:
             sheetShouldOpen()
             break
-        case handshake:
+        case getNewData:
             getLatestDataFromApp(false)
             break
         case leftDataShouldRefresh:
